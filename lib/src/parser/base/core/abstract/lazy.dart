@@ -12,7 +12,6 @@ mixin LazyParserMixin on Parser {
     yield computed;
   }
 
-
   @override
   Parser get base => computed;
 }

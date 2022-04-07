@@ -6,12 +6,6 @@ abstract class WrapParser extends Parser {
 
   WrapParser(this.children);
 
-  @override
-  set memoize(bool value) {
-    for (Parser element in children) {
-      element.memoize = true;
-    }
-  }
 
   @override
   Parser cloneSelf(Map<Parser, Parser> cloned) {

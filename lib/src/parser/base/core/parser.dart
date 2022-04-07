@@ -5,8 +5,6 @@ import "package:parser_peg/internal_all.dart";
 
 abstract class Parser {
   bool memoize = false;
-  bool computing = false;
-  bool hasComputed = false;
 
   @Deprecated("Use the 'parseCtx' method")
   Context parse(Context context, MemoizationHandler handler);
@@ -30,7 +28,6 @@ abstract class Parser {
 
   Parser get base;
   Iterable<Parser> get children;
-
   Iterable<Parser> get traverse sync* {
     Set<Parser> traversed = Set<Parser>.identity();
     List<Parser> parsers = <Parser>[this];
@@ -46,9 +43,7 @@ abstract class Parser {
   }
 
   static Parser clone(Parser parser, Map<Parser, Parser> cloned) {
-    return cloned[parser] ??= parser.cloneSelf(cloned)
-      ..memoize = parser.memoize
-      ..hasComputed = parser.hasComputed;
+    return cloned[parser] ??= parser.cloneSelf(cloned)..memoize = parser.memoize;
   }
 
   static Parser transformWhere<T extends Parser>(Parser parser, ParserPredicate pred, TransformHandler<T> handler) {
@@ -70,13 +65,11 @@ abstract class Parser {
   }
 
   static Parser transform(Parser parser, TransformHandler handler, Map<Parser, Parser> transformed) {
-    return transformed[parser] ??= handler(parser.transformChildren(handler, transformed)
-      ..memoize = parser.memoize
-      ..hasComputed = parser.hasComputed);
+    return transformed[parser] ??= handler(parser.transformChildren(handler, transformed)..memoize = parser.memoize);
   }
 
   static Parser build(Parser parser) {
-    Parser built = parser
+    Parser built = parser //
         .transformType<CacheParser>((CacheParser p) => p.parser)
         .transformType<ThunkParser>((ThunkParser p) => p.computed..memoize = true);
 
@@ -121,6 +114,10 @@ abstract class Parser {
     required bool isLast,
     required int level,
   }) {
+    if (parser is ThunkParser) {
+      return _generateAsciiTree(rules, parser.computed, indent, isLast: isLast, level: level);
+    }
+
     StringBuffer buffer = StringBuffer();
 
     // ignore: literal_only_boolean_expressions
@@ -139,14 +136,6 @@ abstract class Parser {
         break;
       }
 
-      if (parser.computing) {
-        buffer
-          ..write(" (...)")
-          ..writeln();
-        break;
-      }
-
-      parser.computing = true;
       buffer
         ..write(" $parser")
         ..writeln();
@@ -164,18 +153,15 @@ abstract class Parser {
           ));
         }
       }
-      parser.computing = false;
     } while (false);
 
     return buffer.toString();
   }
 
   static String asciiTree(Parser parser) {
-    Parser copy = parser.thunk();
+    Parser copy = parser.thunk().transformType<MappedParser>((MappedParser p) => p.parser);
     List<Parser> references = copy.traverse.whereType<ThunkParser>().map((ThunkParser p) => p.computed).toList();
     Map<Parser, int> rules = <Parser, int>{for (int i = 0; i < references.length; i++) references[i]: i};
-    copy.build();
-
     StringBuffer buffer = StringBuffer();
 
     for (Parser p in rules.keys) {
