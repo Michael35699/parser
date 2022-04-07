@@ -1,0 +1,8 @@
+parser_peg
+parser_peg.exe
+.dart_tool
+.dart_tool/package_config.json
+.vscode
+.packages
+.pubspec.lock
+
