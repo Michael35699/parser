@@ -5,6 +5,7 @@ class FromPrecedenceParser extends WrapParser {
   Parser get parser => children[0];
 
   FromPrecedenceParser(this.precedence, Parser parser) : super(<Parser>[parser]);
+  FromPrecedenceParser.empty(this.precedence) : super(<Parser>[]);
 
   @override
   Context parse(Context context, MemoizationHandler handler) {
@@ -15,10 +16,13 @@ class FromPrecedenceParser extends WrapParser {
   }
 
   @override
-  FromPrecedenceParser cloneSelf() => FromPrecedenceParser(precedence, parser);
+  FromPrecedenceParser cloneSelf(Map<Parser, Parser> cloned) => FromPrecedenceParser(precedence, parser);
 
   @override
   Parser get base => parser.base;
+
+  @override
+  FromPrecedenceParser empty() => FromPrecedenceParser.empty(precedence);
 }
 
 FromPrecedenceParser fromPrecedence(num precedence, Parser parser) => FromPrecedenceParser(precedence, parser);

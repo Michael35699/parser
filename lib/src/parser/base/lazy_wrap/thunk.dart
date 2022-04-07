@@ -22,7 +22,18 @@ class ThunkParser extends Parser with LazyParserMixin {
   }
 
   @override
-  ThunkParser cloneSelf() => ThunkParser(lazyParser);
+  Parser cloneSelf(Map<Parser, Parser> cloned) {
+    Parser evaluated = computed.clone(cloned);
+
+    return ThunkParser(() => evaluated);
+  }
+
+  @override
+  Parser transformChildren(TransformHandler handler, Map<Parser, Parser> transformed) {
+    Parser evaluated = computed.transform(handler, transformed);
+
+    return ThunkParser(() => evaluated);
+  }
 }
 
 ThunkParser thunk(LazyParser fn) => ThunkParser(fn);

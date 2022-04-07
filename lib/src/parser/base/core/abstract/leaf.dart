@@ -23,12 +23,15 @@ abstract class LeafParserMixin extends Parser {
   @override
   Iterable<Parser> get children sync* {}
 
-  @override
-  Parser cloneSelf() => this;
-
   String get failureMessage;
   int? parseLeaf(String input, int index);
 
   @override
   Parser get base => this;
+
+  @override
+  Parser cloneSelf(Map<Parser, Parser> cloned) => this;
+
+  @override
+  Parser transformChildren(TransformHandler handler, Map<Parser, Parser> transformed) => this;
 }

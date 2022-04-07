@@ -12,12 +12,6 @@ mixin LazyParserMixin on Parser {
     yield computed;
   }
 
-  @override
-  void replace<T extends Parser>(ParserPredicate target, TransformHandler<T> result) {
-    super.replace(target, result);
-
-    _computed = computed.applyTransformation(target, result);
-  }
 
   @override
   Parser get base => computed;

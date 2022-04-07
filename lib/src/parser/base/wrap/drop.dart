@@ -4,6 +4,7 @@ class DropParser extends WrapParser {
   Parser get parser => children[0];
 
   DropParser(Parser parser) : super(<Parser>[parser]);
+  DropParser.empty() : super(<Parser>[]);
 
   @override
   Context parse(Context context, MemoizationHandler handler) {
@@ -17,10 +18,13 @@ class DropParser extends WrapParser {
   }
 
   @override
-  DropParser cloneSelf() => DropParser(parser);
+  DropParser cloneSelf(Map<Parser, Parser> cloned) => DropParser(parser);
 
   @override
   Parser get base => parser.base;
+
+  @override
+  DropParser empty() => DropParser.empty();
 }
 
 DropParser drop(Object parser) => DropParser(parser.$);

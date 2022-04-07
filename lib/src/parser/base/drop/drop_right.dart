@@ -5,6 +5,7 @@ class DropRightParser extends WrapParser {
   Parser get right => children[1];
 
   DropRightParser(Parser parser, Parser right) : super(<Parser>[parser, right]);
+  DropRightParser.empty() : super(<Parser>[]);
 
   @override
   Context parse(Context context, MemoizationHandler handler) {
@@ -26,10 +27,13 @@ class DropRightParser extends WrapParser {
   }
 
   @override
-  DropRightParser cloneSelf() => DropRightParser(parser, right);
+  DropRightParser cloneSelf(Map<Parser, Parser> cloned) => DropRightParser(parser, right);
 
   @override
   Parser get base => parser.base;
+
+  @override
+  DropRightParser empty() => DropRightParser.empty();
 }
 
 extension DropRightParserExtension on Parser {

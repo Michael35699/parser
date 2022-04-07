@@ -2,6 +2,7 @@ import "package:parser_peg/internal_all.dart";
 
 class CycleEndParser extends WrapParser {
   CycleEndParser(Parser parser) : super(<Parser>[parser]);
+  CycleEndParser.empty() : super(<Parser>[]);
 
   Parser get parser => children[0];
 
@@ -24,10 +25,13 @@ class CycleEndParser extends WrapParser {
   }
 
   @override
-  CycleEndParser cloneSelf() => CycleEndParser(parser);
+  CycleEndParser cloneSelf(Map<Parser, Parser> cloned) => CycleEndParser(parser);
 
   @override
   Parser get base => parser.base;
+
+  @override
+  CycleEndParser empty() => CycleEndParser.empty();
 }
 
 extension CycleEndExtension on Parser {

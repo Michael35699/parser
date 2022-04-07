@@ -8,7 +8,10 @@ abstract class ChildlessParser extends Parser {
   Iterable<Parser> get children sync* {}
 
   @override
-  Parser cloneSelf() => this;
+  Parser cloneSelf(Map<Parser, Parser> cloned) => this;
+
+  @override
+  Parser transformChildren(TransformHandler handler, Map<Parser, Parser> transformed) => this;
 
   @override
   Parser get base => this;

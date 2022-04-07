@@ -3,16 +3,19 @@ import "package:parser_peg/internal_all.dart";
 class CacheParser extends WrapParser {
   Parser get parser => children[0];
   CacheParser(Parser parser) : super(<Parser>[parser]);
+  CacheParser.empty() : super(<Parser>[]);
 
   @override
-  Context parse(Context context, MemoizationHandler handler) =>
-      throw UnsupportedError("Cache does not support parsing.");
+  Context parse(Context context, MemoizationHandler handler) => parser.parseCtx(context, handler);
 
   @override
-  CacheParser cloneSelf() => CacheParser(parser);
+  CacheParser cloneSelf(Map<Parser, Parser> cloned) => CacheParser(parser);
 
   @override
   Parser get base => parser.base;
+
+  @override
+  CacheParser empty() => CacheParser.empty();
 }
 
 CacheParser cache(Parser fn) => CacheParser(fn);

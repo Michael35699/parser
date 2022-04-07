@@ -10,13 +10,10 @@ abstract class Parser {
 
   @Deprecated("Use the 'parseCtx' method")
   Context parse(Context context, MemoizationHandler handler);
-  @Deprecated("Use the [clone] method")
-  Parser cloneSelf();
-
-  @nonVirtual
-  Parser clone() => cloneSelf()
-    ..memoize = memoize
-    ..hasComputed = hasComputed;
+  @Deprecated("Use the 'clone' method")
+  Parser cloneSelf(Map<Parser, Parser> cloned);
+  @Deprecated("Use the 'transform' method")
+  Parser transformChildren(TransformHandler handler, Map<Parser, Parser> transformed);
 
   @nonVirtual
   Context parseCtx(Context context, MemoizationHandler handler) {
@@ -48,70 +45,42 @@ abstract class Parser {
     }
   }
 
-  @mustCallSuper
-  void replace<T extends Parser>(ParserPredicate target, TransformHandler<T> result) {}
-  Parser replaceRecursive<T extends Parser>(ParserPredicate target, TransformHandler<T> result) {
-    CacheParser parser = this.cache();
-    Set<Parser> previous = <Parser>{...parser.traverse};
-    Set<Parser> traversed = <Parser>{...previous};
-    List<Parser> stack = <Parser>[...previous];
-
-    while (stack.isNotEmpty) {
-      Parser parent = stack.removeLast();
-
-      for (Parser child in parent.children) {
-        if (previous.contains(child)) {
-          // Replace the parser if it's been seen.
-          parent.replace(target, result);
-        } else if (traversed.add(child)) {
-          // If it's not been seen yet, add it to the stack.
-          stack.add(child);
-        }
-      }
-    }
-
-    return parser.parser;
+  static Parser clone(Parser parser, Map<Parser, Parser> cloned) {
+    return cloned[parser] ??= parser.cloneSelf(cloned)
+      ..memoize = parser.memoize
+      ..hasComputed = parser.hasComputed;
   }
 
-  Parser deepClone() {
-    CacheParser parser = this.cache();
-
-    Set<Parser> previousParsers = <Parser>{...parser.traverse};
-    Map<Parser, Parser> mapping = <Parser, Parser>{for (Parser p in previousParsers) p: p.clone()};
-    List<Parser> stack = <Parser>[...previousParsers];
-    Set<Parser> seen = <Parser>{...previousParsers};
-    while (stack.isNotEmpty) {
-      Parser parent = stack.removeLast();
-      for (Parser p in parent.children) {
-        if (previousParsers.contains(p)) {
-          parent.replace((Parser c) => c == p, (Parser c) => mapping[c]!);
-        } else if (seen.add(p)) {
-          stack.add(p);
-        }
+  static Parser transformWhere<T extends Parser>(Parser parser, ParserPredicate pred, TransformHandler<T> handler) {
+    return parser.transform((Parser parser) {
+      if (pred(parser) && parser is T) {
+        return handler(parser);
       }
-    }
-
-    return parser.parser;
+      return parser;
+    });
   }
 
-  Parser applyTransformation<T extends Parser>(ParserPredicate target, TransformHandler<T> result) {
-    Parser self = this;
-    if (target(self) && self is T) {
-      return result(self);
-    }
-    return this;
+  static Parser transformType<T extends Parser>(Parser parser, TransformHandler<T> handler) {
+    return parser.transform((Parser parser) {
+      if (parser is T) {
+        return handler(parser);
+      }
+      return parser;
+    });
+  }
+
+  static Parser transform(Parser parser, TransformHandler handler, Map<Parser, Parser> transformed) {
+    return transformed[parser] ??= handler(parser.transformChildren(handler, transformed)
+      ..memoize = parser.memoize
+      ..hasComputed = parser.hasComputed);
   }
 
   static Parser build(Parser parser) {
-    CacheParser self = parser.cache();
-    Parser resolved = self.parser
-            .replaceRecursive((Parser p) => p is SynthesizedParser, (SynthesizedParser p) => p.synthesized)
-            .replaceRecursive((Parser p) => p is CacheParser, (CacheParser p) => p.parser)
-            .replaceRecursive((Parser p) => p is ThunkParser, (ThunkParser p) => p.computed..memoize = true)
-        //
-        ;
+    Parser built = parser
+        .transformType<CacheParser>((CacheParser p) => p.parser)
+        .transformType<ThunkParser>((ThunkParser p) => p.computed..memoize = true);
 
-    return resolved;
+    return built;
   }
 
   static T run<T extends ParseResult>(Parser parser, String input, {bool? map, bool? end}) {
@@ -164,14 +133,22 @@ abstract class Parser {
 
       if (level > 0 && rules.containsKey(parser)) {
         buffer
-          ..write("(rule#${rules[parser]})")
+          ..write(" (rule#${rules[parser]})")
           ..writeln();
 
         break;
       }
 
+      if (parser.computing) {
+        buffer
+          ..write(" (...)")
+          ..writeln();
+        break;
+      }
+
+      parser.computing = true;
       buffer
-        ..write("$parser")
+        ..write(" $parser")
         ..writeln();
 
       List<Parser> children = parser.children.toList();
@@ -187,18 +164,17 @@ abstract class Parser {
           ));
         }
       }
+      parser.computing = false;
     } while (false);
 
     return buffer.toString();
   }
 
   static String asciiTree(Parser parser) {
-    Parser copy = parser.thunk().deepClone();
+    Parser copy = parser.thunk();
     List<Parser> references = copy.traverse.whereType<ThunkParser>().map((ThunkParser p) => p.computed).toList();
     Map<Parser, int> rules = <Parser, int>{for (int i = 0; i < references.length; i++) references[i]: i};
-    copy
-      ..replaceRecursive((Parser p) => p is MappedParser, (MappedParser p) => p.parser)
-      ..build();
+    copy.build();
 
     StringBuffer buffer = StringBuffer();
 
@@ -233,16 +209,42 @@ abstract class Parser {
 
 extension SharedParserExtension on Parser {
   T run<T extends ParseResult>(String input, {bool? map, bool? end}) => Parser.run(this, input, map: map, end: end);
+
   Context runCtx(String input, {bool? map, bool? end}) => Parser.runCtx(this, input, map: map, end: end);
+
   Parser build() => Parser.build(this);
+
   String generateAsciiTree() => Parser.asciiTree(this);
+
+  Parser clone([Map<Parser, Parser>? cloned]) => Parser.clone(this, cloned ?? <Parser, Parser>{});
+
+  Parser transformWhere<T extends Parser>(ParserPredicate predicate, TransformHandler<T> handler) =>
+      Parser.transformWhere(this, predicate, handler);
+
+  Parser transformType<T extends Parser>(TransformHandler<T> handler) => Parser.transformType(this, handler);
+
+  Parser transform(TransformHandler handler, [Map<Parser, Parser>? transformed]) =>
+      Parser.transform(this, handler, transformed ?? <Parser, Parser>{});
 }
 
 extension LazyParserMethodsExtension on LazyParser {
   T run<T extends ParseResult>(String input, {bool? map, bool? end}) => this.$.run(input, map: map, end: end);
+
   Context runCtx(String input, {bool? map, bool? end}) => this.$.runCtx(input, map: map, end: end);
+
   Parser build() => this.$.build();
+
   String generateAsciiTree() => this.$.generateAsciiTree();
+
+  Parser clone([Map<Parser, Parser>? cloned]) => this.$.clone(cloned);
+
+  Parser transformWhere<T extends Parser>(ParserPredicate predicate, TransformHandler<T> handler) =>
+      this.$.transformWhere(predicate, handler);
+
+  Parser transformType<T extends Parser>(TransformHandler<T> handler) => this.$.transformType(handler);
+
+  Parser transform(TransformHandler handler, [Map<Parser, Parser>? transformed]) =>
+      this.$.transform(handler, transformed);
 
   ThunkParser thunk() => ThunkParser(this);
 }
