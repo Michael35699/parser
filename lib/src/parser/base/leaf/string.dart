@@ -20,7 +20,7 @@ class StringParser extends LeafParserMixin {
   int? parseLeaf(String input, int index) => pattern.matchAsPrefix(input, index)?.end;
 
   @override
-  String toString() => "'$pattern'";
+  String toString() => "'$pattern'".replaceAll("\n", r"\n").replaceAll("\r", r"\r").replaceAll("\t", r"\t");
 }
 
 extension StringParserExtension on String {
