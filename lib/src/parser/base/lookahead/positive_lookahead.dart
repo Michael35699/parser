@@ -6,6 +6,7 @@ class PositiveLookaheadParser extends WrapParser {
   Parser get parser => children[0];
 
   PositiveLookaheadParser(Parser parser) : super(<Parser>[parser]);
+  PositiveLookaheadParser.empty() : super(<Parser>[]);
 
   @override
   Context parse(Context context, MemoizationHandler handler) {
@@ -17,10 +18,10 @@ class PositiveLookaheadParser extends WrapParser {
   }
 
   @override
-  PositiveLookaheadParser cloneSelf() => PositiveLookaheadParser(parser);
+  Parser get base => parser.base;
 
   @override
-  Parser get base => parser.base;
+  PositiveLookaheadParser empty() => PositiveLookaheadParser.empty();
 }
 
 PositiveLookaheadParser and(Parser parser) => PositiveLookaheadParser(parser);

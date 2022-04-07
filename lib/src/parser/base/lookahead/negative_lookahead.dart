@@ -4,6 +4,7 @@ class NegativeLookaheadParser extends WrapParser {
   Parser get parser => children[0];
 
   NegativeLookaheadParser(Parser parser) : super(<Parser>[parser]);
+  NegativeLookaheadParser.empty() : super(<Parser>[]);
 
   @override
   Context parse(Context context, MemoizationHandler handler) {
@@ -15,10 +16,13 @@ class NegativeLookaheadParser extends WrapParser {
   }
 
   @override
-  NegativeLookaheadParser cloneSelf() => NegativeLookaheadParser(parser);
+  NegativeLookaheadParser cloneSelf(Map<Parser, Parser> cloned) => NegativeLookaheadParser(parser);
 
   @override
   Parser get base => parser.base;
+
+  @override
+  NegativeLookaheadParser empty() => NegativeLookaheadParser.empty();
 }
 
 NegativeLookaheadParser negativeLookahead(Parser parser) => NegativeLookaheadParser(parser);

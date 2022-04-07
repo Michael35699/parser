@@ -5,6 +5,7 @@ class ExceptParser extends WrapParser {
   Parser get except => children[1];
 
   ExceptParser(Parser parser, Parser except) : super(<Parser>[parser, except]);
+  ExceptParser.empty() : super(<Parser>[]);
 
   @override
   Context parse(Context context, MemoizationHandler handler) {
@@ -17,10 +18,13 @@ class ExceptParser extends WrapParser {
   }
 
   @override
-  ExceptParser cloneSelf() => ExceptParser(parser, except);
+  ExceptParser cloneSelf(Map<Parser, Parser> cloned) => ExceptParser(parser, except);
 
   @override
   Parser get base => parser.base;
+
+  @override
+  ExceptParser empty() => ExceptParser.empty();
 }
 
 extension ParserExceptExtension on Parser {

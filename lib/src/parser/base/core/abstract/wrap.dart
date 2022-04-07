@@ -14,11 +14,24 @@ abstract class WrapParser extends Parser {
   }
 
   @override
-  void replace<T extends Parser>(ParserPredicate target, TransformHandler<T> result) {
-    super.replace(target, result);
-
-    for (int i = 0; i < children.length; i++) {
-      children[i] = children[i].applyTransformation(target, result);
+  Parser cloneSelf(Map<Parser, Parser> cloned) {
+    WrapParser parser = cloned[this] = empty();
+    for (Parser p in children) {
+      parser.children.add(p.clone());
     }
+
+    return parser;
   }
+
+  @override
+  Parser transformChildren(TransformHandler handler, Map<Parser, Parser> transformed) {
+    WrapParser parser = transformed[this] = empty();
+    for (Parser p in children) {
+      parser.children.add(p.transform(handler, transformed));
+    }
+
+    return parser;
+  }
+
+  WrapParser empty();
 }

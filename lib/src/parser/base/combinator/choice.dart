@@ -1,6 +1,6 @@
 import "package:parser_peg/internal_all.dart";
 
-class ChoiceParser extends CombinatorParserMixin {
+class ChoiceParser extends CombinatorParser {
   ChoiceParser(List<Parser> parsers) : super(parsers);
 
   ContextFailure determineContext(ContextFailure ctx, ContextFailure? longestError) {
@@ -36,7 +36,7 @@ class ChoiceParser extends CombinatorParserMixin {
   }
 
   @override
-  ChoiceParser cloneSelf() => ChoiceParser(<Parser>[...children]);
+  ChoiceParser empty() => ChoiceParser(<Parser>[]);
 }
 
 extension ChoiceExtension on Parser {

@@ -5,6 +5,7 @@ class CycleToParser extends WrapParser {
   Parser get delimiter => children[1];
 
   CycleToParser(Parser delimiter, Parser parser) : super(<Parser>[parser, delimiter]);
+  CycleToParser.empty() : super(<Parser>[]);
 
   @override
   Context parse(Context context, MemoizationHandler handler) {
@@ -38,10 +39,13 @@ class CycleToParser extends WrapParser {
   }
 
   @override
-  CycleToParser cloneSelf() => CycleToParser(parser, delimiter);
+  CycleToParser cloneSelf(Map<Parser, Parser> cloned) => CycleToParser(parser, delimiter);
 
   @override
   Parser get base => parser.base;
+
+  @override
+  CycleToParser empty() => CycleToParser.empty();
 }
 
 extension CycleToExtension on Parser {

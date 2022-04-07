@@ -5,6 +5,7 @@ class ContinuationParser extends WrapParser {
   Parser get parser => children[0];
 
   ContinuationParser(Parser parser, this.handler) : super(<Parser>[parser]);
+  ContinuationParser.empty(this.handler) : super(<Parser>[]);
 
   @override
   Context parse(Context context, MemoizationHandler handler) {
@@ -12,10 +13,13 @@ class ContinuationParser extends WrapParser {
   }
 
   @override
-  ContinuationParser cloneSelf() => ContinuationParser(parser, handler);
+  ContinuationParser cloneSelf(Map<Parser, Parser> cloned) => ContinuationParser(parser, handler);
 
   @override
   Parser get base => parser.base;
+
+  @override
+  ContinuationParser empty() => ContinuationParser.empty(handler);
 }
 
 extension ContinuationParserExtension on Parser {

@@ -11,6 +11,9 @@ class MappedParser extends WrapParser {
   MappedParser(Parser parser, this.mapper, {bool replace = false})
       : replaceResult = replace,
         super(<Parser>[parser]);
+  MappedParser.empty(this.mapper, {bool replace = false})
+      : replaceResult = replace,
+        super(<Parser>[]);
 
   @override
   Context parse(Context context, MemoizationHandler handler) {
@@ -27,7 +30,13 @@ class MappedParser extends WrapParser {
   }
 
   @override
-  MappedParser cloneSelf() => MappedParser(parser, mapper, replace: replaceResult);
+  MappedParser cloneSelf(Map<Parser, Parser> cloned) => MappedParser(parser, mapper, replace: replaceResult);
+
+  @override
+  Parser get base => parser.base;
+
+  @override
+  MappedParser empty() => MappedParser.empty(mapper, replace: replaceResult);
 
   static MapFunction resolveMapper(Function fn) {
     if (fn is MapFunction) {
@@ -50,9 +59,6 @@ class MappedParser extends WrapParser {
       }
     };
   }
-
-  @override
-  Parser get base => parser.base;
 }
 
 MappedParser mapped(Parser parser, MapFunction mapper, {bool replace = false}) =>

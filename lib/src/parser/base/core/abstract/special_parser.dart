@@ -8,10 +8,14 @@ abstract class SpecialParserMixin extends Parser {
   @override
   Iterable<Parser> get children sync* {}
 
-  @nonVirtual
-  @override
-  Parser cloneSelf() => this;
-
   @override
   Parser get base => this;
+
+  @nonVirtual
+  @override
+  Parser cloneSelf(Map<Parser, Parser> cloned) => this;
+
+  @nonVirtual
+  @override
+  Parser transformChildren(TransformHandler handler, Map<Parser, Parser> transformed) => this;
 }
