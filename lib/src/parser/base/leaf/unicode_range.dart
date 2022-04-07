@@ -24,6 +24,9 @@ class UnicodeRangeParser extends LeafParserMixin {
     }
     return null;
   }
+
+  @override
+  String toString() => "[$low-$high]";
 }
 
 extension UnicodeRangeParserExtension on String {

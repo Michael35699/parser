@@ -59,6 +59,9 @@ class RegExpParser extends ChildlessParser {
 
     return context.failure(expected.value("'${pattern.pattern}'"));
   }
+
+  @override
+  String toString() => "/${pattern.pattern}/";
 }
 
 extension RegExpParserExtension on String {

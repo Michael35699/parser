@@ -20,7 +20,7 @@ class StringParser extends LeafParserMixin {
   int? parseLeaf(String input, int index) => pattern.matchAsPrefix(input, index)?.end;
 
   @override
-  String toString() => "string['$pattern']";
+  String toString() => "'$pattern'";
 }
 
 extension StringParserExtension on String {
