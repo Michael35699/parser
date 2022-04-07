@@ -26,7 +26,7 @@ class DropRightParser extends WrapParser {
   }
 
   @override
-  DropLeftParser cloneSelf() => DropLeftParser(parser, right);
+  DropRightParser cloneSelf() => DropRightParser(parser, right);
 
   @override
   Parser get base => parser.base;
