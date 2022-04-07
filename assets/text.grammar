@@ -1,0 +1,18 @@
+start = addition
+
+addition = addition . '+' . multiplication { (l, _, r) -> l + r }
+         | addition . '-' . multiplication { (l, _, r) -> l - r }
+         | multiplication
+
+multiplication = multiplication . '*' . power { (l, _, r) -> l * r }
+               | multiplication . '/' . power { (l, _, r) -> l / r }
+               | power
+
+power = negative . '^' . power { (l, _, r) -> l ^ r }
+      | negative
+
+negative = '-' negative { (_, v) -> -v }
+         | atom
+
+atom = '(' addition ')' { (_, v, _) -> v}
+     | ('0' >> '9')+  { (v) -> int-parse(join(v)) }

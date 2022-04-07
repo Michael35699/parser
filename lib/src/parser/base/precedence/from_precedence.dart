@@ -1,0 +1,42 @@
+import "package:parser_peg/internal_all.dart";
+
+class FromPrecedenceParser extends WrapParser {
+  final num precedence;
+  Parser get parser => children[0];
+
+  FromPrecedenceParser(this.precedence, Parser parser) : super(<Parser>[parser]);
+
+  @override
+  Context parse(Context context, MemoizationHandler handler) {
+    num previousPrecedence = context.state.precedence;
+    Context ctx = parser.parseCtx(context.copyWith.state(precedence: precedence), handler);
+
+    return ctx.copyWith.state(precedence: previousPrecedence);
+  }
+
+  @override
+  FromPrecedenceParser cloneSelf() => FromPrecedenceParser(precedence, parser);
+
+  @override
+  Parser get base => parser.base;
+}
+
+FromPrecedenceParser fromPrecedence(num precedence, Parser parser) => FromPrecedenceParser(precedence, parser);
+
+extension PrecedenceParserExtension on Parser {
+  FromPrecedenceParser prec(num precedence) => FromPrecedenceParser(precedence, this);
+  FromPrecedenceParser fromPrecedence(num precedence) => FromPrecedenceParser(precedence, this);
+  FromPrecedenceParser operator [](num precedence) => fromPrecedence(precedence);
+}
+
+extension LazyPrecedenceParserExtension on LazyParser {
+  FromPrecedenceParser prec(num precedence) => this.$.fromPrecedence(precedence);
+  FromPrecedenceParser fromPrecedence(num precedence) => this.$.fromPrecedence(precedence);
+  FromPrecedenceParser operator [](num precedence) => this.$[precedence];
+}
+
+extension StringPrecedenceParserExtension on String {
+  FromPrecedenceParser prec(num precedence) => this.$.fromPrecedence(precedence);
+  FromPrecedenceParser fromPrecedence(num precedence) => this.$.fromPrecedence(precedence);
+  FromPrecedenceParser operator [](num precedence) => this.$[precedence];
+}
