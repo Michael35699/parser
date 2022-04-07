@@ -3,15 +3,30 @@ import "package:parser_peg/internal_all.dart";
 class ChoiceParser extends CombinatorParserMixin {
   ChoiceParser(List<Parser> parsers) : super(parsers);
 
+  ContextFailure determineContext(ContextFailure ctx, ContextFailure? longestError) {
+    if (longestError == null) {
+      return ctx;
+    }
+    const String memoError = "Memoization seed. If this is seen, then "
+        "it means that there is probably a mistake in the grammar.";
+
+    if (ctx.message == memoError) {
+      return longestError;
+    } else if (longestError.message == memoError) {
+      return ctx;
+    }
+    return ctx.state.index > longestError.state.index ? ctx : longestError;
+  }
+
   @override
   Context parse(Context context, MemoizationHandler handler) {
-    Context? longestError;
+    ContextFailure? longestError;
 
     for (int i = 0; i < children.length; i++) {
       Context ctx = children[i].parseCtx(context, handler);
 
-      if (ctx.isFailure) {
-        longestError = ctx.state.index > (longestError?.state.index ?? -1) ? ctx : longestError;
+      if (ctx is ContextFailure) {
+        longestError = determineContext(ctx, longestError);
       } else {
         return ctx;
       }
