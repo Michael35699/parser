@@ -37,32 +37,10 @@ class MappedParser extends WrapParser {
 
   @override
   MappedParser empty() => MappedParser.empty(mapper, replace: replaceResult);
-
-  static MapFunction resolveMapper(Function fn) {
-    if (fn is MapFunction) {
-      return fn;
-    }
-
-    if (fn is dynamic Function()) {
-      return (dynamic r, Context ctx) => fn();
-    }
-
-    return (dynamic r, Context ctx) {
-      if (r is! List) {
-        return fn.call(r);
-      }
-
-      try {
-        return Function.apply(fn, r);
-      } on NoSuchMethodError {
-        return fn.call(r);
-      }
-    };
-  }
 }
 
 MappedParser mapped(Parser parser, MapFunction mapper, {bool replace = false}) =>
-    MappedParser(parser, MappedParser.resolveMapper(mapper), replace: replace);
+    MappedParser(parser, mapper, replace: replace);
 
 extension MappedExtension on Parser {
   MappedParser map(MapFunction mapper, {bool replace = false}) => mapped(this, mapper, replace: replace);

@@ -13,7 +13,6 @@ import "package:parser_peg/internal_all.dart";
 class GrammarMagic {
   const GrammarMagic._();
 
-  MapFunction call(Function fn) => MappedParser.resolveMapper(fn);
   GrammarMagicHelper1 operator [](num prec) => GrammarMagicHelper1(prec);
 }
 
