@@ -7,7 +7,6 @@ export "base/core/abstract/combinator.dart";
 export "base/core/abstract/lazy.dart";
 export "base/core/abstract/leaf.dart";
 export "base/core/abstract/special_parser.dart";
-export "base/core/abstract/synthesized.dart";
 export "base/core/abstract/wrap.dart";
 export "base/core/parser.dart";
 export "base/cycle/cycle.dart";
