@@ -52,12 +52,12 @@ Parser _postUnaryMathOp() => "!".r();
 
 // JSON NUMBER
 
-Parser __sign() => "-" ^ $type((str r) => r == "-" ? -1 : 1) | success(1);
+Parser __sign() => "-" ^ $type((String r) => r == "-" ? -1 : 1) | success(1);
 Parser __whole() => "[0-9]+".r ^ $type(int.parse);
-Parser __fraction() => r"\.[0-9]+".r ^ $type((str r) => double.parse("0$r")) | success(0);
+Parser __fraction() => r"\.[0-9]+".r ^ $type((String r) => double.parse("0$r")) | success(0);
 Parser __eMark() => "[Ee]".r();
 Parser __eSign() => "[+-]".r | success("+");
-Parser __power() => __eMark & __eSign & __whole ^ $3((_, str s, int v) => pow(10, s == "-" ? -v : v)) | success(1);
+Parser __power() => __eMark & __eSign & __whole ^ $3((_, String s, int v) => pow(10, s == "-" ? -v : v)) | success(1);
 Parser __base() => __whole & __fraction ^ $2((num w, num f) => w + f);
 Parser _completeNumberSlow() => __base & __power ^ $2((num b, num p) => b * p);
 Parser _jsonNumberSlow() => __sign & __base & __power ^ $3((num s, num b, num p) => s * b * p);

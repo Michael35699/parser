@@ -13,10 +13,6 @@ typedef TransformHandler<T extends Parser> = Parser Function(T);
 
 typedef ParseResult = Object?;
 
-typedef any = dynamic;
-typedef str = String;
-typedef object = Object;
-
 typedef Rule = Parser;
 typedef Fragment = Parser;
 typedef Terminal = Parser;
