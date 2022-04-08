@@ -5,9 +5,6 @@ import "dart:collection";
 import "package:freezed_annotation/freezed_annotation.dart";
 import "package:parser_peg/internal_all.dart";
 
-int calls = 0;
-HashMap<Parser, int> parsersTimeSpent = HashMap<Parser, int>();
-
 abstract class Parser {
   bool memoize = false;
   bool built = false;
@@ -47,17 +44,11 @@ abstract class Parser {
       return context;
     }
 
-    Context result;
-    Stopwatch stopwatch = Stopwatch()..start();
     if (memoize) {
-      result = handler.resolve(this, context);
+      return handler.resolve(this, context);
     } else {
-      result = parse(context, handler);
+      return parse(context, handler);
     }
-    stopwatch.stop();
-    parsersTimeSpent[this] = (parsersTimeSpent[this] ?? 0) + stopwatch.elapsedMicroseconds;
-
-    return result;
   }
 
   Parser get base;
