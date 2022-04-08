@@ -4,8 +4,11 @@ abstract class LazyLoadParser extends Parser {
   abstract final LazyParser lazyParser;
   bool get memoizeBody;
 
-  Parser? _computed;
-  Parser get computed => _computed ??= lazyParser();
+  Parser? computedInner;
+  Parser get computed => computedInner ??= lazyParser();
+
+  LazyLoadParser();
+  LazyLoadParser.eager(this.computedInner);
 
   @override
   Iterable<Parser> get children sync* {

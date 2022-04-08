@@ -12,6 +12,10 @@ class ThunkParser extends LazyLoadParser {
   final bool memoizeBody = true;
 
   factory ThunkParser(LazyParser lazyParser) => map[lazyParser] ??= ThunkParser._(lazyParser);
+  ThunkParser.eager(Parser parser)
+      : lazyParser = (() => parser),
+        super.eager(parser);
+
   ThunkParser._(this.lazyParser);
 
   @override
@@ -23,16 +27,12 @@ class ThunkParser extends LazyLoadParser {
 
   @override
   Parser cloneSelf(HashMap<Parser, Parser> cloned) {
-    Parser evaluated = computed.clone(cloned);
-
-    return ThunkParser(() => evaluated);
+    return ThunkParser.eager(computed.clone(cloned));
   }
 
   @override
   Parser transformChildren(TransformHandler handler, HashMap<Parser, Parser> transformed) {
-    Parser evaluated = computed.transform(handler, transformed);
-
-    return ThunkParser(() => evaluated);
+    return ThunkParser.eager(computed.transform(handler, transformed));
   }
 }
 
