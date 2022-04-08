@@ -62,6 +62,9 @@ class RegExpParser extends ChildlessParser {
 
   @override
   String toString() => "/${pattern.pattern}/";
+
+  @override
+  bool hasEqualProperties(RegExpParser target) => super.hasEqualProperties(target) && target.pattern == pattern;
 }
 
 extension RegExpParserExtension on String {

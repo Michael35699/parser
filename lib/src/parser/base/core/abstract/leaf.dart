@@ -38,4 +38,9 @@ abstract class LeafParserMixin extends Parser {
 
   @override
   Parser transformChildren(TransformHandler handler, HashMap<Parser, Parser> transformed) => this;
+
+  @override
+  bool hasEqualProperties(LeafParserMixin target) {
+    return super.hasEqualProperties(target) && this == target;
+  }
 }

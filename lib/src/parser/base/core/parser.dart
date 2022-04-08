@@ -16,6 +16,11 @@ abstract class Parser {
   @Deprecated("Use the 'transform' method")
   Parser transformChildren(TransformHandler handler, HashMap<Parser, Parser> transformed);
 
+  @mustCallSuper
+  bool hasEqualProperties(covariant Parser target) {
+    return true;
+  }
+
   @nonVirtual
   Context parseCtx(Context context, MemoizationHandler handler) {
     if (context.isFailure) {
@@ -32,14 +37,38 @@ abstract class Parser {
   Parser get base;
   Iterable<Parser> get children;
 
-  static ParserSubtype clone<ParserSubtype extends Parser>(ParserSubtype parser, HashMap<Parser, Parser> cloned) {
-    return (cloned[parser] ??= parser.cloneSelf(cloned)
-      ..memoize = parser.memoize
-      ..built = parser.built) as ParserSubtype;
+  static bool equals(Parser parser, Parser target) {
+    Iterable<Parser> leftString = parser.traverseBreadthFirst().whereNotType<ThunkParser>();
+    Iterable<Parser> rightString = target.traverseBreadthFirst().whereNotType<ThunkParser>();
+    Iterable<List<Parser>> zipped = leftString.zip.rest(rightString);
+
+    for (List<Parser> pair in zipped) {
+      if (pair.length != 2) {
+        return false;
+      }
+
+      Parser left = pair[0];
+      Parser right = pair[1];
+
+      if (left.runtimeType != right.runtimeType || !left.hasEqualProperties(right)) {
+        return false;
+      }
+    }
+
+    return true;
   }
 
-  static ParserSubtype transformWhere<T extends Parser, ParserSubtype extends Parser>(
-    ParserSubtype parser,
+  static ST clone<ST extends Parser>(ST parser, [HashMap<Parser, Parser>? cloned]) {
+    cloned ??= HashMap<Parser, Parser>.identity();
+    ST clone = (cloned[parser] ??= parser.cloneSelf(cloned)
+      ..memoize = parser.memoize
+      ..built = parser.built) as ST;
+
+    return clone;
+  }
+
+  static ST transformWhere<T extends Parser, ST extends Parser>(
+    ST parser,
     ParserPredicate predicate,
     TransformHandler<T> handler,
   ) {
@@ -51,10 +80,7 @@ abstract class Parser {
     });
   }
 
-  static ParserSubtype transformType<T extends Parser, ParserSubtype extends Parser>(
-    ParserSubtype parser,
-    TransformHandler<T> handler,
-  ) {
+  static ST transformType<T extends Parser, ST extends Parser>(ST parser, TransformHandler<T> handler) {
     return parser.transform((Parser parser) {
       if (parser is T) {
         return handler(parser);
@@ -63,21 +89,17 @@ abstract class Parser {
     });
   }
 
-  static ParserSubtype transform<ParserSubtype extends Parser>(
-    ParserSubtype parser,
-    TransformHandler handler,
-    HashMap<Parser, Parser> transformed,
-  ) {
-    return (transformed[parser] ??= handler(parser.transformChildren(handler, transformed)..memoize = parser.memoize))
-        as ParserSubtype;
+  static ST transform<ST extends Parser>(ST parser, TransformHandler handler, HashMap<Parser, Parser> transformed) {
+    return (transformed[parser] ??= handler(parser.transformChildren(handler, transformed)..memoize = parser.memoize)
+      ..built = false) as ST;
   }
 
-  static ParserSubtype build<ParserSubtype extends Parser>(ParserSubtype parser) {
+  static ST build<ST extends Parser>(ST parser) {
     if (parser.built) {
       return parser;
     }
 
-    ParserSubtype built = parser //
+    ST built = parser //
         .transformType<CacheParser>((CacheParser p) => p.parser)
         .transformType<ThunkParser>((ThunkParser p) {
       Parser comp = p.computed;
@@ -91,7 +113,7 @@ abstract class Parser {
     return built;
   }
 
-  static ParserSubtype simplified<ParserSubtype extends Parser>(ParserSubtype parser) {
+  static ST simplified<ST extends Parser>(ST parser) {
     return parser.transformType((WrapParser p) => p.base);
   }
 
@@ -178,9 +200,9 @@ abstract class Parser {
   }
 
   static String asciiTree(Parser parser) {
-    Parser copy = parser.build();
-    List<Parser> references = Parser.rules(copy).toList();
-    Map<Parser, int> rules = <Parser, int>{for (int i = 0; i < references.length; i++) references[i]: i};
+    Parser copy = Parser.clone(parser);
+    int counter = 0;
+    Map<Parser, int> rules = <Parser, int>{for (Parser p in Parser.rules(copy)) p: counter++};
     StringBuffer buffer = StringBuffer();
 
     for (Parser p in rules.keys) {
@@ -240,11 +262,9 @@ abstract class Parser {
   }
 
   static Iterable<Parser> rules(Parser root) sync* {
-    yield* Parser.build(root)
-        .transformType((ThunkParser p) => p.computed)
+    yield* Parser.build(root) //
+        .transformType((WrapParser p) => p.base)
         .traverseDepthFirst()
-        .where((Parser p) => p is! WrapParser)
-        .where((Parser p) => p is! CacheParser)
         .where((Parser p) => p.isRecursive())
         .where((Parser p) => p.memoize);
   }
@@ -270,23 +290,24 @@ abstract class Parser {
   }
 }
 
-extension SharedParserExtension<ParserSubtype extends Parser> on ParserSubtype {
+extension SharedParserExtension<ST extends Parser> on ST {
   T run<T extends ParseResult>(String input, {bool? map, bool? end}) => Parser.run(this, input, map: map, end: end);
   Context runCtx(String input, {bool? map, bool? end}) => Parser.runCtx(this, input, map: map, end: end);
   String generateAsciiTree() => Parser.asciiTree(this);
 
-  ParserSubtype build() => Parser.build(this);
-  ParserSubtype simplified() => Parser.simplified(this);
-  ParserSubtype clone([HashMap<Parser, Parser>? cloned]) =>
-      Parser.clone(this, cloned ?? HashMap<Parser, Parser>.identity());
-  ParserSubtype transformWhere<T extends Parser>(ParserPredicate predicate, TransformHandler<T> handler) =>
+  ST build() => Parser.build(this);
+  ST simplified() => Parser.simplified(this);
+  ST clone([HashMap<Parser, Parser>? cloned]) => Parser.clone(this, cloned);
+
+  ST transformWhere<T extends Parser>(ParserPredicate predicate, TransformHandler<T> handler) =>
       Parser.transformWhere(this, predicate, handler);
-  ParserSubtype transformType<T extends Parser>(TransformHandler<T> handler) => //
+  ST transformType<T extends Parser>(TransformHandler<T> handler) => //
       Parser.transformType(this, handler);
-  ParserSubtype transform<T extends Parser>(TransformHandler handler, [HashMap<Parser, Parser>? transformed]) =>
+  ST transform<T extends Parser>(TransformHandler handler, [HashMap<Parser, Parser>? transformed]) =>
       Parser.transform(this, handler, transformed ?? HashMap<Parser, Parser>.identity());
 
   bool isRecursive() => Parser.isRecursive(this);
+  bool equals(Parser target) => Parser.equals(this, target);
   Iterable<Parser> rules() => Parser.rules(this);
 
   Iterable<Parser> traverseBreadthFirst() => Parser.traverseBreadthFirst(this);
@@ -294,21 +315,24 @@ extension SharedParserExtension<ParserSubtype extends Parser> on ParserSubtype {
 }
 
 extension LazyParserMethodsExtension on Lazy<Parser> {
-  T run<T extends ParseResult>(String input, {bool? map, bool? end}) => this.$.run(input, map: map, end: end);
-  Context runCtx(String input, {bool? map, bool? end}) => this.$.runCtx(input, map: map, end: end);
-  String generateAsciiTree() => this.$.generateAsciiTree();
+  T run<T extends ParseResult>(String input, {bool? map, bool? end}) => Parser.run(this.$, input, map: map, end: end);
+  Context runCtx(String input, {bool? map, bool? end}) => Parser.runCtx(this.$, input, map: map, end: end);
+  String generateAsciiTree() => Parser.asciiTree(this.$);
 
-  Parser build() => this.$.build();
-  Parser simplified() => this.$.simplified();
-  Parser clone([HashMap<Parser, Parser>? cloned]) => this.$.clone(cloned);
+  Parser build() => Parser.build(this.$);
+  Parser simplified() => Parser.simplified(this.$);
+  Parser clone([HashMap<Parser, Parser>? cloned]) => Parser.clone(this.$);
+
   Parser transformWhere<T extends Parser>(ParserPredicate predicate, TransformHandler<T> handler) =>
-      this.$.transformWhere(predicate, handler);
-  Parser transformType<T extends Parser>(TransformHandler<T> handler) => this.$.transformType(handler);
-  Parser transform(TransformHandler handler, [HashMap<Parser, Parser>? transformed]) =>
-      this.$.transform(handler, transformed);
+      Parser.transformWhere(this.$, predicate, handler);
+  Parser transformType<T extends Parser>(TransformHandler<T> handler) => //
+      Parser.transformType(this.$, handler);
+  Parser transform<T extends Parser>(TransformHandler handler, [HashMap<Parser, Parser>? transformed]) =>
+      Parser.transform(this.$, handler, transformed ?? HashMap<Parser, Parser>.identity());
 
-  bool isRecursive() => this.$.isRecursive();
-  Iterable<Parser> rules() => this.$.rules();
+  bool isRecursive() => Parser.isRecursive(this.$);
+  bool equals(Parser target) => Parser.equals(this.$, target);
+  Iterable<Parser> rules() => Parser.rules(this.$);
 
   Iterable<Parser> traverseBreadthFirst() => Parser.traverseBreadthFirst(this.$);
   Iterable<Parser> traverseDepthFirst() => Parser.traverseDepthFirst(this.$);

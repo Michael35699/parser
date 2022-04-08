@@ -34,6 +34,10 @@ class MappedParser extends WrapParser {
 
   @override
   MappedParser empty() => MappedParser.empty(mapper, replace: replaceResult);
+
+  @override
+  bool hasEqualProperties(MappedParser target) =>
+      super.hasEqualProperties(target) && target.mapper == mapper && target.replaceResult == replaceResult;
 }
 
 MappedParser mapped(Parser parser, MapFunction mapper, {bool replace = false}) =>

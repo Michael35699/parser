@@ -22,6 +22,10 @@ class WithPrecedenceParser extends WrapParser {
 
   @override
   WithPrecedenceParser empty() => WithPrecedenceParser.empty(precedence);
+
+  @override
+  bool hasEqualProperties(WithPrecedenceParser target) =>
+      super.hasEqualProperties(target) && target.precedence == precedence;
 }
 
 WithPrecedenceParser withPrecedence(num precedence, Parser parser) => WithPrecedenceParser(precedence, parser);

@@ -27,6 +27,11 @@ class UnicodeRangeParser extends LeafParserMixin {
 
   @override
   String toString() => "[$low-$high]";
+
+  @override
+  bool hasEqualProperties(UnicodeRangeParser target) {
+    return super.hasEqualProperties(target) && target.low == low && target.high == high;
+  }
 }
 
 extension UnicodeRangeParserExtension on String {

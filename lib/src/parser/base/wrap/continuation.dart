@@ -17,6 +17,9 @@ class ContinuationParser extends WrapParser {
 
   @override
   ContinuationParser empty() => ContinuationParser.empty(handler);
+
+  @override
+  bool hasEqualProperties(ContinuationParser target) => super.hasEqualProperties(target) && target.handler == handler;
 }
 
 extension ContinuationParserExtension on Parser {

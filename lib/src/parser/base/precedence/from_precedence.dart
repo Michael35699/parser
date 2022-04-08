@@ -20,6 +20,10 @@ class FromPrecedenceParser extends WrapParser {
 
   @override
   FromPrecedenceParser empty() => FromPrecedenceParser.empty(precedence);
+
+  @override
+  bool hasEqualProperties(FromPrecedenceParser target) =>
+      super.hasEqualProperties(target) && target.precedence == precedence;
 }
 
 FromPrecedenceParser fromPrecedence(num precedence, Parser parser) => FromPrecedenceParser(precedence, parser);
