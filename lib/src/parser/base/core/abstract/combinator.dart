@@ -10,7 +10,7 @@ abstract class CombinatorParser extends Parser {
   Parser get base => this;
 
   @override
-  Parser cloneSelf(Map<Parser, Parser> cloned) {
+  CombinatorParser cloneSelf(Map<Parser, Parser> cloned) {
     CombinatorParser parser = cloned[this] = empty();
     for (Parser p in children) {
       parser.children.add(p.clone(cloned));
@@ -20,7 +20,7 @@ abstract class CombinatorParser extends Parser {
   }
 
   @override
-  Parser transformChildren(TransformHandler handler, Map<Parser, Parser> transformed) {
+  CombinatorParser transformChildren(TransformHandler handler, Map<Parser, Parser> transformed) {
     CombinatorParser parser = transformed[this] = empty();
     for (Parser p in children) {
       parser.children.add(p.transform(handler, transformed));

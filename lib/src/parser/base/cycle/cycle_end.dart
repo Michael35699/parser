@@ -25,9 +25,6 @@ class CycleEndParser extends WrapParser {
   }
 
   @override
-  CycleEndParser cloneSelf(Map<Parser, Parser> cloned) => CycleEndParser(parser);
-
-  @override
   Parser get base => parser.base;
 
   @override

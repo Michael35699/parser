@@ -71,7 +71,13 @@ abstract class Parser {
   static Parser build(Parser parser) {
     Parser built = parser //
         .transformType<CacheParser>((CacheParser p) => p.parser)
-        .transformType<ThunkParser>((ThunkParser p) => p.computed..memoize = true);
+        .transformType<ThunkParser>((ThunkParser p) {
+      Parser comp = p.computed;
+      while (comp is ThunkParser) {
+        comp = comp.computed;
+      }
+      return comp..memoize = true;
+    });
 
     return built;
   }

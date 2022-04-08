@@ -9,9 +9,6 @@ class CacheParser extends WrapParser {
   Context parse(Context context, MemoizationHandler handler) => parser.parseCtx(context, handler);
 
   @override
-  CacheParser cloneSelf(Map<Parser, Parser> cloned) => CacheParser(parser);
-
-  @override
   Parser get base => parser.base;
 
   @override

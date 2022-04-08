@@ -11,9 +11,6 @@ class UnmappedParser extends WrapParser {
       parser.parseCtx(context.copyWith.state(map: false), handler);
 
   @override
-  UnmappedParser cloneSelf(Map<Parser, Parser> cloned) => UnmappedParser(parser);
-
-  @override
   Parser get base => parser.base;
 
   @override

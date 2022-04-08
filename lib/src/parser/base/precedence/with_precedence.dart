@@ -18,9 +18,6 @@ class WithPrecedenceParser extends WrapParser {
   }
 
   @override
-  WithPrecedenceParser cloneSelf(Map<Parser, Parser> cloned) => WithPrecedenceParser(precedence, parser);
-
-  @override
   Parser get base => parser.base;
 
   @override

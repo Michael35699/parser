@@ -30,9 +30,6 @@ class MappedParser extends WrapParser {
   }
 
   @override
-  MappedParser cloneSelf(Map<Parser, Parser> cloned) => MappedParser(parser, mapper, replace: replaceResult);
-
-  @override
   Parser get base => parser.base;
 
   @override

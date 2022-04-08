@@ -13,9 +13,6 @@ class ContinuationParser extends WrapParser {
   }
 
   @override
-  ContinuationParser cloneSelf(Map<Parser, Parser> cloned) => ContinuationParser(parser, handler);
-
-  @override
   Parser get base => parser.base;
 
   @override

@@ -1,3 +1,4 @@
+import "package:freezed_annotation/freezed_annotation.dart";
 import "package:parser_peg/internal_all.dart";
 
 abstract class WrapParser extends Parser {
@@ -6,19 +7,20 @@ abstract class WrapParser extends Parser {
 
   WrapParser(this.children);
 
-
+  @nonVirtual
   @override
-  Parser cloneSelf(Map<Parser, Parser> cloned) {
+  WrapParser cloneSelf(Map<Parser, Parser> cloned) {
     WrapParser parser = cloned[this] = empty();
     for (Parser p in children) {
-      parser.children.add(p.clone());
+      parser.children.add(p.clone(cloned));
     }
 
     return parser;
   }
 
+  @nonVirtual
   @override
-  Parser transformChildren(TransformHandler handler, Map<Parser, Parser> transformed) {
+  WrapParser transformChildren(TransformHandler handler, Map<Parser, Parser> transformed) {
     WrapParser parser = transformed[this] = empty();
     for (Parser p in children) {
       parser.children.add(p.transform(handler, transformed));

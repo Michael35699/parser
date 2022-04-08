@@ -16,9 +16,6 @@ class NegativeLookaheadParser extends WrapParser {
   }
 
   @override
-  NegativeLookaheadParser cloneSelf(Map<Parser, Parser> cloned) => NegativeLookaheadParser(parser);
-
-  @override
   Parser get base => parser.base;
 
   @override

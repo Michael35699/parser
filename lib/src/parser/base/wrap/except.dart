@@ -18,9 +18,6 @@ class ExceptParser extends WrapParser {
   }
 
   @override
-  ExceptParser cloneSelf(Map<Parser, Parser> cloned) => ExceptParser(parser, except);
-
-  @override
   Parser get base => parser.base;
 
   @override

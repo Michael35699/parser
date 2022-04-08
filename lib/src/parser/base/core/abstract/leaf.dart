@@ -1,3 +1,4 @@
+import "package:freezed_annotation/freezed_annotation.dart";
 import "package:parser_peg/internal_all.dart";
 
 abstract class LeafParserMixin extends Parser {
@@ -29,6 +30,7 @@ abstract class LeafParserMixin extends Parser {
   @override
   Parser get base => this;
 
+  @nonVirtual
   @override
   Parser cloneSelf(Map<Parser, Parser> cloned) => this;
 

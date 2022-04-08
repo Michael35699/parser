@@ -18,9 +18,6 @@ class DropParser extends WrapParser {
   }
 
   @override
-  DropParser cloneSelf(Map<Parser, Parser> cloned) => DropParser(parser);
-
-  @override
   Parser get base => parser.base;
 
   @override
