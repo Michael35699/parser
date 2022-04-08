@@ -38,15 +38,15 @@ abstract class Parser {
   Iterable<Parser> get children;
 
   static bool equals(Parser parser, Parser target) {
+    if (parser == target) {
+      return true;
+    }
+
     Iterable<Parser> leftString = parser.traverseBreadthFirst().whereNotType<ThunkParser>();
     Iterable<Parser> rightString = target.traverseBreadthFirst().whereNotType<ThunkParser>();
     Iterable<List<Parser>> zipped = leftString.zip.rest(rightString);
 
     for (List<Parser> pair in zipped) {
-      if (pair.length != 2) {
-        return false;
-      }
-
       Parser left = pair[0];
       Parser right = pair[1];
 

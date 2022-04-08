@@ -14,7 +14,7 @@ class XmlGrammar with Grammar {
   Parser singleTag() => -"<".tr >> identifier & tagAttributes << -"/>".tl;
   Parser tagClose() => -"</".tr >> identifier << -">".tl;
 
-  Parser tagAttributes() => whitespace >> tagAttribute.sep(~whitespace) | success(<Object>[]);
+  Parser tagAttributes() => whitespace >> tagAttribute.sep(~whitespace) | success(const <Object>[]);
   Parser tagAttribute() =>
       identifier.trim & "=".t & string.$at(1).or(identifier) | //
       identifier.trim & success("=") & success("true");
@@ -34,7 +34,7 @@ class XmlEvaluator extends XmlGrammar {
   Parser content() => super.content.$type(List<XmlNode>.from);
 
   @override
-  Parser tagOpen() => super.tagOpen.$2((String name, List<XmlAttribute> attributes) => //
+  Parser tagOpen() => super.tagOpen.$2((String name, List<XmlAttribute> attributes) =>
       XmlTagStart(name: name, attributes: XmlAttributes.fromEntries(attributes)));
 
   @override

@@ -29,7 +29,7 @@ enum BinaryOperator {
 
 Parser expressionParser() => _expression();
 
-Parser _lambdaParameters() => _lambdaParameter % -",".t | success(<Node>[]);
+Parser _lambdaParameters() => _lambdaParameter % -",".t | success(const <Node>[]);
 Parser _lambdaParameter() => identifier();
 
 Parser _expression() => _lambda();
@@ -60,7 +60,7 @@ Parser _postUnary() => _postUnary & _unaryExclamation ^ _$postUnaryNode() | _fun
 Parser _callParameter() => identifier & ":".t & _expression | _expression;
 Parser _functionCall() =>
     _functionCall & "(".t & _callParameter % -",".t & ")".t ^ _$callNode() | //
-    _functionCall & "(".t & success(<Node>[]) & ")".t ^ _$callNode() |
+    _functionCall & "(".t & success(const <Node>[]) & ")".t ^ _$callNode() |
     _atomic;
 
 Parser _atomic() => _literal();

@@ -1,6 +1,6 @@
 import "package:parser_peg/internal_all.dart";
 
-Parser cycleStarParser(Parser parser) => parser.cycle() | success(<ParseResult>[]);
+Parser cycleStarParser(Parser parser) => parser.cycle() | success(const <ParseResult>[]);
 Parser cycleStar(Object parser) => cycleStarParser(parser.$);
 
 extension CycleStarExtension on Parser {
