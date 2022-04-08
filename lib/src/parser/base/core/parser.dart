@@ -10,21 +10,13 @@ abstract class Parser {
   bool built = false;
 
   bool? _leftRecursive;
-  bool get leftRecursive => _leftRecursive ?? Parser.isLeftRecursive(this);
   List<ParserSetMapping>? _parserSets;
-  List<ParserSetMapping> get parserSets => _parserSets ??= Parser.computeParserSets(this);
   ParserSetMapping? _firstSets;
-  ParserSetMapping get firstSets => _firstSets ??= parserSets[0];
   ParserSetMapping? _followSets;
-  ParserSetMapping get followSets => _followSets ??= parserSets[1];
   ParserSetMapping? _cycleSets;
-  ParserSetMapping get cycleSets => _cycleSets ??= parserSets[2];
   ParserSet? _firstSet;
-  ParserSet get firstSet => _firstSet ??= firstSets[this]!;
   ParserSet? _followSet;
-  ParserSet get followSet => _followSet ??= followSets[this]!;
   ParserSet? _cycleSet;
-  ParserSet get cycleSet => _cycleSet ??= cycleSets[this]!;
 
   @Deprecated("Use the 'parseCtx' method")
   Context parse(Context context, MemoizationHandler handler);
@@ -558,6 +550,15 @@ extension SharedParserExtension<ST extends Parser> on ST {
 
   Iterable<Parser> traverseBreadthFirst() => Parser.traverseBreadthFirst(this);
   Iterable<Parser> traverseDepthFirst() => Parser.traverseDepthFirst(this);
+
+  bool get leftRecursive => _leftRecursive ?? Parser.isLeftRecursive(this);
+  List<ParserSetMapping> get parserSets => _parserSets ??= Parser.computeParserSets(this);
+  ParserSetMapping get firstSets => _firstSets ??= parserSets[0];
+  ParserSetMapping get followSets => _followSets ??= parserSets[1];
+  ParserSetMapping get cycleSets => _cycleSets ??= parserSets[2];
+  ParserSet get firstSet => _firstSet ??= firstSets[this]!;
+  ParserSet get followSet => _followSet ??= followSets[this]!;
+  ParserSet get cycleSet => _cycleSet ??= cycleSets[this]!;
 }
 
 extension LazyParserMethodsExtension on Lazy<Parser> {
@@ -591,6 +592,15 @@ extension LazyParserMethodsExtension on Lazy<Parser> {
   Iterable<Parser> traverseDepthFirst() => Parser.traverseDepthFirst(this.$);
 
   ThunkParser thunk() => ThunkParser(this);
+
+  bool get leftRecursive => this.$.leftRecursive;
+  List<ParserSetMapping> get parserSets => this.$.parserSets;
+  ParserSetMapping get firstSets => this.$.firstSets;
+  ParserSetMapping get followSets => this.$.followSets;
+  ParserSetMapping get cycleSets => this.$.cycleSets;
+  ParserSet get firstSet => this.$.firstSet;
+  ParserSet get followSet => this.$.followSet;
+  ParserSet get cycleSet => this.$.cycleSet;
 }
 
 extension GeneralParserExtension<T extends Object> on T {
