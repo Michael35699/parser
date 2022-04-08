@@ -15,6 +15,13 @@ class SuccessParser extends SpecialParser {
 
   @override
   Context parse(Context context, MemoizationHandler handler) => context.success(mappedResult, unmappedResult);
+
+  @override
+  bool hasEqualProperties(SuccessParser target) {
+    return super.hasEqualProperties(target) &&
+        target.mappedResult.hashCode == mappedResult.hashCode &&
+        target.unmappedResult.hashCode == unmappedResult.hashCode;
+  }
 }
 
 SuccessParser success(Object? mapped, [Object? unmapped = #NO]) => SuccessParser(mapped, unmapped);

@@ -7,6 +7,11 @@ class FailureParser extends SpecialParser {
 
   @override
   Context parse(Context context, MemoizationHandler handler) => context.failure(message);
+
+  @override
+  bool hasEqualProperties(FailureParser target) {
+    return super.hasEqualProperties(target) && target.message == message;
+  }
 }
 
 FailureParser failure(String message) => FailureParser(message);
