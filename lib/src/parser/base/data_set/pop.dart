@@ -1,6 +1,6 @@
 import "package:parser_peg/internal_all.dart";
 
-class PopParser extends SpecialParserMixin {
+class PopParser extends SpecialParser {
   final dynamic item;
 
   PopParser(this.item);

@@ -1,6 +1,6 @@
 import "package:parser_peg/internal_all.dart";
 
-class FailureParser extends SpecialParserMixin {
+class FailureParser extends SpecialParser {
   final String message;
 
   FailureParser(this.message);

@@ -1,6 +1,6 @@
 import "package:parser_peg/internal_all.dart";
 
-class DedentParser extends SpecialParserMixin {
+class DedentParser extends SpecialParser {
   @override
   Context parse(Context context, MemoizationHandler handler) {
     /// I literally don't understand this.

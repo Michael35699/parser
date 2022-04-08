@@ -2,7 +2,7 @@ import "dart:collection";
 
 import "package:parser_peg/internal_all.dart";
 
-class ConditionalParser extends SpecialParserMixin {
+class ConditionalParser extends SpecialParser {
   final HashMap<Context, Parser> _saved = HashMap<Context, Parser>();
 
   final Parser Function(Context) function;

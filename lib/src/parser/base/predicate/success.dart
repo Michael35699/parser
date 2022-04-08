@@ -1,6 +1,6 @@
 import "package:parser_peg/internal_all.dart";
 
-class SuccessParser extends SpecialParserMixin {
+class SuccessParser extends SpecialParser {
   late final ParseResult mappedResult;
   late final ParseResult unmappedResult;
 

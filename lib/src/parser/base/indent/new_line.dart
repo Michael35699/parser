@@ -1,6 +1,6 @@
 import "package:parser_peg/internal_all.dart";
 
-class NewLineParser extends SpecialParserMixin {
+class NewLineParser extends SpecialParser {
   @override
   Context parse(Context context, MemoizationHandler handler) {
     String input = context.state.input;

@@ -3,7 +3,7 @@ import "package:parser_peg/internal_all.dart";
 typedef ProcessYield = T Function<T extends Object?>(Object);
 typedef ProcessFunction = dynamic Function(ProcessYield);
 
-class ProcessParser extends SpecialParserMixin {
+class ProcessParser extends SpecialParser {
   @override
   bool get memoize => false;
 
@@ -45,6 +45,9 @@ class ProcessParser extends SpecialParserMixin {
       return e.context;
     }
   }
+
+  @override
+  bool hasEqualProperties(ProcessParser target) => super.hasEqualProperties(target) && target.callback == callback;
 }
 
 ProcessParser process(ProcessFunction fn) => ProcessParser(fn);

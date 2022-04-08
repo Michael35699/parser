@@ -3,7 +3,7 @@ import "dart:collection";
 import "package:freezed_annotation/freezed_annotation.dart";
 import "package:parser_peg/internal_all.dart";
 
-abstract class SpecialParserMixin extends Parser {
+abstract class SpecialParser extends Parser {
   @override
   bool get memoize => true;
 
@@ -20,4 +20,9 @@ abstract class SpecialParserMixin extends Parser {
   @nonVirtual
   @override
   Parser transformChildren(TransformHandler handler, HashMap<Parser, Parser> transformed) => this;
+
+  @override
+  bool hasEqualProperties(SpecialParser target) {
+    return super.hasEqualProperties(target) && this == target;
+  }
 }

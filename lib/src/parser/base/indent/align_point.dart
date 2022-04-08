@@ -1,6 +1,6 @@
 import "package:parser_peg/internal_all.dart";
 
-class AlignPointParser extends SpecialParserMixin {
+class AlignPointParser extends SpecialParser {
   @override
   Context parse(Context context, MemoizationHandler handler) {
     String input = context.state.input;

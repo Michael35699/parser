@@ -1,6 +1,6 @@
 import "package:parser_peg/internal_all.dart";
 
-class PushParser extends SpecialParserMixin {
+class PushParser extends SpecialParser {
   final dynamic object;
 
   PushParser(this.object);

@@ -1,6 +1,6 @@
 import "package:parser_peg/internal_all.dart";
 
-class IgnoreParser extends SpecialParserMixin {
+class IgnoreParser extends SpecialParser {
   IgnoreParser();
 
   @override

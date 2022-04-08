@@ -1,6 +1,6 @@
 import "package:parser_peg/internal_all.dart";
 
-class EoiParser extends SpecialParserMixin {
+class EoiParser extends SpecialParser {
   @override
   Context parse(Context context, MemoizationHandler handler) {
     if (context.state.index >= context.state.input.length) {
