@@ -6,6 +6,8 @@ import "package:parser_peg/internal_all.dart";
 abstract class LeafParserMixin extends Parser {
   @override
   bool get memoize => true;
+  @override
+  bool get leftRecursive => false;
 
   @override
   Context parse(Context context, MemoizationHandler handler) {

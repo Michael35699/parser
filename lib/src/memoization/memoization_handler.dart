@@ -8,6 +8,10 @@ class MemoizationHandler {
   MemoizationHandler() : memoizationMap = MultiMap<Object, Context>();
 
   Context resolve(Parser parser, Context context) {
+    if (!parser.leftRecursive) {
+      return memoizationMap[[parser, context.state.normalize]] ??= parser.parse(context, this);
+    }
+
     Context? currentEntry = memoizationMap[[parser, context.state.normalize]];
     if (currentEntry != null) {
       return currentEntry;
