@@ -126,16 +126,21 @@ abstract class Parser {
 
     ST built = parser //
         .transformType<CacheParser>((CacheParser p) => p.parser)
-        .transformType<ThunkParser>((ThunkParser p) {
-      Parser comp = p.computed;
-      while (comp is ThunkParser) {
-        comp = comp.computed;
-      }
-      return comp..memoize = true;
-    })
+        .transformType<ThunkParser>((ThunkParser p) => p.computed..memoize = true)
       ..built = true;
-    parser._parserSets = parser.computeParserSets();
-    parser._leftRecursive = parser.isLeftRecursive();
+
+    List<ParserSetMapping> mapping = built.computeParserSets();
+    built._parserSets = mapping;
+    built._leftRecursive = built.isLeftRecursive();
+    ParserSetMapping firstSets = mapping[0];
+    ParserSetMapping followSets = mapping[1];
+    ParserSetMapping cycleSets = mapping[2];
+
+    for (Parser parser in built.traverseBF) {
+      parser._firstSet = firstSets[parser];
+      parser._followSet = followSets[parser];
+      parser._cycleSet = cycleSets[parser];
+    }
 
     return built;
   }
