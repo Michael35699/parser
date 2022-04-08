@@ -1,6 +1,11 @@
 import "package:parser_peg/internal_all.dart";
 
 class EoiParser extends SpecialParser {
+  static final EoiParser singleton = EoiParser._();
+
+  factory EoiParser() => singleton;
+  EoiParser._();
+
   @override
   Context parse(Context context, MemoizationHandler handler) {
     if (context.state.index >= context.state.input.length) {
@@ -14,9 +19,9 @@ class EoiParser extends SpecialParser {
   String toString() => r"$";
 }
 
-final Parser dollar = EoiParser();
-final Parser eoi = EoiParser();
-final Parser end = EoiParser();
+EoiParser dollar() => EoiParser();
+EoiParser eoi() => EoiParser();
+EoiParser end() => EoiParser();
 
 extension EoiExtension on Parser {
   Parser end() => this << eoi;

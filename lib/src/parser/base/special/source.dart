@@ -1,6 +1,11 @@
 import "package:parser_peg/internal_all.dart";
 
 class SourceParser extends SpecialParser {
+  static final SourceParser singleton = SourceParser._();
+
+  factory SourceParser() => singleton;
+  SourceParser._();
+
   @override
   Context parse(Context context, MemoizationHandler handler) {
     if (context.state.index >= context.state.input.length) {
@@ -11,4 +16,4 @@ class SourceParser extends SpecialParser {
   }
 }
 
-final SourceParser source = SourceParser();
+SourceParser source() => SourceParser();
