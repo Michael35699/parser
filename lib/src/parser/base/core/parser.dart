@@ -32,11 +32,6 @@ abstract class Parser {
   Parser get base;
   Iterable<Parser> get children;
 
-  @mustCallSuper
-  bool hasEqualProperties(covariant Parser other) {
-    return true;
-  }
-
   static ParserSubtype clone<ParserSubtype extends Parser>(ParserSubtype parser, HashMap<Parser, Parser> cloned) {
     return (cloned[parser] ??= parser.cloneSelf(cloned)
       ..memoize = parser.memoize
