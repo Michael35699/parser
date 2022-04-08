@@ -20,9 +20,4 @@ abstract class SpecialParser extends Parser {
   @nonVirtual
   @override
   Parser transformChildren(TransformHandler handler, HashMap<Parser, Parser> transformed) => this;
-
-  @override
-  bool hasEqualProperties(SpecialParser target) {
-    return super.hasEqualProperties(target) && this == target;
-  }
 }
