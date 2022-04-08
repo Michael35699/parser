@@ -1,4 +1,4 @@
-// ignore_for_file: deprecated_member_use_from_same_package, avoid_returning_this
+// ignore_for_file: avoid_returning_this, deprecated_member_use_from_same_package, avoid_equals_and_hash_code_on_mutable_classes, hash_and_equals
 
 import "dart:collection";
 
@@ -12,9 +12,9 @@ abstract class Parser {
   @Deprecated("Use the 'parseCtx' method")
   Context parse(Context context, MemoizationHandler handler);
   @Deprecated("Use the 'clone' method")
-  Parser cloneSelf(Map<Parser, Parser> cloned);
+  Parser cloneSelf(HashMap<Parser, Parser> cloned);
   @Deprecated("Use the 'transform' method")
-  Parser transformChildren(TransformHandler handler, Map<Parser, Parser> transformed);
+  Parser transformChildren(TransformHandler handler, HashMap<Parser, Parser> transformed);
 
   @nonVirtual
   Context parseCtx(Context context, MemoizationHandler handler) {
@@ -32,7 +32,12 @@ abstract class Parser {
   Parser get base;
   Iterable<Parser> get children;
 
-  static ParserSubtype clone<ParserSubtype extends Parser>(ParserSubtype parser, Map<Parser, Parser> cloned) {
+  @mustCallSuper
+  bool hasEqualProperties(covariant Parser other) {
+    return true;
+  }
+
+  static ParserSubtype clone<ParserSubtype extends Parser>(ParserSubtype parser, HashMap<Parser, Parser> cloned) {
     return (cloned[parser] ??= parser.cloneSelf(cloned)
       ..memoize = parser.memoize
       ..built = parser.built) as ParserSubtype;
@@ -66,7 +71,7 @@ abstract class Parser {
   static ParserSubtype transform<ParserSubtype extends Parser>(
     ParserSubtype parser,
     TransformHandler handler,
-    Map<Parser, Parser> transformed,
+    HashMap<Parser, Parser> transformed,
   ) {
     return (transformed[parser] ??= handler(parser.transformChildren(handler, transformed)..memoize = parser.memoize))
         as ParserSubtype;
@@ -276,13 +281,15 @@ extension SharedParserExtension<ParserSubtype extends Parser> on ParserSubtype {
   String generateAsciiTree() => Parser.asciiTree(this);
 
   ParserSubtype build() => Parser.build(this);
-  ParserSubtype clone([Map<Parser, Parser>? cloned]) => Parser.clone(this, cloned ?? <Parser, Parser>{});
+  ParserSubtype simplified() => Parser.simplified(this);
+  ParserSubtype clone([HashMap<Parser, Parser>? cloned]) =>
+      Parser.clone(this, cloned ?? HashMap<Parser, Parser>.identity());
   ParserSubtype transformWhere<T extends Parser>(ParserPredicate predicate, TransformHandler<T> handler) =>
       Parser.transformWhere(this, predicate, handler);
-  ParserSubtype transformType<T extends Parser>(TransformHandler<T> handler) => Parser.transformType(this, handler);
-  ParserSubtype transform<T extends Parser>(TransformHandler handler, [Map<Parser, Parser>? transformed]) =>
-      Parser.transform(this, handler, transformed ?? <Parser, Parser>{});
-  ParserSubtype simplified() => Parser.simplified(this);
+  ParserSubtype transformType<T extends Parser>(TransformHandler<T> handler) => //
+      Parser.transformType(this, handler);
+  ParserSubtype transform<T extends Parser>(TransformHandler handler, [HashMap<Parser, Parser>? transformed]) =>
+      Parser.transform(this, handler, transformed ?? HashMap<Parser, Parser>.identity());
 
   bool isRecursive() => Parser.isRecursive(this);
   Iterable<Parser> rules() => Parser.rules(this);
@@ -297,13 +304,13 @@ extension LazyParserMethodsExtension on Lazy<Parser> {
   String generateAsciiTree() => this.$.generateAsciiTree();
 
   Parser build() => this.$.build();
-  Parser clone([Map<Parser, Parser>? cloned]) => this.$.clone(cloned);
+  Parser simplified() => this.$.simplified();
+  Parser clone([HashMap<Parser, Parser>? cloned]) => this.$.clone(cloned);
   Parser transformWhere<T extends Parser>(ParserPredicate predicate, TransformHandler<T> handler) =>
       this.$.transformWhere(predicate, handler);
   Parser transformType<T extends Parser>(TransformHandler<T> handler) => this.$.transformType(handler);
-  Parser transform(TransformHandler handler, [Map<Parser, Parser>? transformed]) =>
+  Parser transform(TransformHandler handler, [HashMap<Parser, Parser>? transformed]) =>
       this.$.transform(handler, transformed);
-  Parser simplified() => this.$.simplified();
 
   bool isRecursive() => this.$.isRecursive();
   Iterable<Parser> rules() => this.$.rules();

@@ -22,14 +22,14 @@ class ThunkParser extends LazyLoadParser {
   }
 
   @override
-  Parser cloneSelf(Map<Parser, Parser> cloned) {
+  Parser cloneSelf(HashMap<Parser, Parser> cloned) {
     Parser evaluated = computed.clone(cloned);
 
     return ThunkParser(() => evaluated);
   }
 
   @override
-  Parser transformChildren(TransformHandler handler, Map<Parser, Parser> transformed) {
+  Parser transformChildren(TransformHandler handler, HashMap<Parser, Parser> transformed) {
     Parser evaluated = computed.transform(handler, transformed);
 
     return ThunkParser(() => evaluated);

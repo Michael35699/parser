@@ -46,5 +46,5 @@ Parser _negative() => "-".tr & _negative ^ $2((_, num r) => -r) | _atomic;
 Parser _atomic() => "[0-9]+".r ^ $type(int.parse);
 
 void main() {
-  print << infix.run("1 + 2 * 3");
+  print << (infix().hasEqualProperties(infix()));
 }
