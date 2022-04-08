@@ -11,7 +11,7 @@ class WithPrecedenceParser extends WrapParser {
   Context parse(Context context, MemoizationHandler handler) {
     num searchPrecedence = context.state.precedence;
     if (searchPrecedence < precedence) {
-      return context.failure("Search precedence '$searchPrecedence' is higher than '$precedence'");
+      return context.failure("Search precedence '$searchPrecedence' is lower than '$precedence'");
     }
 
     return parser.parseCtx(context, handler);
