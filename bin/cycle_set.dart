@@ -1,27 +1,21 @@
 part of "main.dart";
 
-Map<Parser, List<Parser>> computeCycleSets(Iterable<Parser> parsers, Map<Parser, Set<Parser>> firstSets) {
-  Map<Parser, List<Parser>> cycleSets = <Parser, List<Parser>>{};
+ParserSetMapping computeCycleSets(Iterable<Parser> parsers, ParserSetMapping firstSets) {
+  ParserSetMapping cycleSets = ParserSetMapping();
   for (Parser parser in parsers) {
-    computeCycleSet(parser: parser, firstSets: firstSets, cycleSets: cycleSets);
+    computeCycleSet(parser, firstSets, cycleSets, <Parser>[parser]);
   }
   return cycleSets;
 }
 
-void computeCycleSet({
-  required Parser parser,
-  required Map<Parser, Set<Parser>> firstSets,
-  required Map<Parser, List<Parser>> cycleSets,
-  List<Parser>? stack,
-}) {
+void computeCycleSet(Parser parser, ParserSetMapping firstSets, ParserSetMapping cycleSets, List<Parser> stack) {
   if (cycleSets.containsKey(parser)) {
     return;
   }
   if (isTerminal(parser)) {
-    cycleSets[parser] = const <Parser>[];
+    cycleSets[parser] = ParserSet();
     return;
   }
-  stack ??= <Parser>[parser];
 
   List<Parser> children = computeCycleChildren(parser, firstSets);
   for (Parser child in children) {
@@ -30,17 +24,17 @@ void computeCycleSet({
     if (index >= 0) {
       List<Parser> cycle = stack.sublist(index);
       for (Parser parser in cycle) {
-        cycleSets[parser] = cycle;
+        cycleSets[parser] = ParserSet.from(cycle);
       }
       return;
     } else {
       stack.add(child);
-      computeCycleSet(parser: child, firstSets: firstSets, cycleSets: cycleSets, stack: stack);
+      computeCycleSet(child, firstSets, cycleSets, stack);
       stack.removeLast();
     }
   }
   if (!cycleSets.containsKey(parser)) {
-    cycleSets[parser] = const <Parser>[];
+    cycleSets[parser] = ParserSet();
     return;
   }
 }

@@ -1,13 +1,13 @@
 part of "main.dart";
 
-Map<Parser, Set<Parser>> computeFirstSets(Iterable<Parser> parsers, Parser sentinel) {
-  Map<Parser, Set<Parser>> firstSets = <Parser, Set<Parser>>{
+ParserSetMapping computeFirstSets(Iterable<Parser> parsers, Parser sentinel) {
+  ParserSetMapping firstSets = ParserSetMapping.from(<Parser, ParserSet>{
     for (Parser parser in parsers)
-      parser: <Parser>{
+      parser: ParserSet.from(<Parser>{
         if (isTerminal(parser)) parser,
         if (isNullable(parser)) sentinel,
-      }
-  };
+      })
+  });
 
   bool changed = false;
   do {
@@ -21,10 +21,10 @@ Map<Parser, Set<Parser>> computeFirstSets(Iterable<Parser> parsers, Parser senti
   return firstSets;
 }
 
-bool expandFirstSets(Parser parser, Map<Parser, Set<Parser>> firstSets, Parser sentinel) {
+bool expandFirstSets(Parser parser, ParserSetMapping firstSets, Parser sentinel) {
   const bool false_ = false;
   bool changed = false;
-  Set<Parser> firstSet = firstSets[parser]!;
+  ParserSet firstSet = firstSets[parser]!;
 
   outer:
   do {

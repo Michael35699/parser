@@ -1,17 +1,12 @@
 part of "main.dart";
 
-Map<Parser, Set<Parser>> computeFollowSets(
-  Parser root,
-  Iterable<Parser> parsers,
-  Map<Parser, Set<Parser>> firstSets,
-  Parser sentinel,
-) {
-  Map<Parser, Set<Parser>> followSets = <Parser, Set<Parser>>{
+ParserSetMapping computeFollowSets(Parser root, Iterable<Parser> parsers, ParserSetMapping firstSets, Parser sentinel) {
+  ParserSetMapping followSets = ParserSetMapping.from(<Parser, ParserSet>{
     for (final Parser parser in parsers)
-      parser: <Parser>{
+      parser: ParserSet.from(<Parser>{
         if (parser == root) sentinel,
-      }
-  };
+      })
+  });
   bool changed = false;
   do {
     changed = false;
@@ -22,7 +17,7 @@ Map<Parser, Set<Parser>> computeFollowSets(
   return followSets;
 }
 
-bool expandFollowSet(Parser parser, Map<Parser, Set<Parser>> followSets, Map<Parser, Set<Parser>> firstSets) {
+bool expandFollowSet(Parser parser, ParserSetMapping followSets, ParserSetMapping firstSets) {
   if (parser is SequentialParser) {
     return expandFollowSetOfSequence(
       parser: parser,
@@ -54,12 +49,12 @@ bool expandFollowSet(Parser parser, Map<Parser, Set<Parser>> followSets, Map<Par
 bool expandFollowSetOfSequence({
   required Parser parser,
   required List<Parser> children,
-  required Map<Parser, Set<Parser>> followSets,
-  required Map<Parser, Set<Parser>> firstSets,
+  required ParserSetMapping followSets,
+  required ParserSetMapping firstSets,
 }) {
   bool changed = false;
   for (int i = 0; i < children.length - 1; i++) {
-    Set<Parser> firstSet = <Parser>{};
+    ParserSet firstSet = ParserSet();
     int j = i + 1;
     for (; j < children.length; j++) {
       firstSet.addAll(firstSets[children[j]]!);

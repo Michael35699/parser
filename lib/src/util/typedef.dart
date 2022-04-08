@@ -1,5 +1,7 @@
 // ignore_for_file: camel_case_types
 
+import "dart:collection";
+
 import "package:parser_peg/internal_all.dart";
 
 typedef Lazy<T> = T Function();
@@ -16,3 +18,6 @@ typedef ParseResult = Object?;
 typedef Rule = Parser;
 typedef Fragment = Parser;
 typedef Terminal = Parser;
+
+typedef ParserSet = HashSet<Parser>;
+typedef ParserSetMapping = HashMap<Parser, ParserSet>;
