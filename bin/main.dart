@@ -5,8 +5,9 @@ import "package:parser_peg/internal_all.dart";
 String get input => File("assets/text.grammar").readAsStringSync();
 
 Parser refactorChoice(ChoiceParser parser) {
+  ChoiceParser cloned = parser.clone();
   Map<num, ChoiceParser> groups = <num, ChoiceParser>{};
-  List<WithPrecedenceParser> children = parser.children.cast();
+  List<WithPrecedenceParser> children = cloned.children.cast();
   children
     ..sort((WithPrecedenceParser a, WithPrecedenceParser b) => b.precedence.compareTo(a.precedence))
     ..forEach((WithPrecedenceParser p) => groups[p.precedence] = ChoiceParser(<Parser>[])..memoize = true);
@@ -27,26 +28,23 @@ Parser refactorChoice(ChoiceParser parser) {
   }
 
   ChoiceParser finalParser = groups.values.first.transformWhere(
-    (Parser p) => p is FromPrecedenceParser && p.base == parser,
-    (FromPrecedenceParser p) => groups[p.precedence] ?? log.error("Undefined parser with precedence ${p.precedence}"),
-  ) as ChoiceParser;
+    (Parser p) => p is FromPrecedenceParser && p.base == cloned,
+    (FromPrecedenceParser p) {
+      print("Hi");
+
+      return p;
+    },
+  );
 
   return finalParser;
 }
 
 Parser infix() => _addition.$;
-
-Parser _addition() => _addition & "+".t & _multiplication | _multiplication;
-Parser _multiplication() => _multiplication & "*".t & _negative | _negative;
+Parser _addition() => _addition & "+".t & _multiplication ^ $3((num l, _, num r) => l + r) | _multiplication;
+Parser _multiplication() => _multiplication & "*".t & _negative ^ $3((num l, _, num r) => l * r) | _negative;
 Parser _negative() => "-".tr & _negative ^ $2((_, num r) => -r) | _atomic;
 Parser _atomic() => "[0-9]+".r ^ $type(int.parse);
 
-extension on File {
-  void operator <<(String other) => writeAsString(other);
-}
-
 void main() {
-  File("assets/out_main.txt") << infix.generateAsciiTree();
-  File("assets/out_clone.txt") << infix.clone().generateAsciiTree();
-  // print << infixMath.run("1 * 2 + 3 * 4");
+  print << infix.run("1 + 2 * 3");
 }

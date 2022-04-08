@@ -1,58 +1,36 @@
 (rule#0)
 └─ Instance of 'ChoiceParser'
-   ├─ Instance of 'SequenceParser'
-   │  ├─ (rule#12)
-   │  ├─ (rule#11)
-   │  └─ (rule#10)
-   └─ (rule#10)
+   ├─ Instance of 'MappedParser'
+   │  └─ Instance of 'SequenceParser'
+   │     ├─ (rule#0)
+   │     ├─ Instance of 'DropRightParser'
+   │     │  ├─ Instance of 'DropLeftParser'
+   │     │  │  ├─ /[ \t]*/
+   │     │  │  └─ '+'
+   │     │  └─ /[ \t]*/
+   │     └─ (rule#1)
+   └─ (rule#1)
 
-(rule#12)
+(rule#1)
 └─ Instance of 'ChoiceParser'
-   ├─ Instance of 'SequenceParser'
-   │  ├─ (rule#12)
-   │  ├─ (rule#11)
-   │  └─ (rule#10)
-   └─ (rule#10)
+   ├─ Instance of 'MappedParser'
+   │  └─ Instance of 'SequenceParser'
+   │     ├─ (rule#1)
+   │     ├─ Instance of 'DropRightParser'
+   │     │  ├─ Instance of 'DropLeftParser'
+   │     │  │  ├─ /[ \t]*/
+   │     │  │  └─ '*'
+   │     │  └─ /[ \t]*/
+   │     └─ (rule#2)
+   └─ (rule#2)
 
-(rule#10)
+(rule#2)
 └─ Instance of 'ChoiceParser'
-   ├─ Instance of 'SequenceParser'
-   │  ├─ (rule#10)
-   │  ├─ (rule#9)
-   │  └─ (rule#6)
-   └─ (rule#6)
-
-(rule#6)
-└─ Instance of 'ChoiceParser'
-   ├─ Instance of 'SequenceParser'
-   │  ├─ (rule#7)
-   │  └─ (rule#6)
-   └─ (rule#5)
-
-(rule#4)
-└─ /[0-9]+/
-
-(rule#5)
-└─ /[0-9]+/
-
-(rule#7)
-└─ Instance of 'DropRightParser'
-   ├─ '-'
-   └─ (rule#8)
-
-(rule#8)
-└─ /[ \t]*/
-
-(rule#9)
-└─ Instance of 'DropRightParser'
-   ├─ Instance of 'DropLeftParser'
-   │  ├─ (rule#8)
-   │  └─ '*'
-   └─ (rule#8)
-
-(rule#11)
-└─ Instance of 'DropRightParser'
-   ├─ Instance of 'DropLeftParser'
-   │  ├─ (rule#8)
-   │  └─ '+'
-   └─ (rule#8)
+   ├─ Instance of 'MappedParser'
+   │  └─ Instance of 'SequenceParser'
+   │     ├─ Instance of 'DropRightParser'
+   │     │  ├─ '-'
+   │     │  └─ /[ \t]*/
+   │     └─ (rule#2)
+   └─ Instance of 'MappedParser'
+      └─ /[0-9]+/
