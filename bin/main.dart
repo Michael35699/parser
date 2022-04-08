@@ -45,6 +45,10 @@ Parser _multiplication() => _multiplication & "*".t & _negative ^ $3((num l, _, 
 Parser _negative() => "-".tr & _negative ^ $2((_, num r) => -r) | _atomic;
 Parser _atomic() => "[0-9]+".r ^ $type(int.parse);
 
+Parser base() => letter & (digit | letter).star();
+
 void main() {
-  print << (infix().hasEqualProperties(infix()));
+  time(() {
+    print << base.run("abc123arsotyaulby");
+  });
 }
