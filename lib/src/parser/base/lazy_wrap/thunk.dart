@@ -2,7 +2,7 @@ import "dart:collection";
 
 import "package:parser_peg/internal_all.dart";
 
-class ThunkParser extends Parser with LazyParserMixin {
+class ThunkParser extends LazyLoadParser {
   static HashMap<LazyParser, ThunkParser> map = HashMap<LazyParser, ThunkParser>();
 
   @override
