@@ -8,6 +8,8 @@ export "base/core/abstract/lazy.dart";
 export "base/core/abstract/leaf.dart";
 export "base/core/abstract/special_parser.dart";
 export "base/core/abstract/wrap.dart";
+export "base/core/mixin/cyclic.dart";
+export "base/core/mixin/sequential.dart";
 export "base/core/parser.dart";
 export "base/cycle/cycle.dart";
 export "base/cycle/cycle_end.dart";

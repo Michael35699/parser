@@ -1,17 +1,38 @@
 import "package:parser_peg/internal_all.dart";
 
-Parser _optional(Parser parser) => parser | success(null);
+class OptionalParser extends WrapParser {
+  Parser get parser => children[0];
 
-Parser optional(Parser parser) => _optional(parser);
+  OptionalParser(Parser parser) : super(<Parser>[parser]);
+  OptionalParser.empty() : super(<Parser>[]);
+
+  @override
+  Context parse(Context context, MemoizationHandler handler) {
+    Context result = parser.parseCtx(context, handler);
+    if (result is! ContextFailure) {
+      return result;
+    } else {
+      return context.success(null);
+    }
+  }
+
+  @override
+  Parser get base => parser.base;
+
+  @override
+  OptionalParser empty() => OptionalParser.empty();
+}
+
+OptionalParser optional(Parser parser) => OptionalParser(parser);
 
 extension OptionalExtension on Parser {
-  Parser optional() => _optional(this);
+  OptionalParser optional() => OptionalParser(this);
 }
 
 extension LazyOptionalExtension on LazyParser {
-  Parser optional() => _optional(this.$);
+  OptionalParser optional() => this.$.optional();
 }
 
 extension StringOptionalExtension on String {
-  Parser optional() => _optional(this.$);
+  OptionalParser optional() => this.$.optional();
 }

@@ -9,8 +9,12 @@ class EoiParser extends SpecialParser {
 
     return context.failure(expected("end of input"));
   }
+
+  @override
+  String toString() => r"$";
 }
 
+final Parser dollar = EoiParser();
 final Parser eoi = EoiParser();
 final Parser end = EoiParser();
 

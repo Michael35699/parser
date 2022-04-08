@@ -1,6 +1,6 @@
 import "package:parser_peg/internal_all.dart";
 
-class SequenceParser extends CombinatorParser {
+class SequenceParser extends CombinatorParser with SequentialParser {
   SequenceParser(List<Parser> children) : super(children);
 
   @override
