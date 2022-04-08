@@ -6,6 +6,7 @@ export "src/util/classes/multi_map.dart";
 export "src/util/error_helpers/error_helper.dart";
 export "src/util/extensions/ascii_tree.dart";
 export "src/util/extensions/fake_rest.dart";
+export "src/util/extensions/iterable.dart";
 export "src/util/extensions/lines.dart";
 export "src/util/extensions/list.dart";
 export "src/util/extensions/numbers.dart";
