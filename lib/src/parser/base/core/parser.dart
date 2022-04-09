@@ -1,4 +1,4 @@
-// ignore_for_file: avoid_returning_this, deprecated_member_use_from_same_package, avoid_equals_and_hash_code_on_mutable_classes, hash_and_equals
+// ignore_for_file: deprecated_member_use_from_same_package
 
 import "dart:collection";
 
@@ -74,11 +74,7 @@ abstract class Parser {
     cloned ??= HashMap<Parser, Parser>.identity();
     ST clone = (cloned[parser] ??= parser.cloneSelf(cloned)
       ..memoize = parser.memoize
-      ..built = parser.built
-      .._parserSets = parser._parserSets
-      .._firstSets = parser._firstSets
-      .._followSets = parser._followSets
-      .._cycleSets = parser._cycleSets) as ST;
+      ..built = parser.built) as ST;
 
     return clone;
   }
@@ -128,7 +124,7 @@ abstract class Parser {
     ParserSetMapping followSets = mapping[1];
     ParserSetMapping cycleSets = mapping[2];
 
-    for (Parser parser in built.traverseBF) {
+    for (Parser parser in built.traverseBf) {
       parser._firstSet = firstSets[parser];
       parser._followSet = followSets[parser];
       parser._cycleSet = cycleSets[parser];
@@ -217,14 +213,23 @@ abstract class Parser {
     }
   }
 
-  static List<ParserSetMapping> computeParserSets(Parser root) {
-    Iterable<Parser> parsers = root.traverseDepthFirst();
+  static List<ParserSetMapping> computeParserSets(Parser root, [Iterable<Parser>? parsers]) {
+    parsers ??= root.traverseBf;
 
     ParserSetMapping firstSets = Parser._computeFirstSets(parsers);
     ParserSetMapping followSets = Parser._computeFollowSets(root, parsers, firstSets);
     ParserSetMapping cycleSets = Parser._computeCycleSets(parsers, firstSets);
 
     return <ParserSetMapping>[firstSets, followSets, cycleSets];
+  }
+
+  static void generateParserSets(Parser root) {
+    Iterable<Parser> parsers = root.traverseBf;
+    List<ParserSetMapping> parserSets = Parser.computeParserSets(root, parsers);
+
+    for (Parser parser in parsers) {
+      parser._parserSets = parserSets;
+    }
   }
 
   static bool isTerminal(Parser parser) {
@@ -260,15 +265,41 @@ abstract class Parser {
   }
 
   static bool isLeftRecursive(Parser root) {
-    return root.cycleSet.contains(root);
+    Iterable<Parser> toAdd = Parser.firstChildren(root);
+    Queue<Parser> parsers = Queue<Parser>()..addAll(toAdd);
+    Set<Parser> visited = <Parser>{...toAdd};
+
+    while (parsers.isNotEmpty) {
+      Parser current = parsers.removeFirst();
+      if (current == root) {
+        return true;
+      }
+
+      Parser.firstChildren(current).where(visited.add).forEach(parsers.add);
+    }
+
+    return false;
+  }
+
+  static bool isMemoizable(Parser parser) {
+    return parser is ThunkParser || parser.memoize;
   }
 
   static Iterable<Parser> rules(Parser root) sync* {
     yield* Parser.build(root) //
-        .transformType((WrapParser p) => p.base)
-        .traverseDepthFirst()
-        .where((Parser p) => p.children.isNotEmpty)
-        .where((Parser p) => p.memoize);
+            .transformType((WrapParser p) => p.base)
+            .traverseBreadthFirst()
+            .where((Parser p) => !Parser.isTerminal(p))
+        // .where((Parser p) => p.memoize)
+        ;
+  }
+
+  static Iterable<Parser> firstChildren(Parser root) sync* {
+    if (root is SequenceParser) {
+      yield root.children.first;
+    } else {
+      yield* root.children;
+    }
   }
 
   static Parser resolve(Object object) {
@@ -295,13 +326,13 @@ abstract class Parser {
   }
 
   static ParserSetMapping _computeFirstSets(Iterable<Parser> parsers) {
-    ParserSetMapping firstSets = ParserSetMapping.from(<Parser, ParserSet>{
+    ParserSetMapping firstSets = <Parser, ParserSet>{
       for (Parser parser in parsers)
-        parser: ParserSet.from(<Parser>{
+        parser: <Parser>{
           if (isTerminal(parser)) parser,
           if (isNullable(parser)) startSentinel,
-        })
-    });
+        }
+    };
 
     bool changed = false;
     do {
@@ -350,12 +381,12 @@ abstract class Parser {
   }
 
   static ParserSetMapping _computeFollowSets(Parser root, Iterable<Parser> parsers, ParserSetMapping firsts) {
-    ParserSetMapping followSets = ParserSetMapping.from(<Parser, ParserSet>{
+    ParserSetMapping followSets = <Parser, ParserSet>{
       for (final Parser parser in parsers)
-        parser: ParserSet.from(<Parser>{
+        parser: <Parser>{
           if (parser == root) endSentinel,
-        })
-    });
+        }
+    };
     bool changed = false;
     do {
       changed = false;
@@ -392,7 +423,7 @@ abstract class Parser {
   ) {
     bool changed = false;
     for (int i = 0; i < children.length - 1; i++) {
-      ParserSet firstSet = ParserSet();
+      ParserSet firstSet = <Parser>{};
       int j = i + 1;
       for (; j < children.length; j++) {
         firstSet.addAll(firsts[children[j]]!);
@@ -417,7 +448,7 @@ abstract class Parser {
   }
 
   static ParserSetMapping _computeCycleSets(Iterable<Parser> parsers, ParserSetMapping firsts) {
-    ParserSetMapping cycleSets = ParserSetMapping();
+    ParserSetMapping cycleSets = <Parser, ParserSet>{};
     for (Parser parser in parsers) {
       _computeCycleSet(parser, firsts, cycleSets, <Parser>[parser]);
     }
@@ -429,7 +460,7 @@ abstract class Parser {
       return;
     }
     if (isTerminal(parser)) {
-      cycles[parser] = ParserSet();
+      cycles[parser] = const <Parser>{};
       return;
     }
 
@@ -440,7 +471,7 @@ abstract class Parser {
       if (index >= 0) {
         List<Parser> cycle = stack.sublist(index);
         for (Parser parser in cycle) {
-          cycles[parser] = ParserSet.from(cycle);
+          cycles[parser] = cycle.toSet();
         }
         return;
       } else {
@@ -450,7 +481,7 @@ abstract class Parser {
       }
     }
     if (!cycles.containsKey(parser)) {
-      cycles[parser] = ParserSet();
+      cycles[parser] = const <Parser>{};
       return;
     }
   }
@@ -510,7 +541,7 @@ abstract class Parser {
             rules,
             children[i],
             newIndent,
-            isLast: i + 1 == children.length,
+            isLast: i == children.length - 1,
             level: level + 1,
           ));
         }
@@ -545,11 +576,15 @@ extension SharedParserExtension<ST extends Parser> on ST {
 
   Iterable<Parser> rules() => Parser.rules(this);
 
-  Iterable<Parser> get traverseBF => traverseBreadthFirst();
-  Iterable<Parser> get traverseDF => traverseDepthFirst();
+  Iterable<Parser> get traverseBf => traverseBreadthFirst();
+  Iterable<Parser> get traverseDf => traverseDepthFirst();
 
   Iterable<Parser> traverseBreadthFirst() => Parser.traverseBreadthFirst(this);
   Iterable<Parser> traverseDepthFirst() => Parser.traverseDepthFirst(this);
+
+  Iterable<Parser> get firsts => firstChildren();
+
+  Iterable<Parser> firstChildren() => Parser.firstChildren(this);
 
   bool get leftRecursive => _leftRecursive ?? Parser.isLeftRecursive(this);
   List<ParserSetMapping> get parserSets => _parserSets ??= Parser.computeParserSets(this);
@@ -590,6 +625,10 @@ extension LazyParserMethodsExtension on Lazy<Parser> {
 
   Iterable<Parser> traverseBreadthFirst() => Parser.traverseBreadthFirst(this.$);
   Iterable<Parser> traverseDepthFirst() => Parser.traverseDepthFirst(this.$);
+
+  Iterable<Parser> get firsts => firstChildren();
+
+  Iterable<Parser> firstChildren() => Parser.firstChildren(this.$);
 
   ThunkParser thunk() => ThunkParser(this);
 
