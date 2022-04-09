@@ -569,7 +569,7 @@ extension SharedParserExtension<ST extends Parser> on ST {
   ST transformType<T extends Parser>(TransformHandler<T> handler) => //
       Parser.transformType(this, handler);
   ST transform<T extends Parser>(TransformHandler handler, [HashMap<Parser, Parser>? transformed]) =>
-      Parser.transform(this, handler, transformed ?? HashMap<Parser, Parser>.identity());
+      Parser.transform(this, handler, transformed);
 
   bool isMemoized() => Parser.isMemoized(this);
   bool isNullable() => Parser.isNullable(this);
@@ -616,7 +616,7 @@ extension LazyParserMethodsExtension on Lazy<Parser> {
   Parser transformType<T extends Parser>(TransformHandler<T> handler) => //
       Parser.transformType(this.$, handler);
   Parser transform<T extends Parser>(TransformHandler handler, [HashMap<Parser, Parser>? transformed]) =>
-      Parser.transform(this.$, handler, transformed ?? HashMap<Parser, Parser>.identity());
+      Parser.transform(this.$, handler, transformed);
 
   bool isMemoized() => Parser.isMemoized(this.$);
   bool isNullable() => Parser.isNullable(this.$);
