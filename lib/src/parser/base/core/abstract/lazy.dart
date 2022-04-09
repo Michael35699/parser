@@ -11,9 +11,7 @@ abstract class LazyLoadParser extends Parser {
   LazyLoadParser.eager(this.computedInner);
 
   @override
-  Iterable<Parser> get children sync* {
-    yield computed;
-  }
+  List<Parser> get children => <Parser>[computed];
 
   @override
   Parser get base => computed;

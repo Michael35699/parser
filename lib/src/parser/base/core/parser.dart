@@ -44,7 +44,7 @@ abstract class Parser {
   }
 
   Parser get base;
-  Iterable<Parser> get children;
+  List<Parser> get children;
 
   static final Parser startSentinel = epsilon();
   static final Parser endSentinel = dollar();
@@ -80,10 +80,7 @@ abstract class Parser {
   }
 
   static ST transformWhere<T extends Parser, ST extends Parser>(
-    ST parser,
-    ParserPredicate predicate,
-    TransformHandler<T> handler,
-  ) {
+      ST parser, ParserPredicate predicate, TransformHandler<T> handler) {
     return parser.transform((Parser parser) {
       if (predicate(parser) && parser is T) {
         return handler(parser);
