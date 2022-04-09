@@ -23,12 +23,12 @@ abstract class WrapParser extends Parser {
   @nonVirtual
   @override
   WrapParser transformChildren(TransformHandler handler, HashMap<Parser, Parser> transformed) {
-    WrapParser parser = transformed[this] = empty();
-    for (Parser p in children) {
-      parser.children.add(p.transform(handler, transformed));
+    transformed[this] = this;
+    for (int i = 0; i < children.length; i++) {
+      children[i] = children[i].transform(handler, transformed);
     }
 
-    return parser;
+    return this;
   }
 
   WrapParser empty();

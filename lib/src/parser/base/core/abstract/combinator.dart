@@ -23,12 +23,12 @@ abstract class CombinatorParser extends Parser {
 
   @override
   CombinatorParser transformChildren(TransformHandler handler, HashMap<Parser, Parser> transformed) {
-    CombinatorParser parser = transformed[this] = empty();
-    for (Parser p in children) {
-      parser.children.add(p.transform(handler, transformed));
+    transformed[this] = this;
+    for (int i = 0; i < children.length; i++) {
+      children[i] = children[i].transform(handler, transformed);
     }
 
-    return parser;
+    return this;
   }
 
   CombinatorParser empty();

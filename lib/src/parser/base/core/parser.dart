@@ -104,9 +104,10 @@ abstract class Parser {
     });
   }
 
-  static ST transform<ST extends Parser>(ST parser, TransformHandler handler, HashMap<Parser, Parser> transformed) {
-    return (transformed[parser] ??= handler(parser.transformChildren(handler, transformed)..memoize = parser.memoize)
-      ..built = false) as ST;
+  static ST transform<ST extends Parser>(ST parser, TransformHandler handler, [HashMap<Parser, Parser>? transformed]) {
+    transformed ??= HashMap<Parser, Parser>.identity();
+
+    return (transformed[parser] ??= handler(parser.transformChildren(handler, transformed))) as ST;
   }
 
   static ST build<ST extends Parser>(ST parser) {
@@ -171,7 +172,7 @@ abstract class Parser {
     }
   }
 
-  static String asciiTree(Parser parser) {
+  static String generateAsciiTree(Parser parser) {
     Parser copy = Parser.clone(parser);
     int counter = 0;
     Map<Parser, int> rules = <Parser, int>{for (Parser p in Parser.rules(copy)) p: counter++};
@@ -294,12 +295,11 @@ abstract class Parser {
   }
 
   static Iterable<Parser> rules(Parser root) sync* {
-    yield* Parser.build(root) //
-            .transformType((WrapParser p) => p.base)
-            .traverseBreadthFirst()
-            .where(~Parser.isTerminal)
-        // .where((Parser p) => p.memoize)
-        ;
+    yield* Parser.clone(root)
+        .transformType((ThunkParser p) => p..computed.memoize = true) //
+        .transformType((WrapParser p) => p.base)
+        .traverseBreadthFirst()
+        .where(~Parser.isTerminal & Parser.isMemoized);
   }
 
   static List<Parser> firstChildren(Parser root) {
@@ -513,9 +513,6 @@ abstract class Parser {
     required bool isLast,
     required int level,
   }) {
-    if (parser is ThunkParser) {
-      return _generateAsciiTree(rules, parser.computed, indent, isLast: isLast, level: level);
-    }
 
     StringBuffer buffer = StringBuffer();
 
@@ -561,7 +558,7 @@ abstract class Parser {
 extension SharedParserExtension<ST extends Parser> on ST {
   T run<T extends ParseResult>(String input, {bool? map, bool? end}) => Parser.run(this, input, map: map, end: end);
   Context runCtx(String input, {bool? map, bool? end}) => Parser.runCtx(this, input, map: map, end: end);
-  String generateAsciiTree() => Parser.asciiTree(this);
+  String generateAsciiTree() => Parser.generateAsciiTree(this);
 
   ST build() => Parser.build(this);
   ST simplified() => Parser.simplified(this);
@@ -608,7 +605,7 @@ extension SharedParserExtension<ST extends Parser> on ST {
 extension LazyParserMethodsExtension on Lazy<Parser> {
   T run<T extends ParseResult>(String input, {bool? map, bool? end}) => Parser.run(this.$, input, map: map, end: end);
   Context runCtx(String input, {bool? map, bool? end}) => Parser.runCtx(this.$, input, map: map, end: end);
-  String generateAsciiTree() => Parser.asciiTree(this.$);
+  String generateAsciiTree() => Parser.generateAsciiTree(this.$);
 
   Parser build() => Parser.build(this.$);
   Parser simplified() => Parser.simplified(this.$);
