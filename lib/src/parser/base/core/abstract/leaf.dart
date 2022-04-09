@@ -1,9 +1,7 @@
-import "dart:collection";
-
 import "package:freezed_annotation/freezed_annotation.dart";
 import "package:parser_peg/internal_all.dart";
 
-abstract class LeafParserMixin extends Parser {
+abstract class LeafParserMixin extends ChildlessParser {
   @nonVirtual
   @override
   bool get memoize => true;
@@ -28,21 +26,8 @@ abstract class LeafParserMixin extends Parser {
     }
   }
 
-  @override
-  Iterable<Parser> get children sync* {}
-
   String get failureMessage;
   int? parseLeaf(String input, int index);
-
-  @override
-  Parser get base => this;
-
-  @nonVirtual
-  @override
-  Parser cloneSelf(HashMap<Parser, Parser> cloned) => this;
-
-  @override
-  Parser transformChildren(TransformHandler handler, HashMap<Parser, Parser> transformed) => this;
 
   @override
   bool hasEqualProperties(LeafParserMixin target) {
