@@ -46,6 +46,12 @@ abstract class Parser {
   Parser get base;
   List<Parser> get children;
 
+  /// Utility class helpers
+
+  static const int firstSetIndex = 0;
+  static const int followSetIndex = 1;
+  static const int cycleSetIndex = 2;
+
   static final Parser startSentinel = epsilon();
   static final Parser endSentinel = dollar();
 
@@ -105,7 +111,7 @@ abstract class Parser {
 
   static ST build<ST extends Parser>(ST parser) {
     if (parser.built) {
-      print("Parser is already built, so saving a few cycles.");
+      // print("Parser is already built, so saving a few cycles.");
       return parser;
     }
 
@@ -153,7 +159,7 @@ abstract class Parser {
     end ??= false;
 
     MemoizationHandler handler = MemoizationHandler();
-    Parser built = (end ? parser.end() : parser.cache()).build();
+    Parser built = end ? parser.build().end() : parser.build();
     String formatted = input.replaceAll("\r", "").unindent();
     Context context = Context.ignore(State(input: formatted, map: map ?? true));
     Context result = built.parseCtx(context, handler);
@@ -226,6 +232,8 @@ abstract class Parser {
 
     for (Parser parser in parsers) {
       parser._parserSets = parserSets;
+      parser._followSets = parserSets[2];
+      parser._cycleSets = parserSets[3];
     }
   }
 
@@ -235,13 +243,12 @@ abstract class Parser {
 
   static bool isNullable(Parser parser) {
     bool parserIsEpsilon(Parser p) => p is EpsilonParser || p == "".p();
+    bool parserIsNullable(Parser p) => p is SuccessParser || p is OptionalParser || parserIsEpsilon(p);
 
-    late bool isEpsilon = parserIsEpsilon(parser);
-    late bool isOptional = parser is OptionalParser;
-    late bool isNullableChoice = parser is ChoiceParser && //
-        parser.children.any((Parser p) => p.base is SuccessParser || parserIsEpsilon(p));
+    late bool isNullable = parserIsNullable(parser);
+    late bool isNullableChoice = parser is ChoiceParser && parser.children.any(parserIsNullable);
 
-    return isEpsilon || isOptional || isNullableChoice;
+    return isNullable || isNullableChoice;
   }
 
   static bool isRecursive(Parser root) {
@@ -282,21 +289,23 @@ abstract class Parser {
     return parser is ThunkParser || parser.memoize;
   }
 
+  static bool isMemoized(Parser parser) {
+    return parser.memoize;
+  }
+
   static Iterable<Parser> rules(Parser root) sync* {
     yield* Parser.build(root) //
             .transformType((WrapParser p) => p.base)
             .traverseBreadthFirst()
-            .where((Parser p) => !Parser.isTerminal(p))
+            .where(~Parser.isTerminal)
         // .where((Parser p) => p.memoize)
         ;
   }
 
-  static Iterable<Parser> firstChildren(Parser root) sync* {
-    if (root is SequenceParser) {
-      yield root.children.first;
-    } else {
-      yield* root.children;
-    }
+  static List<Parser> firstChildren(Parser root) {
+    return <Parser>[
+      if (root is SequenceParser) root.children.first else ...root.children,
+    ];
   }
 
   static Parser resolve(Object object) {
@@ -565,7 +574,10 @@ extension SharedParserExtension<ST extends Parser> on ST {
   ST transform<T extends Parser>(TransformHandler handler, [HashMap<Parser, Parser>? transformed]) =>
       Parser.transform(this, handler, transformed ?? HashMap<Parser, Parser>.identity());
 
+  bool isMemoized() => Parser.isMemoized(this);
+  bool isNullable() => Parser.isNullable(this);
   bool isRecursive() => Parser.isRecursive(this);
+  bool isMemoizable() => Parser.isMemoizable(this);
   bool isLeftRecursive() => Parser.isLeftRecursive(this);
   bool equals(Object target) => Parser.equals(this, target.$);
 
@@ -585,9 +597,9 @@ extension SharedParserExtension<ST extends Parser> on ST {
 
   bool get leftRecursive => _leftRecursive ?? Parser.isLeftRecursive(this);
   List<ParserSetMapping> get parserSets => _parserSets ??= Parser.computeParserSets(this);
-  ParserSetMapping get firstSets => _firstSets ??= parserSets[0];
-  ParserSetMapping get followSets => _followSets ??= parserSets[1];
-  ParserSetMapping get cycleSets => _cycleSets ??= parserSets[2];
+  ParserSetMapping get firstSets => _firstSets ??= parserSets[Parser.firstSetIndex];
+  ParserSetMapping get followSets => _followSets ??= parserSets[Parser.followSetIndex];
+  ParserSetMapping get cycleSets => _cycleSets ??= parserSets[Parser.cycleSetIndex];
   ParserSet get firstSet => _firstSet ??= firstSets[this]!;
   ParserSet get followSet => _followSet ??= followSets[this]!;
   ParserSet get cycleSet => _cycleSet ??= cycleSets[this]!;
@@ -609,7 +621,10 @@ extension LazyParserMethodsExtension on Lazy<Parser> {
   Parser transform<T extends Parser>(TransformHandler handler, [HashMap<Parser, Parser>? transformed]) =>
       Parser.transform(this.$, handler, transformed ?? HashMap<Parser, Parser>.identity());
 
+  bool isMemoized() => Parser.isMemoized(this.$);
+  bool isNullable() => Parser.isNullable(this.$);
   bool isRecursive() => Parser.isRecursive(this.$);
+  bool isMemoizable() => Parser.isMemoizable(this.$);
   bool isLeftRecursive() => Parser.isLeftRecursive(this.$);
   bool equals(Object target) => Parser.equals(this.$, target.$);
 
