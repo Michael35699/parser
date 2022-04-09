@@ -116,7 +116,7 @@ abstract class Parser {
       return parser;
     }
 
-    ST built = parser //
+    ST built = Parser.clone(parser) //
         .transformType<CacheParser>((CacheParser p) => p.parser)
         .transformType<ThunkParser>((ThunkParser p) => p.computed..memoize = true)
       ..built = true;
@@ -513,7 +513,6 @@ abstract class Parser {
     required bool isLast,
     required int level,
   }) {
-
     StringBuffer buffer = StringBuffer();
 
     // ignore: literal_only_boolean_expressions
