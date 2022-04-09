@@ -4,11 +4,14 @@ import "package:freezed_annotation/freezed_annotation.dart";
 import "package:parser_peg/internal_all.dart";
 
 abstract class LeafParserMixin extends Parser {
+  @nonVirtual
   @override
   bool get memoize => true;
-  @override
+
+  @nonVirtual
   bool get leftRecursive => false;
 
+  @nonVirtual
   @override
   Context parse(Context context, MemoizationHandler handler) {
     String input = context.state.input;

@@ -1,8 +1,6 @@
 import "package:parser_peg/internal_all.dart";
 
 class UnicodeRangeParser extends LeafParserMixin {
-  @override
-  bool get memoize => true;
 
   final int low;
   final int high;

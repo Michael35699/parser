@@ -5,9 +5,6 @@ import "package:parser_peg/internal_all.dart";
 class CharacterParser extends LeafParserMixin {
   static HashMap<String, CharacterParser> map = HashMap<String, CharacterParser>();
 
-  @override
-  bool get memoize => true;
-
   final String pattern;
 
   factory CharacterParser(String pattern) => map[pattern] ??= CharacterParser.generate(pattern);
