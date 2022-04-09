@@ -4,22 +4,22 @@ RegExpParser ws() => r"[ \t]*".r();
 RegExpParser whitespace() => r"[ \t]*".r();
 RegExpParser whitespaceNewline() => r"[ \t\n\r]*".r();
 
-Parser trim(Parser parser) => whitespace >> parser << whitespace;
-Parser trimLeft(Parser parser) => whitespace >> parser;
-Parser trimRight(Parser parser) => parser << whitespace;
+Parser trim(Parser parser) => whitespace() >> parser << whitespace();
+Parser trimLeft(Parser parser) => whitespace() >> parser;
+Parser trimRight(Parser parser) => parser << whitespace();
 
-Parser trimNewline(Parser parser) => whitespaceNewline >> parser << whitespaceNewline;
-Parser trimNewlineLeft(Parser parser) => whitespaceNewline >> parser;
-Parser trimNewlineRight(Parser parser) => parser << whitespaceNewline;
+Parser trimNewline(Parser parser) => whitespaceNewline() >> parser << whitespaceNewline();
+Parser trimNewlineLeft(Parser parser) => whitespaceNewline() >> parser;
+Parser trimNewlineRight(Parser parser) => parser << whitespaceNewline();
 
 extension ParserTrimmedExtension on Parser {
-  Parser trim() => whitespace >> this << whitespace;
-  Parser trimLeft() => whitespace >> this;
-  Parser trimRight() => this << whitespace;
+  Parser trim() => whitespace() >> this << whitespace();
+  Parser trimLeft() => whitespace() >> this;
+  Parser trimRight() => this << whitespace();
 
-  Parser trimNewline() => whitespaceNewline >> this << whitespaceNewline;
-  Parser trimNewlineLeft() => whitespaceNewline >> this;
-  Parser trimNewlineRight() => this << whitespaceNewline;
+  Parser trimNewline() => whitespaceNewline() >> this << whitespaceNewline();
+  Parser trimNewlineLeft() => whitespaceNewline() >> this;
+  Parser trimNewlineRight() => this << whitespaceNewline();
 
   Parser t() => trim();
   Parser tl() => trimLeft();
