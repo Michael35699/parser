@@ -11,6 +11,7 @@ export "base/core/abstract/wrap.dart";
 export "base/core/mixin/cyclic.dart";
 export "base/core/mixin/sequential.dart";
 export "base/core/parser.dart";
+export "base/core/transformer_stream/transformer_stream.dart";
 export "base/cycle/cycle.dart";
 export "base/cycle/cycle_end.dart";
 export "base/cycle/cycle_n.dart";

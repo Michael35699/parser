@@ -104,6 +104,10 @@ abstract class Parser {
     });
   }
 
+  static ST transformOrSelf<ST extends Parser>(ST parser, NullableTransformHandler handler) {
+    return parser.transform((Parser parser) => handler(parser) ?? parser);
+  }
+
   static ST transform<ST extends Parser>(ST parser, TransformHandler handler, [HashMap<Parser, Parser>? transformed]) {
     transformed ??= HashMap<Parser, Parser>.identity();
 
@@ -117,8 +121,10 @@ abstract class Parser {
     }
 
     ST built = Parser.clone(parser) //
-        .transformType<CacheParser>((CacheParser p) => p.parser)
-        .transformType<ThunkParser>((ThunkParser p) => p.computed..memoize = true)
+        .streamTransform()
+        .whereType((CacheParser parser) => parser.parser)
+        .whereType((ThunkParser parser) => parser.computed..memoize = true)
+        .run() as ST
       ..built = true;
 
     List<ParserSetMapping> mapping = built.computeParserSets();
@@ -327,6 +333,10 @@ abstract class Parser {
     }
 
     throw UnsupportedError("Object of type '${object.runtimeType}' is not a resolvable parser.");
+  }
+
+  static ParserTransformStream streamTransform(Parser root) {
+    return ParserTransformStream(root);
   }
 
   static ParserSetMapping _computeFirstSets(Iterable<Parser> parsers) {
@@ -568,8 +578,11 @@ extension SharedParserExtension<ST extends Parser> on ST {
       Parser.transformWhere(this, predicate, handler);
   ST transformType<T extends Parser>(TransformHandler<T> handler) => //
       Parser.transformType(this, handler);
+  ST transformOrSelf<T extends Parser>(NullableTransformHandler handler) => //
+      Parser.transformOrSelf(this, handler);
   ST transform<T extends Parser>(TransformHandler handler, [HashMap<Parser, Parser>? transformed]) =>
       Parser.transform(this, handler, transformed);
+  ParserTransformStream streamTransform() => Parser.streamTransform(this);
 
   bool isMemoized() => Parser.isMemoized(this);
   bool isNullable() => Parser.isNullable(this);
@@ -603,7 +616,7 @@ extension SharedParserExtension<ST extends Parser> on ST {
   ParserSet get cycleSet => _cycleSet ??= cycleSets[this]!;
 }
 
-extension LazyParserMethodsExtension on Lazy<Parser> {
+extension LazyParserMethodsExtension<ST extends Parser> on Lazy<ST> {
   T run<T extends ParseResult>(String input, {bool? map, bool? end}) => Parser.run(this.$, input, map: map, end: end);
   Context runCtx(String input, {bool? map, bool? end}) => Parser.runCtx(this.$, input, map: map, end: end);
   String generateAsciiTree({Map<Parser, String>? marks}) => Parser.generateAsciiTree(this.$, marks: marks);
@@ -616,8 +629,11 @@ extension LazyParserMethodsExtension on Lazy<Parser> {
       Parser.transformWhere(this.$, predicate, handler);
   Parser transformType<T extends Parser>(TransformHandler<T> handler) => //
       Parser.transformType(this.$, handler);
+  Parser transformOrSelf<T extends Parser>(NullableTransformHandler handler) => //
+      Parser.transformOrSelf(this.$, handler);
   Parser transform<T extends Parser>(TransformHandler handler, [HashMap<Parser, Parser>? transformed]) =>
       Parser.transform(this.$, handler, transformed);
+  ParserTransformStream streamTransform() => Parser.streamTransform(this.$);
 
   bool isMemoized() => Parser.isMemoized(this.$);
   bool isNullable() => Parser.isNullable(this.$);
