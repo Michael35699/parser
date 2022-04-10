@@ -55,26 +55,28 @@ abstract class Parser {
   static final Parser startSentinel = epsilon();
   static final Parser endSentinel = dollar();
 
-  static ParserPredicate equals(Parser parser) => (Parser target) {
-        if (parser == target) {
-          return true;
-        }
-
-        Iterable<Parser> leftString = parser.traverseBreadthFirst().whereNotType<ThunkParser>();
-        Iterable<Parser> rightString = target.traverseBreadthFirst().whereNotType<ThunkParser>();
-        Iterable<List<Parser>> zipped = leftString.zip.rest(rightString);
-
-        for (List<Parser> pair in zipped) {
-          Parser left = pair[0];
-          Parser right = pair[1];
-
-          if (left.runtimeType != right.runtimeType || !left.hasEqualProperties(right)) {
-            return false;
-          }
-        }
-
+  static ParserPredicate equals(Parser parser) {
+    return (Parser target) {
+      if (parser == target) {
         return true;
-      };
+      }
+
+      Iterable<Parser> leftString = parser.traverseBreadthFirst().whereNotType<ThunkParser>();
+      Iterable<Parser> rightString = target.traverseBreadthFirst().whereNotType<ThunkParser>();
+      Iterable<List<Parser>> zipped = leftString.zip.rest(rightString);
+
+      for (List<Parser> pair in zipped) {
+        Parser left = pair[0];
+        Parser right = pair[1];
+
+        if (left.runtimeType != right.runtimeType || !left.hasEqualProperties(right)) {
+          return false;
+        }
+      }
+
+      return true;
+    };
+  }
 
   static ST clone<ST extends Parser>(ST parser, [HashMap<Parser, Parser>? cloned]) {
     cloned ??= HashMap<Parser, Parser>.identity();
