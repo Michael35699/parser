@@ -1,5 +1,3 @@
-// ignore_for_file: camel_case_types
-
 import "package:parser_peg/internal_all.dart";
 
 typedef Lazy<T> = T Function();
