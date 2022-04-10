@@ -65,7 +65,7 @@ class MarkdownGrammar with Grammar {
   Parser tableFormatRow() => bar >> (center | left | right | default_).t % bar << bar;
   Parser tableCellSeparator() => (~escapedBar >> bar).drop();
 
-  Parser default_ = double.infinity.$ ^ "-".plus;
+  Parser default_ = epsilon >> "-".plus;
   Parser left = ":" & "-".plus;
   Parser right = "-".plus & ":";
   Parser center = ":" & "-".plus & ":";

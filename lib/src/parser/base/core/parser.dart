@@ -241,8 +241,9 @@ abstract class Parser {
 
     for (Parser parser in parsers) {
       parser._parserSets = parserSets;
-      parser._followSets = parserSets[2];
-      parser._cycleSets = parserSets[3];
+      parser._firstSet = (parser._firstSets = parserSets[Parser.firstSetIndex])[parser];
+      parser._followSet = (parser._followSets = parserSets[Parser.followSetIndex])[parser];
+      parser._cycleSet = (parser._cycleSets = parserSets[Parser.cycleSetIndex])[parser];
     }
   }
 
