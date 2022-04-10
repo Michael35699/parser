@@ -2,7 +2,7 @@ import "dart:collection";
 
 import "package:parser_peg/internal_all.dart";
 
-class StringParser extends LeafParserMixin {
+class StringParser extends LeafParser {
   static HashMap<String, StringParser> map = HashMap<String, StringParser>();
 
   final String pattern;

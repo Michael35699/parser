@@ -1,6 +1,6 @@
 import "package:parser_peg/internal_all.dart";
 
-class UnicodeRangeParser extends LeafParserMixin {
+class UnicodeRangeParser extends LeafParser {
 
   final int low;
   final int high;

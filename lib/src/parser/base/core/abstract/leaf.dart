@@ -1,7 +1,7 @@
 import "package:freezed_annotation/freezed_annotation.dart";
 import "package:parser_peg/internal_all.dart";
 
-abstract class LeafParserMixin extends ChildlessParser {
+abstract class LeafParser extends ChildlessParser {
   @nonVirtual
   @override
   bool get memoize => true;
@@ -30,7 +30,7 @@ abstract class LeafParserMixin extends ChildlessParser {
   int? parseLeaf(String input, int index);
 
   @override
-  bool hasEqualProperties(LeafParserMixin target) {
+  bool hasEqualProperties(LeafParser target) {
     return super.hasEqualProperties(target) && this == target;
   }
 }
