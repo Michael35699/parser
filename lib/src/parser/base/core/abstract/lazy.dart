@@ -5,12 +5,10 @@ import "package:parser_peg/internal_all.dart";
 abstract class LazyLoadParser extends Parser {
   abstract final LazyParser lazyParser;
   bool get memoizeBody;
-
-  Parser? computedInner;
-  Parser get computed => computedInner ??= lazyParser();
+  late Parser computed = lazyParser();
 
   LazyLoadParser();
-  LazyLoadParser.eager(this.computedInner);
+  LazyLoadParser.eager(this.computed);
 
   @override
   List<Parser> get children => <Parser>[computed];
@@ -25,7 +23,7 @@ abstract class LazyLoadParser extends Parser {
 
   @override
   Parser transformChildren(TransformHandler handler, HashMap<Parser, Parser> transformed) {
-    return this..computedInner = computed.transform(handler, transformed);
+    return this..computed = computed.transform(handler, transformed);
   }
 
   LazyLoadParser eager(Parser parser);

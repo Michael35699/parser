@@ -7,6 +7,7 @@ abstract class LeafParser extends ChildlessParser {
   bool get memoize => true;
 
   @nonVirtual
+  @override
   bool get leftRecursive => false;
 
   @nonVirtual

@@ -9,14 +9,14 @@ abstract class Parser {
   bool memoize = false;
   bool built = false;
 
-  bool? _leftRecursive;
-  List<ParserSetMapping>? _parserSets;
-  ParserSetMapping? _firstSets;
-  ParserSetMapping? _followSets;
-  ParserSetMapping? _cycleSets;
-  ParserSet? _firstSet;
-  ParserSet? _followSet;
-  ParserSet? _cycleSet;
+  late final bool leftRecursive = Parser.isLeftRecursive(this);
+  late final List<ParserSetMapping> parserSets = Parser.computeParserSets(this);
+  late final ParserSetMapping firstSets = parserSets[Parser.firstSetIndex];
+  late final ParserSetMapping followSets = parserSets[Parser.followSetIndex];
+  late final ParserSetMapping cycleSets = parserSets[Parser.cycleSetIndex];
+  late final ParserSet firstSet = firstSets[this] ?? const <Parser>{};
+  late final ParserSet followSet = followSets[this] ?? const <Parser>{};
+  late final ParserSet cycleSet = cycleSets[this] ?? const <Parser>{};
 
   @Deprecated("Use the 'parseCtx' method")
   Context parse(Context context, MemoizationHandler handler);
@@ -107,10 +107,6 @@ abstract class Parser {
     });
   }
 
-  static ST transformOrSelf<ST extends Parser>(ST parser, NullableTransformHandler handler) {
-    return parser.transform((Parser parser) => handler(parser) ?? parser);
-  }
-
   static ST transform<ST extends Parser>(ST parser, TransformHandler handler, [HashMap<Parser, Parser>? transformed]) {
     transformed ??= HashMap<Parser, Parser>.identity();
 
@@ -129,19 +125,6 @@ abstract class Parser {
         .whereType((ThunkParser parser) => parser.computed..memoize = true)
         .run() as ST
       ..built = true;
-
-    List<ParserSetMapping> mapping = built.computeParserSets();
-    built._parserSets = mapping;
-    built._leftRecursive = built.isLeftRecursive();
-    ParserSetMapping firstSets = mapping[0];
-    ParserSetMapping followSets = mapping[1];
-    ParserSetMapping cycleSets = mapping[2];
-
-    for (Parser parser in built.traverseBf) {
-      parser._firstSet = firstSets[parser];
-      parser._followSet = followSets[parser];
-      parser._cycleSet = cycleSets[parser];
-    }
 
     return built;
   }
@@ -233,18 +216,6 @@ abstract class Parser {
     ParserSetMapping cycleSets = Parser._computeCycleSets(parsers, firstSets);
 
     return <ParserSetMapping>[firstSets, followSets, cycleSets];
-  }
-
-  static void generateParserSets(Parser root) {
-    Iterable<Parser> parsers = root.traverseBf;
-    List<ParserSetMapping> parserSets = Parser.computeParserSets(root, parsers);
-
-    for (Parser parser in parsers) {
-      parser._parserSets = parserSets;
-      parser._firstSet = (parser._firstSets = parserSets[Parser.firstSetIndex])[parser];
-      parser._followSet = (parser._followSets = parserSets[Parser.followSetIndex])[parser];
-      parser._cycleSet = (parser._cycleSets = parserSets[Parser.cycleSetIndex])[parser];
-    }
   }
 
   static bool isTerminal(Parser parser) {
@@ -582,8 +553,6 @@ extension SharedParserExtension<ST extends Parser> on ST {
       Parser.transformWhere(this, predicate, handler);
   ST transformType<T extends Parser>(TransformHandler<T> handler) => //
       Parser.transformType(this, handler);
-  ST transformOrSelf<T extends Parser>(NullableTransformHandler handler) => //
-      Parser.transformOrSelf(this, handler);
   ST transform<T extends Parser>(TransformHandler handler, [HashMap<Parser, Parser>? transformed]) =>
       Parser.transform(this, handler, transformed);
   ParserTransformStream streamTransform() => Parser.streamTransform(this);
@@ -609,15 +578,6 @@ extension SharedParserExtension<ST extends Parser> on ST {
   Iterable<Parser> get firsts => firstChildren();
 
   Iterable<Parser> firstChildren() => Parser.firstChildren(this);
-
-  bool get leftRecursive => _leftRecursive ?? Parser.isLeftRecursive(this);
-  List<ParserSetMapping> get parserSets => _parserSets ??= Parser.computeParserSets(this);
-  ParserSetMapping get firstSets => _firstSets ??= parserSets[Parser.firstSetIndex];
-  ParserSetMapping get followSets => _followSets ??= parserSets[Parser.followSetIndex];
-  ParserSetMapping get cycleSets => _cycleSets ??= parserSets[Parser.cycleSetIndex];
-  ParserSet get firstSet => _firstSet ??= firstSets[this]!;
-  ParserSet get followSet => _followSet ??= followSets[this]!;
-  ParserSet get cycleSet => _cycleSet ??= cycleSets[this]!;
 }
 
 extension LazyParserMethodsExtension<ST extends Parser> on Lazy<ST> {
@@ -633,8 +593,6 @@ extension LazyParserMethodsExtension<ST extends Parser> on Lazy<ST> {
       Parser.transformWhere(this.$, predicate, handler);
   Parser transformType<T extends Parser>(TransformHandler<T> handler) => //
       Parser.transformType(this.$, handler);
-  Parser transformOrSelf<T extends Parser>(NullableTransformHandler handler) => //
-      Parser.transformOrSelf(this.$, handler);
   Parser transform<T extends Parser>(TransformHandler handler, [HashMap<Parser, Parser>? transformed]) =>
       Parser.transform(this.$, handler, transformed);
   ParserTransformStream streamTransform() => Parser.streamTransform(this.$);
