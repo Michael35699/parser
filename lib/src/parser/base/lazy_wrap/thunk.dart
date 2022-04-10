@@ -12,11 +12,10 @@ class ThunkParser extends LazyLoadParser {
   final bool memoizeBody = true;
 
   factory ThunkParser(LazyParser lazyParser) => map[lazyParser] ??= ThunkParser._(lazyParser);
-  ThunkParser.eager(Parser parser)
-      : lazyParser = (() => parser),
-        super.eager(parser);
-
   ThunkParser._(this.lazyParser);
+  ThunkParser.eager(Parser parser)
+      : lazyParser = (() => throw UnsupportedError("Hello")),
+        super.eager(parser);
 
   @override
   Context parse(Context context, MemoizationHandler handler) {
@@ -26,14 +25,7 @@ class ThunkParser extends LazyLoadParser {
   }
 
   @override
-  Parser cloneSelf(HashMap<Parser, Parser> cloned) {
-    return ThunkParser.eager(computed.clone(cloned));
-  }
-
-  @override
-  Parser transformChildren(TransformHandler handler, HashMap<Parser, Parser> transformed) {
-    return ThunkParser.eager(computed.transform(handler, transformed));
-  }
+  ThunkParser eager(Parser parser) => ThunkParser.eager(parser);
 }
 
 ThunkParser thunk(LazyParser fn) => ThunkParser(fn);
