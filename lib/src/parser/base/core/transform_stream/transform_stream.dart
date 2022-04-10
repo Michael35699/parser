@@ -23,7 +23,7 @@ class ParserTransformStream<T extends Parser, P extends Parser> {
         if (predicate != null) (Parser p) => p is R ? predicate(p) : p else (Parser p) => p is R
       ]);
 
-  T run() => target.transform((Parser p) {
+  T apply() => target.transform((Parser p) {
         Parser parser = p;
         for (Function handler in handlers) {
           if (handler is ParserPredicate) {

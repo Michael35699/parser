@@ -123,7 +123,7 @@ abstract class Parser {
         .streamTransform()
         .whereType((CacheParser parser) => parser.parser)
         .whereType((ThunkParser parser) => parser.computed..memoize = true)
-        .run() as ST
+        .apply() as ST
       ..built = true;
 
     return built;
