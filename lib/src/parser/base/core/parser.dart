@@ -115,15 +115,12 @@ abstract class Parser {
 
   static ST build<ST extends Parser>(ST parser) {
     if (parser.built) {
-      // print("Parser is already built, so saving a few cycles.");
       return parser;
     }
 
     ST built = Parser.clone(parser) //
-        .streamTransform()
-        .whereType((CacheParser parser) => parser.parser)
-        .whereType((ThunkParser parser) => parser.computed..memoize = true)
-        .apply() as ST
+        .transformType((CacheParser parser) => parser.parser)
+        .transformType((ThunkParser parser) => parser.computed..memoize = true)
       ..built = true;
 
     return built;
@@ -228,8 +225,9 @@ abstract class Parser {
 
     late bool isNullable = parserIsNullable(parser);
     late bool isNullableChoice = parser is ChoiceParser && parser.children.any(parserIsNullable);
+    late bool isNullableSequential = parser is SequentialParser && parser.children.every(parserIsNullable);
 
-    return isNullable || isNullableChoice;
+    return isNullable || isNullableChoice || isNullableSequential;
   }
 
   static bool isRecursive(Parser root) {
@@ -283,7 +281,7 @@ abstract class Parser {
 
   static List<Parser> firstChildren(Parser root) {
     return <Parser>[
-      if (root is SequenceParser) root.children.first else ...root.children,
+      if (root is SequentialParser) root.children.first else ...root.children,
     ];
   }
 
@@ -308,10 +306,6 @@ abstract class Parser {
     }
 
     throw UnsupportedError("Object of type '${object.runtimeType}' is not a resolvable parser.");
-  }
-
-  static ParserTransformStream streamTransform(Parser root) {
-    return ParserTransformStream(root);
   }
 
   static ParserSetMapping _computeFirstSets(Iterable<Parser> parsers) {
@@ -555,7 +549,6 @@ extension SharedParserExtension<ST extends Parser> on ST {
       Parser.transformType(this, handler);
   ST transform<T extends Parser>(TransformHandler handler, [HashMap<Parser, Parser>? transformed]) =>
       Parser.transform(this, handler, transformed);
-  ParserTransformStream streamTransform() => Parser.streamTransform(this);
 
   bool isMemoized() => Parser.isMemoized(this);
   bool isNullable() => Parser.isNullable(this);
@@ -595,7 +588,6 @@ extension LazyParserMethodsExtension<ST extends Parser> on Lazy<ST> {
       Parser.transformType(this.$, handler);
   Parser transform<T extends Parser>(TransformHandler handler, [HashMap<Parser, Parser>? transformed]) =>
       Parser.transform(this.$, handler, transformed);
-  ParserTransformStream streamTransform() => Parser.streamTransform(this.$);
 
   bool isMemoized() => Parser.isMemoized(this.$);
   bool isNullable() => Parser.isNullable(this.$);
