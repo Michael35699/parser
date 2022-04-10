@@ -52,6 +52,8 @@ abstract class Parser {
   static const int followSetIndex = 1;
   static const int cycleSetIndex = 2;
 
+  static const bool _false = false;
+
   static final Parser startSentinel = epsilon();
   static final Parser endSentinel = dollar();
 
@@ -148,16 +150,17 @@ abstract class Parser {
         return result.unmappedResult as T;
       }
     }
-    throw ParseException("Detected ignore context. Check the grammar lmao.");
+    throw ParseException("Detected ignore context. Check the grammar.");
   }
 
   static Context runCtx(Parser parser, String input, {bool? map, bool? end}) {
     end ??= false;
+    map ??= true;
 
     MemoizationHandler handler = MemoizationHandler();
     Parser built = end ? parser.build().end() : parser.build();
     String formatted = input.replaceAll("\r", "").unindent();
-    Context context = Context.ignore(State(input: formatted, map: map ?? true));
+    Context context = Context.ignore(State(input: formatted, map: map));
     Context result = built.parseCtx(context, handler);
 
     if (result is ContextFailure) {
@@ -337,7 +340,6 @@ abstract class Parser {
   }
 
   static bool _expandFirstSets(Parser parser, ParserSetMapping firstSets) {
-    const bool false_ = false;
     bool changed = false;
     ParserSet firstSet = firstSets[parser]!;
 
@@ -347,8 +349,8 @@ abstract class Parser {
         for (Parser child in parser.children) {
           bool nullable = false;
           for (Parser first in firstSets[child]!) {
-            if (isNullable(first)) {
-              nullable = true;
+            if (Parser.isNullable(first)) {
+              nullable |= true;
             } else {
               changed |= firstSet.add(first);
             }
@@ -365,7 +367,7 @@ abstract class Parser {
           }
         }
       }
-    } while (false_);
+    } while (_false);
 
     return changed;
   }
@@ -500,7 +502,6 @@ abstract class Parser {
   }) {
     StringBuffer buffer = StringBuffer();
 
-    // ignore: literal_only_boolean_expressions
     do {
       String marker = isLast ? "└─" : "├─";
 
@@ -535,7 +536,7 @@ abstract class Parser {
           ));
         }
       }
-    } while (false);
+    } while (_false);
 
     return buffer.toString();
   }
