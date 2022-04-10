@@ -30,18 +30,21 @@ FromPrecedenceParser fromPrecedence(num precedence, Parser parser) => FromPreced
 
 extension PrecedenceParserExtension on Parser {
   FromPrecedenceParser prec(num precedence) => FromPrecedenceParser(precedence, this);
+  FromPrecedenceParser from(num precedence) => FromPrecedenceParser(precedence, this);
   FromPrecedenceParser fromPrecedence(num precedence) => FromPrecedenceParser(precedence, this);
   FromPrecedenceParser operator [](num precedence) => fromPrecedence(precedence);
 }
 
 extension LazyPrecedenceParserExtension on LazyParser {
   FromPrecedenceParser prec(num precedence) => this.$.fromPrecedence(precedence);
+  FromPrecedenceParser from(num precedence) => this.$.fromPrecedence(precedence);
   FromPrecedenceParser fromPrecedence(num precedence) => this.$.fromPrecedence(precedence);
   FromPrecedenceParser operator [](num precedence) => this.$[precedence];
 }
 
 extension StringPrecedenceParserExtension on String {
   FromPrecedenceParser prec(num precedence) => this.$.fromPrecedence(precedence);
+  FromPrecedenceParser from(num precedence) => this.$.fromPrecedence(precedence);
   FromPrecedenceParser fromPrecedence(num precedence) => this.$.fromPrecedence(precedence);
   FromPrecedenceParser operator [](num precedence) => this.$[precedence];
 }
