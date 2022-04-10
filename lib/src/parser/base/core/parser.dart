@@ -172,15 +172,14 @@ abstract class Parser {
     }
   }
 
-  static String generateAsciiTree(Parser parser) {
-    Parser copy = Parser.clone(parser);
+  static String generateAsciiTree(Parser parser, {Map<Parser, String>? marks}) {
     int counter = 0;
-    Map<Parser, int> rules = <Parser, int>{for (Parser p in Parser.rules(copy)) p: counter++};
+    Map<Parser, int> rules = <Parser, int>{for (Parser p in Parser.rules(parser)) p: counter++};
     StringBuffer buffer = StringBuffer();
 
     for (Parser p in rules.keys) {
       buffer.writeln("(rule#${rules[p]})");
-      buffer.writeln(_generateAsciiTree(rules, p, "", isLast: true, level: 0));
+      buffer.writeln(_generateAsciiTree(rules, p, "", isLast: true, level: 0, marks: marks));
     }
 
     return buffer.toString().trimRight();
@@ -295,9 +294,8 @@ abstract class Parser {
   }
 
   static Iterable<Parser> rules(Parser root) sync* {
-    yield* Parser.clone(root)
+    yield* root
         .transformType((ThunkParser p) => p..computed.memoize = true) //
-        .transformType((WrapParser p) => p.base)
         .traverseBreadthFirst()
         .where(~Parser.isTerminal & Parser.isMemoized);
   }
@@ -512,6 +510,7 @@ abstract class Parser {
     String indent, {
     required bool isLast,
     required int level,
+    Map<Parser, String>? marks,
   }) {
     StringBuffer buffer = StringBuffer();
 
@@ -533,6 +532,7 @@ abstract class Parser {
 
       buffer
         ..write(" $parser")
+        ..write((marks?.containsKey(parser) ?? false) ? "  <--  '${marks![parser]}'" : "")
         ..writeln();
 
       List<Parser> children = parser.children.toList();
@@ -545,6 +545,7 @@ abstract class Parser {
             newIndent,
             isLast: i == children.length - 1,
             level: level + 1,
+            marks: marks,
           ));
         }
       }
@@ -557,7 +558,7 @@ abstract class Parser {
 extension SharedParserExtension<ST extends Parser> on ST {
   T run<T extends ParseResult>(String input, {bool? map, bool? end}) => Parser.run(this, input, map: map, end: end);
   Context runCtx(String input, {bool? map, bool? end}) => Parser.runCtx(this, input, map: map, end: end);
-  String generateAsciiTree() => Parser.generateAsciiTree(this);
+  String generateAsciiTree({Map<Parser, String>? marks}) => Parser.generateAsciiTree(this, marks: marks);
 
   ST build() => Parser.build(this);
   ST simplified() => Parser.simplified(this);
@@ -572,6 +573,7 @@ extension SharedParserExtension<ST extends Parser> on ST {
 
   bool isMemoized() => Parser.isMemoized(this);
   bool isNullable() => Parser.isNullable(this);
+  bool isTerminal() => Parser.isTerminal(this);
   bool isRecursive() => Parser.isRecursive(this);
   bool isMemoizable() => Parser.isMemoizable(this);
   bool isLeftRecursive() => Parser.isLeftRecursive(this);
@@ -604,7 +606,7 @@ extension SharedParserExtension<ST extends Parser> on ST {
 extension LazyParserMethodsExtension on Lazy<Parser> {
   T run<T extends ParseResult>(String input, {bool? map, bool? end}) => Parser.run(this.$, input, map: map, end: end);
   Context runCtx(String input, {bool? map, bool? end}) => Parser.runCtx(this.$, input, map: map, end: end);
-  String generateAsciiTree() => Parser.generateAsciiTree(this.$);
+  String generateAsciiTree({Map<Parser, String>? marks}) => Parser.generateAsciiTree(this.$, marks: marks);
 
   Parser build() => Parser.build(this.$);
   Parser simplified() => Parser.simplified(this.$);
@@ -619,6 +621,7 @@ extension LazyParserMethodsExtension on Lazy<Parser> {
 
   bool isMemoized() => Parser.isMemoized(this.$);
   bool isNullable() => Parser.isNullable(this.$);
+  bool isTerminal() => Parser.isTerminal(this.$);
   bool isRecursive() => Parser.isRecursive(this.$);
   bool isMemoizable() => Parser.isMemoizable(this.$);
   bool isLeftRecursive() => Parser.isLeftRecursive(this.$);
