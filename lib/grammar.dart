@@ -1,6 +1,7 @@
 library parser.peg.grammar;
 
-export "src/grammar/example/json.dart";
+export "src/grammar/example/json/optimized.dart";
+export "src/grammar/example/json/primitive.dart";
 export "src/grammar/example/math/infix.dart";
 export "src/grammar/example/math/postfix.dart";
 export "src/grammar/example/math/prefix.dart";

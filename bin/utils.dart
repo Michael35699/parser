@@ -13,10 +13,10 @@ class Analyzer {
 
   void checkEmptyFirst(Parser parser) {
     if (!parser.isNullable() && firstSets[parser]!.isEmpty) {
-      log.warn("Parser of type '${parser.runtimeType}' has an empty first set.");
-      // log.documentor(generateAsciiTree(marks: <Parser, String>{
-      //   this: "No starting terminal, therefore this parser cannot parse anything.",
-      // }));
+      log.cerror("Parser of type '${parser.runtimeType}' has an empty first set.");
+      log.cerror(parser.generateAsciiTree(marks: <Parser, String>{
+        parser: "No starting terminal, therefore this parser cannot parse anything.",
+      }));
     }
   }
 
@@ -51,9 +51,10 @@ class Analyzer {
     if (this is ChoiceParser) {
       for (int i = 0; i < parser.children.length - 1; i++) {
         if (Parser.isNullable(parser.children[i])) {
-          log.warn("Choices after the $i-th choice is not reachable.");
-          log.warn(parser.generateAsciiTree(
+          log.print("Choices after the $i-th choice is not reachable.");
+          log.print(parser.generateAsciiTree(
             marks: <Parser, String>{
+              parser: "This parser has unreachable choices",
               parser.children[i]: "Anything after this parser is always ignored.",
             },
           ));
@@ -64,17 +65,17 @@ class Analyzer {
 
   void checkNullableCyclic(Parser parser) {
     if (parser is CyclicParser && Parser.isNullable(parser.parser)) {
-      log.warn("The cyclic parser '${parser.runtimeType}' has a nullable child. "
-          "This means that the parser can pretty much hang the program, "
-          "as it can infinitely run successfully.");
-      log.warn("""
+      log.cerror(//
+          "The cyclic parser '${parser.runtimeType}' has a nullable child. "
+          "This means that the parser can pretty much hang the program "
+          "as it can indefinitely run.");
 
-${parser.generateAsciiTree(
+      log.cerror(parser.generateAsciiTree(
         marks: <Parser, String>{
-          parser.parser: "This parser can cause a hang.",
+          parser: "This parser will hang the program.",
+          parser.parser: "This parser is nullable.",
         },
-      )}
-""");
+      ));
     }
   }
 

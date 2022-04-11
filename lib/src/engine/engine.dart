@@ -54,7 +54,7 @@ class ParserEngine {
     for (;;) {
       head.evaluationSet.addAll(head.involvedSet);
       Context result = parser.parse(seedContext.absolute(index), this);
-      if (result is ContextFailure || result.state.index <= seedContext.state.index) {
+      if (result.state.index <= seedContext.state.index) {
         break;
       }
       entry.value = result;
