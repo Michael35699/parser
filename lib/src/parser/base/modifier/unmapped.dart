@@ -1,6 +1,7 @@
 import "package:parser_peg/internal_all.dart";
 
 class UnmappedParser extends WrapParser {
+  @override
   Parser get parser => children[0];
 
   UnmappedParser(Parser parser) : super(<Parser>[parser]);

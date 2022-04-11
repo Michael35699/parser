@@ -22,4 +22,8 @@ abstract class ChildlessParser extends Parser {
   @nonVirtual
   @override
   Parser get base => this;
+
+  @nonVirtual
+  @override
+  Parser get unwrapped => this;
 }

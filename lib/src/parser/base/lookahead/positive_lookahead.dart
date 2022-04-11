@@ -1,6 +1,7 @@
 import "package:parser_peg/internal_all.dart";
 
 class PositiveLookaheadParser extends WrapParser {
+  @override
   Parser get parser => children[0];
 
   PositiveLookaheadParser(Parser parser) : super(<Parser>[parser]);

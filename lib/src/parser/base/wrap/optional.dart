@@ -1,6 +1,7 @@
 import "package:parser_peg/internal_all.dart";
 
 class OptionalParser extends WrapParser {
+  @override
   Parser get parser => children[0];
 
   OptionalParser(Parser parser) : super(<Parser>[parser]);

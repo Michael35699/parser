@@ -1,6 +1,7 @@
 import "package:parser_peg/internal_all.dart";
 
 class DropParser extends WrapParser {
+  @override
   Parser get parser => children[0];
 
   DropParser(Parser parser) : super(<Parser>[parser]);

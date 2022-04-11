@@ -17,6 +17,9 @@ abstract class LazyLoadParser extends Parser {
   Parser get base => computed;
 
   @override
+  Parser get unwrapped => computed;
+
+  @override
   Parser cloneSelf(HashMap<Parser, Parser> cloned) {
     return eager(computed.clone(cloned));
   }

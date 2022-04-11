@@ -6,6 +6,7 @@ class MappedParser extends WrapParser {
   final MapFunction mapper;
   final bool replaceResult;
 
+  @override
   Parser get parser => children[0];
 
   MappedParser(Parser parser, this.mapper, {bool replace = false})

@@ -2,6 +2,7 @@ import "package:parser_peg/internal_all.dart";
 
 class WithPrecedenceParser extends WrapParser {
   final num precedence;
+  @override
   Parser get parser => children[0];
 
   WithPrecedenceParser(this.precedence, Parser parser) : super(<Parser>[parser]);

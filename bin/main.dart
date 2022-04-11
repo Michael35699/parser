@@ -1,12 +1,11 @@
 import "package:parser_peg/internal_all.dart";
-import "package:parser_peg/src/util/classes/default_map.dart";
 
 extension ParserExtension on Parser {
   void checkEmptyFirst() {
     if (!isNullable() && firstSet.isEmpty) {
       log.warn("Parser of type '$runtimeType' has an empty first set.");
       log.documentor(generateAsciiTree(marks: <Parser, String>{
-        this: "No starting terminal, therefore the parser cannot parse anything.",
+        this: "No starting terminal, therefore this parser cannot parse anything.",
       }));
     }
   }
@@ -64,14 +63,71 @@ extension ParserExtension on Parser {
   }
 }
 
-Parser left() => left & "a" | "a";
+ChoiceParser transformChoice(Parser parser) {
+  if (parser is SequentialParser) {
+    return transformChoice(ChoiceParser(<Parser>[parser]));
+  }
+
+  Parser clone = parser.clone();
+  List<Parser> children = <Parser>[...clone.children];
+  List<List<Parser>> childrenMatrix = <List<Parser>>[];
+  List<List<bool>> indices = <List<bool>>[];
+
+  for (SequenceParser child in children.cast()) {
+    childrenMatrix.add(child.children.toList());
+    indices.add(child.children.map((Parser p) => p is OptionalParser).toList());
+  }
+
+  List<List<Parser>> resolvedChildren = <List<Parser>>[];
+  for (int i = 0; i < children.length; i++) {
+    List<Parser> parsers = childrenMatrix[i];
+    List<bool> index = indices[i];
+
+    for (List<Parser> permutation in generatePermutations(parsers, index, 0)) {
+      resolvedChildren.add(permutation);
+    }
+  }
+
+  ChoiceParser resolved = resolvedChildren
+      .map((List<Parser> p) => p.length == 1
+          ? p[0]
+          : SequenceParser(<Parser>[
+              for (Parser parser in p)
+                if (parser is SequenceParser) ...parser.children else parser
+            ]))
+      .choiceParser()
+    ..memoize = clone.memoize;
+  resolved.transformReplace(clone, resolved);
+
+  return resolved;
+}
+
+Parser addition() =>
+    addition & "+".t & number | //
+    number;
+
+Iterable<List<Parser>> generatePermutations(List<Parser> parsers, List<bool> index, int i) sync* {
+  if (i >= parsers.length) {
+    yield <Parser>[];
+  } else {
+    for (List<Parser> sublist in generatePermutations(parsers, index, i + 1)) {
+      if (index[i]) {
+        OptionalParser optional = parsers[i] as OptionalParser;
+
+        yield <Parser>[optional.parser, ...sublist];
+        yield <Parser>[...sublist];
+      } else {
+        yield <Parser>[parsers[i], ...sublist];
+      }
+    }
+  }
+}
 
 void main() {
-  DefaultMap<String, DefaultMap<String, int>> map =
-      DefaultMap<String, DefaultMap<String, int>>(() => DefaultMap<String, int>(() => -1));
+  Parser parser = addition.build();
+  String input = <int>[for (int i = 0; i < 20000;) i++].join("+");
 
-  // Parser parser = Parser.clone(left.thunk()) //
-  //     .transformType((StringParser parser) => "b".$);
-
-  // print(parser.generateAsciiTree());
+  time(() {
+    parser.run(input);
+  });
 }

@@ -1,6 +1,7 @@
 import "package:parser_peg/internal_all.dart";
 
-class CycleToParser extends WrapParser with CyclicParser  {
+class CycleToParser extends WrapParser with CyclicParser {
+  @override
   Parser get parser => children[0];
   Parser get delimiter => children[1];
 

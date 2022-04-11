@@ -12,6 +12,9 @@ abstract class CombinatorParser extends Parser {
   Parser get base => this;
 
   @override
+  Parser get unwrapped => this;
+
+  @override
   CombinatorParser cloneSelf(HashMap<Parser, Parser> cloned) {
     CombinatorParser parser = cloned[this] = empty();
     for (Parser p in children) {

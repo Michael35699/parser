@@ -9,6 +9,11 @@ abstract class WrapParser extends Parser {
 
   WrapParser(this.children);
 
+  Parser get parser;
+
+  @override
+  Parser get unwrapped => parser;
+
   @nonVirtual
   @override
   WrapParser cloneSelf(HashMap<Parser, Parser> cloned) {

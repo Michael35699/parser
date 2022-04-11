@@ -2,6 +2,7 @@ import "package:parser_peg/internal_all.dart";
 
 class ContinuationParser extends WrapParser {
   final ContinuationFunction handler;
+  @override
   Parser get parser => children[0];
 
   ContinuationParser(Parser parser, this.handler) : super(<Parser>[parser]);

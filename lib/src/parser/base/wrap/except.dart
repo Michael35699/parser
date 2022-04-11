@@ -1,6 +1,7 @@
 import "package:parser_peg/internal_all.dart";
 
 class ExceptParser extends WrapParser {
+  @override
   Parser get parser => children[0];
   Parser get except => children[1];
 

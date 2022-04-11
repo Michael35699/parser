@@ -44,6 +44,7 @@ abstract class Parser {
   }
 
   Parser get base;
+  Parser get unwrapped;
   List<Parser> get children;
 
   /// Utility class helpers
