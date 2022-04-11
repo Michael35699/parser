@@ -15,9 +15,5 @@ typedef GenericTransformHandler<R extends Parser, T extends Parser> = ParserFunc
 
 typedef ParseResult = Object?;
 
-typedef Rule = Parser;
-typedef Fragment = Parser;
-typedef Terminal = Parser;
-
 typedef ParserSet = Set<Parser>;
 typedef ParserSetMapping = Map<Parser, ParserSet>;
