@@ -26,7 +26,7 @@ class CycleSeparatedParser extends WrapParser with CyclicParser {
     ctx.addResult(mapped, unmapped);
 
     for (;;) {
-      Context temp1 = engine.apply(parser, ctx);
+      Context temp1 = engine.apply(separator, ctx);
       if (temp1 is ContextFailure) {
         break;
       }
