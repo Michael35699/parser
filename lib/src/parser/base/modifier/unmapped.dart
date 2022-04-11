@@ -8,7 +8,7 @@ class UnmappedParser extends WrapParser {
   UnmappedParser.empty() : super(<Parser>[]);
 
   @override
-  Context parse(Context context, ParserEngine engine) => parser.apply(context.copyWith.state(map: false), engine);
+  Context parse(Context context, ParserEngine engine) => engine.apply(parser, context.copyWith.state(map: false));
 
   @override
   Parser get base => parser.base;

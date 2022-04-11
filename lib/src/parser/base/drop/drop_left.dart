@@ -10,12 +10,12 @@ class DropLeftParser extends WrapParser with SequentialParser {
 
   @override
   Context parse(Context context, ParserEngine engine) {
-    Context ctx = left.apply(context, engine);
+    Context ctx = engine.apply(left, context);
     if (ctx is ContextFailure) {
       return ctx;
     }
 
-    return parser.apply(ctx, engine);
+    return engine.apply(parser, ctx);
   }
 
   @override

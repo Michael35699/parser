@@ -9,7 +9,7 @@ class OptionalParser extends WrapParser {
 
   @override
   Context parse(Context context, ParserEngine engine) {
-    Context result = parser.apply(context, engine);
+    Context result = engine.apply(parser, context);
     if (result is! ContextFailure) {
       return result;
     } else {

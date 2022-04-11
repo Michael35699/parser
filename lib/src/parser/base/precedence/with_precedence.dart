@@ -15,7 +15,7 @@ class WithPrecedenceParser extends WrapParser {
       return context.failure("Search precedence '$searchPrecedence' is lower than '$precedence'");
     }
 
-    return parser.apply(context, engine);
+    return engine.apply(parser, context);
   }
 
   @override

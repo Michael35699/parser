@@ -16,7 +16,7 @@ class ProcessParser extends SpecialParser {
     Context ctx = context;
     List<ParseResult> unmapped = <ParseResult>[];
     T completer<T extends Object?>(Object parser) {
-      ctx = Parser.resolve(parser).apply(ctx, engine);
+      ctx = engine.apply(Parser.resolve(parser), ctx);
 
       return ctx.map<T>(
         success: (ContextSuccess context) {

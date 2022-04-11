@@ -30,9 +30,6 @@ abstract class Parser {
     return true;
   }
 
-  @nonVirtual
-  Context apply(Context context, ParserEngine engine) => engine.apply(this, context);
-
   Parser get base;
   Parser get unwrapped;
   List<Parser> get children;
@@ -152,7 +149,7 @@ abstract class Parser {
     Parser built = end ? parser.build().end() : parser.build();
     String formatted = input.replaceAll("\r", "").unindent();
     Context context = Context.ignore(State(input: formatted, map: map));
-    Context result = built.apply(context, engine);
+    Context result = engine.apply(built, context);
 
     if (result is ContextFailure) {
       return result.withFailureMessage();
@@ -350,7 +347,7 @@ abstract class Parser {
         }
       }
       changed |= firstSet.add(startSentinel);
-    } else if (parser is ChoiceParser) {
+    } else {
       for (Parser child in parser.children) {
         for (Parser first in firstSets[child]!) {
           changed |= firstSet.add(first);

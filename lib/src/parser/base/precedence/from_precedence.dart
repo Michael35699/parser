@@ -11,7 +11,7 @@ class FromPrecedenceParser extends WrapParser {
   @override
   Context parse(Context context, ParserEngine engine) {
     num previousPrecedence = context.state.precedence;
-    Context ctx = parser.apply(context.copyWith.state(precedence: precedence), engine);
+    Context ctx = engine.apply(parser, context.copyWith.state(precedence: precedence));
 
     return ctx.copyWith.state(precedence: previousPrecedence);
   }

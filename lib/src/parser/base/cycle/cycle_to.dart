@@ -13,22 +13,22 @@ class CycleToParser extends WrapParser with CyclicParser {
     List<ParseResult> mapped = <ParseResult>[];
     List<ParseResult> unmapped = <ParseResult>[];
     Context ctx = context;
-    if (!delimiter.apply(ctx, engine).isFailure) {
+    if (engine.apply(delimiter, ctx) is! ContextFailure) {
       return ctx.failure("Delimiter detected");
     }
 
-    ctx = parser.apply(ctx, engine);
+    ctx = engine.apply(parser, ctx);
     if (ctx.isFailure) {
       return ctx;
     }
 
     ctx.addResult(mapped, unmapped);
     for (;;) {
-      if (!delimiter.apply(ctx, engine).isFailure) {
+      if (engine.apply(delimiter, ctx) is! ContextFailure) {
         break;
       }
 
-      Context temp = parser.apply(ctx, engine);
+      Context temp = engine.apply(parser, ctx);
       if (ctx.isFailure) {
         break;
       }

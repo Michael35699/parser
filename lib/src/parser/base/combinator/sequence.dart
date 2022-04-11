@@ -10,7 +10,7 @@ class SequenceParser extends CombinatorParser with SequentialParser {
 
     Context ctx = context;
     for (int i = 0; i < children.length; i++) {
-      ctx = children[i].apply(ctx, engine);
+      ctx = engine.apply(children[i], ctx);
 
       if (ctx.isFailure) {
         return ctx;

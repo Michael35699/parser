@@ -23,7 +23,7 @@ class ChoiceParser extends CombinatorParser {
     ContextFailure? longestError;
 
     for (Parser parser in children) {
-      Context ctx = parser.apply(context, engine);
+      Context ctx = engine.apply(parser, context);
 
       if (ctx is ContextFailure) {
         longestError = determineContext(ctx, longestError);
