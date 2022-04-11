@@ -62,7 +62,21 @@ class Analyzer {
     }
   }
 
-  void checkNullableCyclic(Parser parser) {}
+  void checkNullableCyclic(Parser parser) {
+    if (parser is CyclicParser && Parser.isNullable(parser.parser)) {
+      log.warn("The cyclic parser '${parser.runtimeType}' has a nullable child. "
+          "This means that the parser can pretty much hang the program, "
+          "as it can infinitely run successfully.");
+      log.warn("""
+
+${parser.generateAsciiTree(
+        marks: <Parser, String>{
+          parser.parser: "This parser can cause a hang.",
+        },
+      )}
+""");
+    }
+  }
 
   void deepCheck() {
     allParsers.forEach(check);
@@ -73,6 +87,7 @@ class Analyzer {
     checkEmptyFirst(parser);
     checkEqualChoices(parser);
     checkUnreachableChoice(parser);
+    checkNullableCyclic(parser);
   }
 }
 
