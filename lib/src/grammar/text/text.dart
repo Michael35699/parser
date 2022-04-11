@@ -1,6 +1,5 @@
 import "package:parser_peg/parser_peg.dart";
 import "package:parser_peg/src/grammar/text/expression/environment.dart";
-import "package:parser_peg/src/grammar/text/expression/grammar.dart";
 import "package:parser_peg/src/grammar/text/expression/node.dart";
 
 Never error(String message) => throw Exception(message);
@@ -25,7 +24,7 @@ class TextGrammarDefinition with Grammar {
 
   Parser value() =>
       8.$ ^ value[8] & "|".tnl & value[7] ^ $3((Parser l, _, Parser r) => l | r) |
-      7.$ ^ value[6] & "{".t & expressionParser() & "}".t ^ $action() |
+      7.$ ^ value[6] & "{".t & expressionParser & "}".t ^ $action() |
       6.$ ^ number & ":".t & value[5] ^ $3((int i, _, Parser p) => i.$ ^ p) |
       5.$ ^ value[5] & whitespace & value[4] ^ $3((Parser l, _, Parser r) => l & r) |
       4.$ ^ value[3] & "%".tnl & value[4] ^ $3((Parser l, _, Parser r) => l % r) |

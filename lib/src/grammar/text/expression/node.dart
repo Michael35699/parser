@@ -3,7 +3,6 @@ import "dart:math";
 import "package:freezed_annotation/freezed_annotation.dart";
 import "package:parser_peg/internal_all.dart";
 import "package:parser_peg/src/grammar/text/expression/environment.dart";
-import "package:parser_peg/src/grammar/text/expression/grammar.dart";
 
 enum NodeType { number, binary, lambda, function, identifier, object, call, none }
 

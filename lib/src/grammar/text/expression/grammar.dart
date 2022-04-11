@@ -1,31 +1,9 @@
 import "package:parser_peg/internal_all.dart";
 import "package:parser_peg/src/grammar/text/expression/node.dart";
 
-enum UnaryOperatorType { post, pre }
+enum UnaryOperator { negative, factorial }
 
-enum UnaryOperator {
-  negative("-", UnaryOperatorType.pre),
-  factorial("!", UnaryOperatorType.post),
-  ;
-
-  final String representation;
-  final UnaryOperatorType type;
-  const UnaryOperator(this.representation, this.type);
-}
-
-enum BinaryOperator {
-  addition("+"),
-  subtraction("-"),
-  multiplication("*"),
-  division("/"),
-  floorDivision("~/"),
-  modulo("%"),
-  exponent("^"),
-  ;
-
-  final String representation;
-  const BinaryOperator(this.representation);
-}
+enum BinaryOperator { addition, subtraction, multiplication, division, floorDivision, modulo, exponent }
 
 Parser expressionParser() => _expression();
 
@@ -34,8 +12,7 @@ Parser _lambdaParameter() => identifier();
 
 Parser _expression() => _lambda();
 Parser _lambda() =>
-    "(".t & _lambdaParameters & ")".t & "->".t & _lambda ^ _$lambdaNode() | //
-    "(".t & _lambdaParameters & ")".t & "=>".t & _lambda ^ _$lambdaNode() | //
+    "(".t & _lambdaParameters & ")".t & ("->" / "=>").t & _lambda ^ _$lambdaNode() | //
     _addition;
 
 Parser _addition() =>
@@ -68,7 +45,7 @@ Parser _atomic() => _literal();
 Parser _literal() =>
     number ^ _$numberNode() | //
     string ^ _$stringNode() |
-    r"[A-Za-z\_\$\:][A-Za-z0-9\_\$\-]*".r ^ _$identifierNode();
+    identifier ^ _$identifierNode();
 
 Parser _binaryPlus = "+".t ^ $0(() => BinaryOperator.addition);
 Parser _binaryMinus = "-".t ^ $0(() => BinaryOperator.subtraction);
