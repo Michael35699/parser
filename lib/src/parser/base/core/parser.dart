@@ -161,9 +161,9 @@ abstract class Parser {
   static String generateAsciiTree(Parser parser, {Map<Parser, String>? marks}) {
     int counter = 0;
     Map<Parser, int> rules = <Parser, int>{for (Parser p in Parser.rules(parser)) p: counter++};
-    StringBuffer buffer = StringBuffer();
+    StringBuffer buffer = StringBuffer("\n");
 
-    for (Parser p in rules.keys) {
+    for (Parser p in marks == null ? rules.keys : rules.keys.where(marks.keys.contains)) {
       buffer.writeln("(rule#${rules[p]})");
       buffer.writeln(_generateAsciiTree(rules, p, "", isLast: true, level: 0, marks: marks));
     }
