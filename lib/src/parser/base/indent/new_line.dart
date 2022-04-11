@@ -2,7 +2,7 @@ import "package:parser_peg/internal_all.dart";
 
 class NewLineParser extends SpecialParser {
   @override
-  Context parse(Context context, MemoizationHandler handler) {
+  Context parse(Context context) {
     String input = context.state.input;
     int index = context.state.index;
 

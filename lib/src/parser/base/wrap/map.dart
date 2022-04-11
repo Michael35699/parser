@@ -17,8 +17,8 @@ class MappedParser extends WrapParser {
         super(<Parser>[]);
 
   @override
-  Context parse(Context context, MemoizationHandler handler) {
-    Context ctx = parser.parseCtx(context, handler);
+  Context parse(Context context) {
+    Context ctx = parser.apply(context);
 
     if (ctx is ContextSuccess) {
       ParseResult mappedResult = replaceResult || ctx.state.map ? mapper(ctx.mappedResult, ctx) : ctx.mappedResult;

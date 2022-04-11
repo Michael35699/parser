@@ -8,8 +8,8 @@ class FlatParser extends WrapParser {
   FlatParser.empty() : super(<Parser>[]);
 
   @override
-  Context parse(Context context, MemoizationHandler handler) {
-    Context result = parser.parseCtx(context, handler);
+  Context parse(Context context) {
+    Context result = parser.apply(context);
 
     if (result is ContextSuccess) {
       return result.success(result.state.input.substring(context.state.index, result.state.index));

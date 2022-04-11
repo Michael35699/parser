@@ -123,11 +123,11 @@ Iterable<List<Parser>> generatePermutations(List<Parser> parsers, List<bool> ind
   }
 }
 
-void main() {
-  Parser parser = addition.build();
-  String input = <int>[for (int i = 0; i < 20000;) i++].join("+");
+Parser S() => A & "a" | "b";
+Parser A() => S & "d";
 
+void main() {
   time(() {
-    parser.run(input);
+    print << S.run("bdada");
   });
 }

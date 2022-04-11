@@ -5,7 +5,7 @@ part "context.freezed.dart";
 
 /// Immutable class that contains a state object and additional properties.
 @freezed
-class Context with _$Context {
+class Context with MemoEntryResult, _$Context {
   const Context._();
   const factory Context.ignore(State state) = ContextIgnore;
   const factory Context.failure(State state, String message) = ContextFailure;

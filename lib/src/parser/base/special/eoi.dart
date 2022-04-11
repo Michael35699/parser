@@ -7,7 +7,7 @@ class EoiParser extends SpecialParser {
   EoiParser._();
 
   @override
-  Context parse(Context context, MemoizationHandler handler) {
+  Context parse(Context context) {
     if (context.state.index >= context.state.input.length) {
       return context.success(#eoi);
     }

@@ -8,8 +8,8 @@ class CycleParser extends WrapParser with CyclicParser {
   CycleParser.empty() : super(<Parser>[]);
 
   @override
-  Context parse(Context context, MemoizationHandler handler) {
-    Context ctx = parser.parseCtx(context, handler);
+  Context parse(Context context) {
+    Context ctx = parser.apply(context);
     if (ctx.isFailure) {
       return ctx;
     }
@@ -19,7 +19,7 @@ class CycleParser extends WrapParser with CyclicParser {
     ctx.addResult(mapped, unmapped);
 
     for (;;) {
-      Context temp = parser.parseCtx(ctx, handler);
+      Context temp = parser.apply(ctx);
       if (temp.isFailure) {
         break;
       }

@@ -9,26 +9,26 @@ class CycleToParser extends WrapParser with CyclicParser {
   CycleToParser.empty() : super(<Parser>[]);
 
   @override
-  Context parse(Context context, MemoizationHandler handler) {
+  Context parse(Context context) {
     List<ParseResult> mapped = <ParseResult>[];
     List<ParseResult> unmapped = <ParseResult>[];
     Context ctx = context;
-    if (!delimiter.parseCtx(ctx, handler).isFailure) {
+    if (!delimiter.apply(ctx).isFailure) {
       return ctx.failure("Delimiter detected");
     }
 
-    ctx = parser.parseCtx(ctx, handler);
+    ctx = parser.apply(ctx);
     if (ctx.isFailure) {
       return ctx;
     }
 
     ctx.addResult(mapped, unmapped);
     for (;;) {
-      if (!delimiter.parseCtx(ctx, handler).isFailure) {
+      if (!delimiter.apply(ctx).isFailure) {
         break;
       }
 
-      Context temp = parser.parseCtx(ctx, handler);
+      Context temp = parser.apply(ctx);
       if (ctx.isFailure) {
         break;
       }

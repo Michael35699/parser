@@ -19,11 +19,11 @@ class ChoiceParser extends CombinatorParser {
   }
 
   @override
-  Context parse(Context context, MemoizationHandler handler) {
+  Context parse(Context context) {
     ContextFailure? longestError;
 
     for (Parser parser in children) {
-      Context ctx = parser.parseCtx(context, handler);
+      Context ctx = parser.apply(context);
 
       if (ctx is ContextFailure) {
         longestError = determineContext(ctx, longestError);

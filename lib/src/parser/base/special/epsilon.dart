@@ -7,7 +7,7 @@ class EpsilonParser extends SpecialParser {
   EpsilonParser._();
 
   @override
-  Context parse(Context context, MemoizationHandler handler) => context.success("");
+  Context parse(Context context) => context.success("");
 
   @override
   String toString() => "ε";

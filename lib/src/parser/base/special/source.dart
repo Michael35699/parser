@@ -7,7 +7,7 @@ class SourceParser extends SpecialParser {
   SourceParser._();
 
   @override
-  Context parse(Context context, MemoizationHandler handler) {
+  Context parse(Context context) {
     if (context.state.index >= context.state.input.length) {
       return context.failure("Expected any character, received end of input");
     }

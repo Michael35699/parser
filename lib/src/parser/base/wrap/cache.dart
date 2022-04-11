@@ -7,7 +7,7 @@ class CacheParser extends WrapParser {
   CacheParser.empty() : super(<Parser>[]);
 
   @override
-  Context parse(Context context, MemoizationHandler handler) => parser.parseCtx(context, handler);
+  Context parse(Context context) => parser.apply(context);
 
   @override
   Parser get base => parser.base;

@@ -9,13 +9,13 @@ class WithPrecedenceParser extends WrapParser {
   WithPrecedenceParser.empty(this.precedence) : super(<Parser>[]);
 
   @override
-  Context parse(Context context, MemoizationHandler handler) {
+  Context parse(Context context) {
     num searchPrecedence = context.state.precedence;
     if (searchPrecedence < precedence) {
       return context.failure("Search precedence '$searchPrecedence' is lower than '$precedence'");
     }
 
-    return parser.parseCtx(context, handler);
+    return parser.apply(context);
   }
 
   @override
