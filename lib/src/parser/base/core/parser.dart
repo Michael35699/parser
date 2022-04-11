@@ -8,11 +8,11 @@ import "package:parser_peg/internal_all.dart";
 mixin MemoEntryResult {}
 
 class LeftRecursive with MemoEntryResult {
-  MemoEntryResult seed;
-  Parser rule;
+  Context seed;
+  Parser parser;
   Head? head;
 
-  LeftRecursive({required this.seed, required this.rule, required this.head});
+  LeftRecursive({required this.seed, required this.parser, required this.head});
 }
 
 class MemoEntry {
@@ -23,13 +23,11 @@ class MemoEntry {
 }
 
 class Head {
-  final Parser rule;
-  Set<Parser> involvedSet;
-  Set<Parser> evalSet;
+  final Parser parser;
+  final Set<Parser> involvedSet;
+  final Set<Parser> evalSet;
 
-  Head({required this.rule, required this.involvedSet, required this.evalSet});
-
-  Parser get head => rule;
+  Head({required this.parser, required this.involvedSet, required this.evalSet});
 }
 
 typedef _MemoMap = HashMap<Parser, _MemoSubMap>;
@@ -69,27 +67,28 @@ abstract class Parser {
   }
 
   MemoEntry? recall(int p, Context c) {
-    MemoEntry? m = _memoMap.putIfAbsent(this, HashMap<int, MemoEntry>.new)[p];
-    Head? h = _heads[p];
+    MemoEntry? entry = _memoMap.putIfAbsent(this, HashMap<int, MemoEntry>.new)[p];
+    Head? head = _heads[p];
 
     // If the head is not being grown, return the memoized result.
-    if (h == null || !h.evalSet.contains(this)) {
-      return m;
+    if (head == null || !head.evalSet.contains(this)) {
+      return entry;
     }
 
     // If the current parser is not a part of the head and is not evaluated yet,
     // Add a failure to it.
-    if (m == null && !(<Parser>{h.head} | h.involvedSet).contains(this)) {
+    if (entry == null && !(head.involvedSet | <Parser>{head.parser}).contains(this)) {
       return MemoEntry(result: seedFailure.absolute(p), index: p);
     }
 
     // Remove the current parser from the head's evaluation set.
-    h.evalSet = h.evalSet.where((Parser p) => p != this).toSet();
-    Context ans = parse(c);
-    m!.result = ans;
-    m.index = ans.state.index;
+    head.evalSet.remove(this);
 
-    return m;
+    Context ans = parse(c);
+    entry!.result = ans;
+    entry.index = ans.state.index;
+
+    return entry;
   }
 
   Context lrAnswer(int index, MemoEntry entry) {
@@ -98,25 +97,27 @@ abstract class Parser {
 
     /// If the rule of the parser is not the one being parsed,
     /// return the seed.
-    if (head.rule != this) {
-      return lr.seed as Context;
+    if (head.parser != this) {
+      return lr.seed;
     }
 
     /// Since it is the parser, assign it to the seed.
-    Context seed = (entry.result = lr.seed) as Context;
-    if (seed is ContextFailure) {
-      return seed;
+    Context seedContext = entry.result = lr.seed;
+    if (seedContext is ContextFailure) {
+      return seedContext;
     }
 
     _heads[index] = head;
+
+    /// "Grow the seed."
     for (;;) {
-      head.evalSet = <Parser>{...head.involvedSet};
-      Context ans = parse(seed.absolute(index));
-      if (ans is ContextFailure || ans.state.index <= seed.state.index) {
+      head.evalSet.addAll(head.involvedSet);
+      Context result = parse(seedContext.absolute(index));
+      if (result is ContextFailure || result.state.index <= seedContext.state.index) {
         break;
       }
-      entry.result = ans;
-      entry.index = ans.state.index;
+      entry.result = result;
+      entry.index = result.state.index;
     }
     _heads.remove(index);
 
@@ -135,7 +136,7 @@ abstract class Parser {
       MemoEntry? entry = recall(position, context);
       if (entry == null) {
         /// Create a new LR instance. Then, add it to the stack.
-        LeftRecursive lr = LeftRecursive(seed: seedFailure, rule: this, head: null);
+        LeftRecursive lr = LeftRecursive(seed: seedFailure, parser: this, head: null);
         _lrStack.add(lr);
 
         /// Save a new entry on `position` with the LR instance.
@@ -171,17 +172,17 @@ abstract class Parser {
           /// If a previous call on this parser on this position
           /// has placed an LR instance, then this is a left-recursive call.
           /// Create a new head instance, and assign it to the LR instance.
-          Head lHead = result.head = Head(rule: this, evalSet: <Parser>{}, involvedSet: <Parser>{});
+          Head lHead = result.head = Head(parser: this, evalSet: <Parser>{}, involvedSet: <Parser>{});
 
           /// While the LR of the current left-recursive parser is not yet found,
           /// Assign all the `lrStack` items to have the `lHead` as their own head.
           /// Also, add the `rule` of `lrStack.item` to the `lHead.involvedSet`
           for (LeftRecursive lr in _lrStack.reversed.takeWhile((LeftRecursive lr) => lr.head != lHead)) {
-            lHead.involvedSet.add(lr.rule);
+            lHead.involvedSet.add(lr.parser);
             lr.head = lHead;
           }
 
-          return result.seed as Context;
+          return result.seed;
         } else if (result is Context) {
           return result;
         }
