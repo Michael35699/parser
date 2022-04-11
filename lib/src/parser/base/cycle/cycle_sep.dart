@@ -1,7 +1,7 @@
 import "package:parser_peg/internal_all.dart";
 
 Parser cycleSeparatedParser(Parser parser, Parser separator) =>
-    (parser.cache() & (separator.cache() & parser.cache()).star).map(
+    (parser.cache() & (separator.cache() & parser.cache()).star()).map(
         $2((ParseResult left, List<ParseResult> rest) =>
             <ParseResult>[left, for (List<ParseResult> item in rest.cast()) ...item]),
         replace: true);
