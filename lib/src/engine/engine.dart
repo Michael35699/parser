@@ -64,7 +64,7 @@ class ParserEngine {
     return entry.value as Context;
   }
 
-  Context _runMemoized(Parser parser, Context context) {
+  Context runMemoized(Parser parser, Context context) {
     int index = context.state.index;
 
     MemoizationEntry? entry = recall(parser, index, context);
@@ -129,7 +129,7 @@ class ParserEngine {
     }
 
     return parser.memoize //
-        ? _runMemoized(parser, context)
+        ? runMemoized(parser, context)
         : parser.parse(context, this);
   }
 }
