@@ -1,8 +1,11 @@
-import "package:parser_peg/internal_all.dart";
+mixin MemoizationEntryValue {}
 
-class MemoEntry {
-  MemoEntryResult result;
-  int index;
+class MemoizationEntry {
+  MemoizationEntryValue value;
 
-  MemoEntry({required this.result, required this.index});
+  MemoizationEntry(this.value);
+}
+
+extension MemoizationExtensionEntry on MemoizationEntryValue {
+  MemoizationEntry entry() => MemoizationEntry(this);
 }

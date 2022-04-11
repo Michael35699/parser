@@ -1,6 +1,6 @@
 import "package:parser_peg/internal_all.dart";
 
-class LeftRecursion with MemoEntryResult {
+class LeftRecursion with MemoizationEntryValue {
   final Parser parser;
   Context seed;
   Head? head;

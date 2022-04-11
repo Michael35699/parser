@@ -5,8 +5,6 @@ import "dart:collection";
 import "package:freezed_annotation/freezed_annotation.dart";
 import "package:parser_peg/internal_all.dart";
 
-mixin MemoEntryResult {}
-
 abstract class Parser {
   late final bool leftRecursive = Parser.isLeftRecursive(this);
   late final List<ParserSetMapping> parserSets = Parser.computeParserSets(this);
@@ -336,31 +334,29 @@ abstract class Parser {
     bool changed = false;
     ParserSet firstSet = firstSets[parser]!;
 
-    outer:
-    do {
-      if (parser is SequentialParser) {
-        for (Parser child in parser.children) {
-          bool nullable = false;
-          for (Parser first in firstSets[child]!) {
-            if (Parser.isNullable(first)) {
-              nullable |= true;
-            } else {
-              changed |= firstSet.add(first);
-            }
-          }
-          if (!nullable) {
-            break outer;
-          }
-        }
-        changed |= firstSet.add(startSentinel);
-      } else if (parser is ChoiceParser) {
-        for (Parser child in parser.children) {
-          for (Parser first in firstSets[child]!) {
+    conditional:
+    if (parser is SequentialParser) {
+      for (Parser child in parser.children) {
+        bool nullable = false;
+        for (Parser first in firstSets[child]!) {
+          if (Parser.isNullable(first)) {
+            nullable |= true;
+          } else {
             changed |= firstSet.add(first);
           }
         }
+        if (!nullable) {
+          break conditional;
+        }
       }
-    } while (_false);
+      changed |= firstSet.add(startSentinel);
+    } else if (parser is ChoiceParser) {
+      for (Parser child in parser.children) {
+        for (Parser first in firstSets[child]!) {
+          changed |= firstSet.add(first);
+        }
+      }
+    }
 
     return changed;
   }
