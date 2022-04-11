@@ -77,8 +77,8 @@ Metadata _generateMetadata() {
 }
 
 String _msg(Object? message, Metadata m) {
-  // return "[${m.url}](${m.line}, ${m.index}): $message";
-  return "$message";
+  return "[${m.url}](${m.line}, ${m.index}): $message";
+  // return "$message";
 }
 
 String _normalizeAbsoluteUrl(String url) {
