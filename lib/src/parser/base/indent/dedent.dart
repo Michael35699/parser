@@ -2,7 +2,7 @@ import "package:parser_peg/internal_all.dart";
 
 class DedentParser extends SpecialParser {
   @override
-  Context parse(Context context) {
+  Context parse(Context context, ParserEngine engine) {
     /// I literally don't understand this.
 
     String input = context.state.input;

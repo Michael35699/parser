@@ -8,8 +8,8 @@ class FlatParser extends WrapParser {
   FlatParser.empty() : super(<Parser>[]);
 
   @override
-  Context parse(Context context) {
-    Context result = parser.apply(context);
+  Context parse(Context context, ParserEngine engine) {
+    Context result = parser.apply(context, engine);
 
     if (result is ContextSuccess) {
       return result.success(result.state.input.substring(context.state.index, result.state.index));

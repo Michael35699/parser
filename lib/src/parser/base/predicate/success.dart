@@ -14,7 +14,7 @@ class SuccessParser extends SpecialParser {
   }
 
   @override
-  Context parse(Context context) => context.success(mappedResult, unmappedResult);
+  Context parse(Context context, ParserEngine engine) => context.success(mappedResult, unmappedResult);
 
   @override
   bool hasEqualProperties(SuccessParser target) {

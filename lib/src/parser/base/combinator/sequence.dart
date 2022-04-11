@@ -4,13 +4,13 @@ class SequenceParser extends CombinatorParser with SequentialParser {
   SequenceParser(List<Parser> children) : super(children);
 
   @override
-  Context parse(Context context) {
+  Context parse(Context context, ParserEngine engine) {
     List<ParseResult> mapped = <ParseResult>[];
     List<ParseResult> unmapped = <ParseResult>[];
 
     Context ctx = context;
     for (int i = 0; i < children.length; i++) {
-      ctx = children[i].apply(ctx);
+      ctx = children[i].apply(ctx, engine);
 
       if (ctx.isFailure) {
         return ctx;

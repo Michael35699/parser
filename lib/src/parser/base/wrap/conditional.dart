@@ -13,7 +13,8 @@ class ConditionalParser extends SpecialParser {
   Parser resolve(Context context) => _saved[context] ??= function(context);
 
   @override
-  Context parse(Context context) => ((Context ctx) => function(context).apply(ctx))(parser.apply(context));
+  Context parse(Context context, ParserEngine engine) =>
+      ((Context ctx) => function(context).apply(ctx, engine))(parser.apply(context, engine));
 }
 
 extension ConditionalParserExtension on Parser {

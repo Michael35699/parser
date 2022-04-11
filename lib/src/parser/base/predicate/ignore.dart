@@ -4,7 +4,7 @@ class IgnoreParser extends SpecialParser {
   IgnoreParser();
 
   @override
-  Context parse(Context context) => context.ignore();
+  Context parse(Context context, ParserEngine engine) => context.ignore();
 }
 
 IgnoreParser ignore() => IgnoreParser();

@@ -7,7 +7,7 @@ class BlankParser extends SpecialParser {
   BlankParser._();
 
   @override
-  Context parse(Context context) => context.failure("Blank");
+  Context parse(Context context, ParserEngine engine) => context.failure("Blank");
 }
 
 BlankParser blank() => BlankParser();

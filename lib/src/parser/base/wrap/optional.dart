@@ -8,8 +8,8 @@ class OptionalParser extends WrapParser {
   OptionalParser.empty() : super(<Parser>[]);
 
   @override
-  Context parse(Context context) {
-    Context result = parser.apply(context);
+  Context parse(Context context, ParserEngine engine) {
+    Context result = parser.apply(context, engine);
     if (result is! ContextFailure) {
       return result;
     } else {

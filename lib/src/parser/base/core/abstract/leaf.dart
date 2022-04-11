@@ -12,7 +12,7 @@ abstract class LeafParser extends ChildlessParser {
 
   @nonVirtual
   @override
-  Context parse(Context context) {
+  Context parse(Context context, ParserEngine engine) {
     String input = context.state.input;
     int index = context.state.index;
 

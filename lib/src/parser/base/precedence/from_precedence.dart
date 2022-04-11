@@ -9,9 +9,9 @@ class FromPrecedenceParser extends WrapParser {
   FromPrecedenceParser.empty(this.precedence) : super(<Parser>[]);
 
   @override
-  Context parse(Context context) {
+  Context parse(Context context, ParserEngine engine) {
     num previousPrecedence = context.state.precedence;
-    Context ctx = parser.apply(context.copyWith.state(precedence: precedence));
+    Context ctx = parser.apply(context.copyWith.state(precedence: precedence), engine);
 
     return ctx.copyWith.state(precedence: previousPrecedence);
   }

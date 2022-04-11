@@ -1,6 +1,7 @@
 library parser.peg;
 
 export "context.dart";
+export "engine.dart";
 export "exception.dart";
 export "grammar.dart";
 export "mapper.dart";

@@ -7,41 +7,7 @@ import "package:parser_peg/internal_all.dart";
 
 mixin MemoEntryResult {}
 
-class LeftRecursive with MemoEntryResult {
-  Context seed;
-  Parser parser;
-  Head? head;
-
-  LeftRecursive({required this.seed, required this.parser, required this.head});
-}
-
-class MemoEntry {
-  MemoEntryResult result;
-  int index;
-
-  MemoEntry({required this.result, required this.index});
-}
-
-class Head {
-  final Parser parser;
-  final Set<Parser> involvedSet;
-  final Set<Parser> evalSet;
-
-  Head({required this.parser, required this.involvedSet, required this.evalSet});
-}
-
-typedef _MemoMap = HashMap<Parser, _MemoSubMap>;
-typedef _MemoSubMap = HashMap<int, MemoEntry>;
-typedef _Heads = HashMap<int, Head>;
-
 abstract class Parser {
-  static late final Never never = throw Error();
-  static final Context seedFailure = Context.failure(State(input: ""), "seed");
-
-  static List<LeftRecursive> _lrStack = <LeftRecursive>[];
-  static _MemoMap _memoMap = _MemoMap();
-  static _Heads _heads = _Heads();
-
   late final bool leftRecursive = Parser.isLeftRecursive(this);
   late final List<ParserSetMapping> parserSets = Parser.computeParserSets(this);
   late final ParserSetMapping firstSets = parserSets[Parser.firstSetIndex];
@@ -55,7 +21,7 @@ abstract class Parser {
   bool built = false;
 
   @Deprecated("Use the 'parseCtx' method")
-  Context parse(Context context);
+  Context parse(Context context, ParserEngine engine);
   @Deprecated("Use the 'clone' method")
   Parser cloneSelf(HashMap<Parser, Parser> cloned);
   @Deprecated("Use the 'transform' method")
@@ -66,132 +32,8 @@ abstract class Parser {
     return true;
   }
 
-  MemoEntry? recall(int p, Context c) {
-    MemoEntry? entry = _memoMap.putIfAbsent(this, HashMap<int, MemoEntry>.new)[p];
-    Head? head = _heads[p];
-
-    // If the head is not being grown, return the memoized result.
-    if (head == null || !head.evalSet.contains(this)) {
-      return entry;
-    }
-
-    // If the current parser is not a part of the head and is not evaluated yet,
-    // Add a failure to it.
-    if (entry == null && !(head.involvedSet | <Parser>{head.parser}).contains(this)) {
-      return MemoEntry(result: seedFailure.absolute(p), index: p);
-    }
-
-    // Remove the current parser from the head's evaluation set.
-    head.evalSet.remove(this);
-
-    Context ans = parse(c);
-    entry!.result = ans;
-    entry.index = ans.state.index;
-
-    return entry;
-  }
-
-  Context lrAnswer(int index, MemoEntry entry) {
-    LeftRecursive lr = entry.result as LeftRecursive;
-    Head head = lr.head!;
-
-    /// If the rule of the parser is not the one being parsed,
-    /// return the seed.
-    if (head.parser != this) {
-      return lr.seed;
-    }
-
-    /// Since it is the parser, assign it to the seed.
-    Context seedContext = entry.result = lr.seed;
-    if (seedContext is ContextFailure) {
-      return seedContext;
-    }
-
-    _heads[index] = head;
-
-    /// "Grow the seed."
-    for (;;) {
-      head.evalSet.addAll(head.involvedSet);
-      Context result = parse(seedContext.absolute(index));
-      if (result is ContextFailure || result.state.index <= seedContext.state.index) {
-        break;
-      }
-      entry.result = result;
-      entry.index = result.state.index;
-    }
-    _heads.remove(index);
-
-    return entry.result as Context;
-  }
-
   @nonVirtual
-  Context apply(Context context) {
-    if (context.isFailure) {
-      return context;
-    }
-
-    if (memoize) {
-      int position = context.state.index;
-
-      MemoEntry? entry = recall(position, context);
-      if (entry == null) {
-        /// Create a new LR instance. Then, add it to the stack.
-        LeftRecursive lr = LeftRecursive(seed: seedFailure, parser: this, head: null);
-        _lrStack.add(lr);
-
-        /// Save a new entry on `position` with the LR instance.
-        _MemoSubMap subMap = _memoMap.putIfAbsent(this, _MemoSubMap.new);
-        subMap[position] = entry = MemoEntry(result: lr, index: position);
-
-        /// Evaluate the parser.
-        Context ans = parse(context);
-
-        /// Remove the created LR instance from the stack.
-        _lrStack.removeLast();
-
-        /// If a descendant parser put a head in the lr then
-        /// return the result of `lrAnswer`.
-        if (lr.head != null) {
-          lr.seed = ans;
-          entry.index = ans.state.index;
-
-          return lrAnswer(position, entry);
-        }
-
-        /// If it was a normal parser result,
-        /// return the resulting context.
-        else {
-          entry.index = ans.state.index;
-          entry.result = ans;
-
-          return ans;
-        }
-      } else {
-        MemoEntryResult result = entry.result;
-        if (result is LeftRecursive) {
-          /// If a previous call on this parser on this position
-          /// has placed an LR instance, then this is a left-recursive call.
-          /// Create a new head instance, and assign it to the LR instance.
-          Head lHead = result.head = Head(parser: this, evalSet: <Parser>{}, involvedSet: <Parser>{});
-
-          /// While the LR of the current left-recursive parser is not yet found,
-          /// Assign all the `lrStack` items to have the `lHead` as their own head.
-          /// Also, add the `rule` of `lrStack.item` to the `lHead.involvedSet`
-          for (LeftRecursive lr in _lrStack.reversed.takeWhile((LeftRecursive lr) => lr.head != lHead)) {
-            lHead.involvedSet.add(lr.parser);
-            lr.head = lHead;
-          }
-
-          return result.seed;
-        } else if (result is Context) {
-          return result;
-        }
-        never;
-      }
-    }
-
-    return parse(context);
-  }
+  Context apply(Context context, ParserEngine engine) => engine.apply(this, context);
 
   Parser get base;
   Parser get unwrapped;
@@ -308,10 +150,11 @@ abstract class Parser {
     end ??= false;
     map ??= true;
 
+    ParserEngine engine = ParserEngine();
     Parser built = end ? parser.build().end() : parser.build();
     String formatted = input.replaceAll("\r", "").unindent();
     Context context = Context.ignore(State(input: formatted, map: map));
-    Context result = built.apply(context);
+    Context result = built.apply(context, engine);
 
     if (result is ContextFailure) {
       return result.withFailureMessage();

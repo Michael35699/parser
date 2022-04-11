@@ -7,7 +7,7 @@ class EoiParser extends SpecialParser {
   EoiParser._();
 
   @override
-  Context parse(Context context) {
+  Context parse(Context context, ParserEngine engine) {
     if (context.state.index >= context.state.input.length) {
       return context.success(#eoi);
     }

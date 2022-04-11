@@ -8,8 +8,8 @@ class PositiveLookaheadParser extends WrapParser {
   PositiveLookaheadParser.empty() : super(<Parser>[]);
 
   @override
-  Context parse(Context context) {
-    if (parser.apply(context) is! ContextFailure) {
+  Context parse(Context context, ParserEngine engine) {
+    if (parser.apply(context, engine) is! ContextFailure) {
       return context.success(#positiveLookahead);
     } else {
       return context.failure("Positive lookahead failure.");

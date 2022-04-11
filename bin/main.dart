@@ -123,13 +123,9 @@ Iterable<List<Parser>> generatePermutations(List<Parser> parsers, List<bool> ind
   }
 }
 
-// A := B "a" | "a"
-// B := A "b" | "b"
-Parser A() => B & "a" | "a";
-Parser B() => A & "b" | "b";
+Parser A() => B & "a" | epsilon;
+Parser B() => A & "b" | "";
 
 void main() {
-  time(() {
-    print << A.run("aba").toAsciiString();
-  });
+  print << A.run("ababa");
 }

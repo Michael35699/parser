@@ -8,8 +8,8 @@ class DropParser extends WrapParser {
   DropParser.empty() : super(<Parser>[]);
 
   @override
-  Context parse(Context context) {
-    Context ctx = parser.apply(context);
+  Context parse(Context context, ParserEngine engine) {
+    Context ctx = parser.apply(context, engine);
 
     if (ctx is! ContextFailure) {
       return ctx.ignore();

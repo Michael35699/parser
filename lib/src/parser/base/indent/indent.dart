@@ -2,7 +2,7 @@ import "package:parser_peg/internal_all.dart";
 
 class IndentParser extends SpecialParser {
   @override
-  Context parse(Context context) {
+  Context parse(Context context, ParserEngine engine) {
     String input = context.state.input;
     int index = context.state.index;
 
