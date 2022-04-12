@@ -1,7 +1,7 @@
 /// Auto-generated. Don't feel bad.
 import "package:parser_peg/internal_all.dart";
 
-String _flatten(dynamic value) => value is List ? value.map(_flatten).join() : value.toString();
+String _$flatten(dynamic value) => value is List ? value.map(_$flatten).join() : value.toString();
 
 MapFunction _$type<T>(ParseResult Function(T) callback) =>
     (ParseResult result, Context context) => callback(_type(result));
@@ -59,16 +59,12 @@ MapFunction _$echo() => _$type((Object? c) {
 
       return c;
     });
-MapFunction _$list<T extends Object?>(ParseResult Function(List<T>) callback) =>
-    (ParseResult r, Context c) => r is List //
-        ? callback(List<T>.from(r))
-        : callback(<T>[r as T]);
-MapFunction _$flat() => $type(_flatten);
+MapFunction _$value(Object? value) => (ParseResult r, Context c) => value;
+MapFunction _$flat() => $type(_$flatten);
 
 T _type<T>(ParseResult v) => v as T;
 
 dynamic $pipe(ParseResult r, Context c) => r;
-MapFunction $list<T extends Object?>(ParseResult Function(List<T>) callback) => _$list(callback);
 MapFunction $type<T extends Object?>(ParseResult Function(T) callback) => _$type(callback);
 MapFunction $join([String sep = ""]) => _$join(sep);
 MapFunction $named(Function fn) => _$named(fn);
@@ -82,6 +78,7 @@ MapFunction $remove(int index) => _$remove(index);
 MapFunction $drop(int index) => _$drop(index);
 MapFunction $tag(Symbol name) => _$tag(name);
 MapFunction $tagged(dynamic Function(Symbol, ParseResult) function) => _$tagged(function);
+MapFunction $value(Object? value) => _$value(value);
 MapFunction $flat() => _$flat();
 MapFunction $trim() => _$trim();
 MapFunction $echo() => _$echo();
@@ -94,6 +91,7 @@ extension BasicMappersExtension on Parser {
   MappedParser $remove(int index) => map(_$remove(index));
   MappedParser $drop(int index) => map(_$remove(index));
   MappedParser $tag(Symbol name) => map(_$tag(name));
+  MappedParser $value(Object? value) => map(_$value(value));
   MappedParser $trim() => map(_$trim());
   MappedParser $echo() => map(_$echo());
   MappedParser $flat() => map(_$flat());
@@ -103,7 +101,6 @@ extension BasicMappersExtension on Parser {
   MappedParser $res(dynamic Function(ParseResult) fn) => map(_$res(fn));
   MappedParser $tagged(dynamic Function(Symbol, ParseResult) function) => map(_$tagged(function));
   MappedParser $type<T extends Object?>(ParseResult Function(T) callback) => map(_$type(callback));
-  MappedParser $list<T extends Object?>(ParseResult Function(List<T>) callback) => map(_$list(callback));
 }
 
 extension LazyBasicMappersExtension on LazyParser {
@@ -114,6 +111,7 @@ extension LazyBasicMappersExtension on LazyParser {
   MappedParser $remove(int index) => map(_$remove(index));
   MappedParser $drop(int index) => map(_$remove(index));
   MappedParser $tag(Symbol name) => map(_$tag(name));
+  MappedParser $value(Object? value) => map(_$value(value));
   MappedParser $trim() => map(_$trim());
   MappedParser $echo() => map(_$echo());
   MappedParser $flat() => map(_$flat());
@@ -123,7 +121,6 @@ extension LazyBasicMappersExtension on LazyParser {
   MappedParser $res(dynamic Function(ParseResult) fn) => map(_$res(fn));
   MappedParser $tagged(dynamic Function(Symbol, ParseResult) function) => map(_$tagged(function));
   MappedParser $type<T extends Object?>(ParseResult Function(T) callback) => map(_$type(callback));
-  MappedParser $list<T extends Object?>(ParseResult Function(List<T>) callback) => map(_$list(callback));
 }
 
 extension StringBasicMappersExtension on String {
@@ -134,6 +131,7 @@ extension StringBasicMappersExtension on String {
   MappedParser $remove(int index) => map(_$remove(index));
   MappedParser $drop(int index) => map(_$remove(index));
   MappedParser $tag(Symbol name) => map(_$tag(name));
+  MappedParser $value(Object? value) => map(_$value(value));
   MappedParser $trim() => map(_$trim());
   MappedParser $echo() => map(_$echo());
   MappedParser $flat() => map(_$flat());
@@ -143,7 +141,6 @@ extension StringBasicMappersExtension on String {
   MappedParser $res(dynamic Function(ParseResult) fn) => map(_$res(fn));
   MappedParser $tagged(dynamic Function(Symbol, ParseResult) function) => map(_$tagged(function));
   MappedParser $type<T extends Object?>(ParseResult Function(T) callback) => map(_$type(callback));
-  MappedParser $list<T extends Object?>(ParseResult Function(List<T>) callback) => map(_$list(callback));
 }
 
 extension BuiltBasicMappersExtension on MappedParser Function(MapFunction mapper, {bool replace}) {
@@ -154,6 +151,7 @@ extension BuiltBasicMappersExtension on MappedParser Function(MapFunction mapper
   MappedParser $remove(int index) => this(_$remove(index));
   MappedParser $drop(int index) => this(_$remove(index));
   MappedParser $tag(Symbol name) => this(_$tag(name));
+  MappedParser $value(Object? value) => this(_$value(value));
   MappedParser $trim() => this(_$trim());
   MappedParser $echo() => this(_$echo());
   MappedParser $flat() => this(_$flat());
@@ -164,5 +162,4 @@ extension BuiltBasicMappersExtension on MappedParser Function(MapFunction mapper
   MappedParser $res(dynamic Function(ParseResult) fn) => this(_$res(fn));
   MappedParser $tagged(dynamic Function(Symbol, ParseResult) function) => this(_$tagged(function));
   MappedParser $type<T extends Object?>(ParseResult Function(T) callback) => this(_$type(callback));
-  MappedParser $list<T extends Object?>(ParseResult Function(List<T>) callback) => this(_$list(callback));
 }
