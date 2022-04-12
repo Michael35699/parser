@@ -7,14 +7,18 @@ class ChoiceParser extends CombinatorParser {
     if (longestError == null) {
       return ctx;
     }
-    const String memoError = "Memoization seed. If this is seen, then "
-        "it means that there is probably a mistake in the grammar.";
+    const String memoError = "seed";
 
     if (ctx.message == memoError) {
       return longestError;
     } else if (longestError.message == memoError) {
       return ctx;
     }
+
+    if (ctx.artificial ^ longestError.artificial) {
+      return ctx.artificial ? ctx : longestError;
+    }
+
     return ctx.state.index > longestError.state.index ? ctx : longestError;
   }
 
