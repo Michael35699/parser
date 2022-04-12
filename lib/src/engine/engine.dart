@@ -22,7 +22,7 @@ class ParserEngine {
     // If the current parser is not a part of the head and is not evaluated yet,
     // Add a failure to it.
     if (entry == null && !(head.involvedSet | <Parser>{head.parser}).contains(parser)) {
-      return seedFailure.absolute(index).entry();
+      return seedFailure.index(index).entry();
     }
 
     // Remove the current parser from the head's evaluation set.
@@ -53,7 +53,7 @@ class ParserEngine {
     /// "Grow the seed."
     for (;;) {
       head.evaluationSet.addAll(head.involvedSet);
-      Context result = parser.parse(seedContext.absolute(index), this);
+      Context result = parser.parse(seedContext.index(index), this);
       if (result.state.index <= seedContext.state.index) {
         break;
       }

@@ -53,7 +53,7 @@ class RegExpParser extends ChildlessParser {
           result = input.substring(index, match.end);
         }
 
-        return context.absolute(match.end).success(result);
+        return context.index(match.end).success(result);
       }
     } while (_false);
 

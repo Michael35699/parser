@@ -23,7 +23,7 @@ abstract class LeafParser extends ChildlessParser {
     } else {
       String result = input.substring(index, newIndex);
 
-      return context.absolute(newIndex).success(result);
+      return context.index(newIndex).success(result);
     }
   }
 

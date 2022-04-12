@@ -26,7 +26,7 @@ class NewLineParser extends SpecialParser {
         return context.failure("Unexpected indentation");
       }
 
-      return context.absolute(index).success(newlines);
+      return context.index(index).success(newlines);
     } else {
       int indentation = stack.last;
 
@@ -35,7 +35,7 @@ class NewLineParser extends SpecialParser {
       } else if (column > indentation) {
         return context.failure("Unexpected indentation");
       }
-      return context.absolute(index).success(newlines);
+      return context.index(index).success(newlines);
     }
   }
 }
