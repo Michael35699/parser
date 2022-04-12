@@ -28,6 +28,7 @@ abstract class Parser {
   @Deprecated("Use the 'transform' method")
   Parser transformChildren(TransformHandler handler, HashMap<Parser, Parser> transformed);
 
+  @internal
   MemoizationEntry? recall(int index, Context context, ParserMutable mutable) {
     MemoizationEntry? entry = mutable.memoMap.putIfAbsent(this, MemoizationSubMap.new)[index];
     Head? head = mutable.heads[index];
@@ -50,6 +51,7 @@ abstract class Parser {
     return entry;
   }
 
+  @internal
   Context leftRecursiveResult(int index, MemoizationEntry entry, ParserMutable mutable) {
     LeftRecursion leftRecursion = entry.value as LeftRecursion;
     Head head = leftRecursion.head!;
@@ -83,7 +85,8 @@ abstract class Parser {
     return entry.value as Context;
   }
 
-  Context runMemoized(Context context, ParserMutable mutable) {
+  @internal
+  Context parseMemoized(Context context, ParserMutable mutable) {
     int index = context.state.index;
 
     MemoizationEntry? entry = recall(index, context, mutable);
@@ -142,13 +145,14 @@ abstract class Parser {
     }
   }
 
+  @internal
   Context apply(Context context, ParserMutable mutable) {
     if (context is ContextFailure) {
       return context;
     }
 
     return memoize //
-        ? runMemoized(context, mutable)
+        ? parseMemoized(context, mutable)
         : parse(context, mutable);
   }
 
