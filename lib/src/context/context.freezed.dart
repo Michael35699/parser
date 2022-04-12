@@ -24,10 +24,12 @@ class _$ContextTearOff {
     );
   }
 
-  ContextFailure failure(State state, String message) {
+  ContextFailure failure(State state, String message,
+      {bool artificial = false}) {
     return ContextFailure(
       state,
       message,
+      artificial: artificial,
     );
   }
 
@@ -51,7 +53,8 @@ mixin _$Context {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function(State state) ignore,
-    required TResult Function(State state, String message) failure,
+    required TResult Function(State state, String message, bool artificial)
+        failure,
     required TResult Function(
             State state, Object? mappedResult, Object? unmappedResult)
         success,
@@ -60,7 +63,7 @@ mixin _$Context {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult Function(State state)? ignore,
-    TResult Function(State state, String message)? failure,
+    TResult Function(State state, String message, bool artificial)? failure,
     TResult Function(State state, Object? mappedResult, Object? unmappedResult)?
         success,
   }) =>
@@ -68,7 +71,7 @@ mixin _$Context {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(State state)? ignore,
-    TResult Function(State state, String message)? failure,
+    TResult Function(State state, String message, bool artificial)? failure,
     TResult Function(State state, Object? mappedResult, Object? unmappedResult)?
         success,
     required TResult orElse(),
@@ -202,7 +205,8 @@ class _$ContextIgnore extends ContextIgnore {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function(State state) ignore,
-    required TResult Function(State state, String message) failure,
+    required TResult Function(State state, String message, bool artificial)
+        failure,
     required TResult Function(
             State state, Object? mappedResult, Object? unmappedResult)
         success,
@@ -214,7 +218,7 @@ class _$ContextIgnore extends ContextIgnore {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult Function(State state)? ignore,
-    TResult Function(State state, String message)? failure,
+    TResult Function(State state, String message, bool artificial)? failure,
     TResult Function(State state, Object? mappedResult, Object? unmappedResult)?
         success,
   }) {
@@ -225,7 +229,7 @@ class _$ContextIgnore extends ContextIgnore {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(State state)? ignore,
-    TResult Function(State state, String message)? failure,
+    TResult Function(State state, String message, bool artificial)? failure,
     TResult Function(State state, Object? mappedResult, Object? unmappedResult)?
         success,
     required TResult orElse(),
@@ -289,7 +293,7 @@ abstract class $ContextFailureCopyWith<$Res> implements $ContextCopyWith<$Res> {
           ContextFailure value, $Res Function(ContextFailure) then) =
       _$ContextFailureCopyWithImpl<$Res>;
   @override
-  $Res call({State state, String message});
+  $Res call({State state, String message, bool artificial});
 
   @override
   $StateCopyWith<$Res> get state;
@@ -309,6 +313,7 @@ class _$ContextFailureCopyWithImpl<$Res> extends _$ContextCopyWithImpl<$Res>
   $Res call({
     Object? state = freezed,
     Object? message = freezed,
+    Object? artificial = freezed,
   }) {
     return _then(ContextFailure(
       state == freezed
@@ -319,6 +324,10 @@ class _$ContextFailureCopyWithImpl<$Res> extends _$ContextCopyWithImpl<$Res>
           ? _value.message
           : message // ignore: cast_nullable_to_non_nullable
               as String,
+      artificial: artificial == freezed
+          ? _value.artificial
+          : artificial // ignore: cast_nullable_to_non_nullable
+              as bool,
     ));
   }
 }
@@ -326,12 +335,16 @@ class _$ContextFailureCopyWithImpl<$Res> extends _$ContextCopyWithImpl<$Res>
 /// @nodoc
 
 class _$ContextFailure extends ContextFailure {
-  const _$ContextFailure(this.state, this.message) : super._();
+  const _$ContextFailure(this.state, this.message, {this.artificial = false})
+      : super._();
 
   @override
   final State state;
   @override
   final String message;
+  @JsonKey()
+  @override
+  final bool artificial;
 
   @override
   bool operator ==(dynamic other) {
@@ -339,14 +352,17 @@ class _$ContextFailure extends ContextFailure {
         (other.runtimeType == runtimeType &&
             other is ContextFailure &&
             const DeepCollectionEquality().equals(other.state, state) &&
-            const DeepCollectionEquality().equals(other.message, message));
+            const DeepCollectionEquality().equals(other.message, message) &&
+            const DeepCollectionEquality()
+                .equals(other.artificial, artificial));
   }
 
   @override
   int get hashCode => Object.hash(
       runtimeType,
       const DeepCollectionEquality().hash(state),
-      const DeepCollectionEquality().hash(message));
+      const DeepCollectionEquality().hash(message),
+      const DeepCollectionEquality().hash(artificial));
 
   @JsonKey(ignore: true)
   @override
@@ -357,36 +373,37 @@ class _$ContextFailure extends ContextFailure {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function(State state) ignore,
-    required TResult Function(State state, String message) failure,
+    required TResult Function(State state, String message, bool artificial)
+        failure,
     required TResult Function(
             State state, Object? mappedResult, Object? unmappedResult)
         success,
   }) {
-    return failure(state, message);
+    return failure(state, message, artificial);
   }
 
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult Function(State state)? ignore,
-    TResult Function(State state, String message)? failure,
+    TResult Function(State state, String message, bool artificial)? failure,
     TResult Function(State state, Object? mappedResult, Object? unmappedResult)?
         success,
   }) {
-    return failure?.call(state, message);
+    return failure?.call(state, message, artificial);
   }
 
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(State state)? ignore,
-    TResult Function(State state, String message)? failure,
+    TResult Function(State state, String message, bool artificial)? failure,
     TResult Function(State state, Object? mappedResult, Object? unmappedResult)?
         success,
     required TResult orElse(),
   }) {
     if (failure != null) {
-      return failure(state, message);
+      return failure(state, message, artificial);
     }
     return orElse();
   }
@@ -427,12 +444,14 @@ class _$ContextFailure extends ContextFailure {
 }
 
 abstract class ContextFailure extends Context {
-  const factory ContextFailure(State state, String message) = _$ContextFailure;
+  const factory ContextFailure(State state, String message, {bool artificial}) =
+      _$ContextFailure;
   const ContextFailure._() : super._();
 
   @override
   State get state;
   String get message;
+  bool get artificial;
   @override
   @JsonKey(ignore: true)
   $ContextFailureCopyWith<ContextFailure> get copyWith =>
@@ -519,7 +538,8 @@ class _$ContextSuccess extends ContextSuccess {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function(State state) ignore,
-    required TResult Function(State state, String message) failure,
+    required TResult Function(State state, String message, bool artificial)
+        failure,
     required TResult Function(
             State state, Object? mappedResult, Object? unmappedResult)
         success,
@@ -531,7 +551,7 @@ class _$ContextSuccess extends ContextSuccess {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult Function(State state)? ignore,
-    TResult Function(State state, String message)? failure,
+    TResult Function(State state, String message, bool artificial)? failure,
     TResult Function(State state, Object? mappedResult, Object? unmappedResult)?
         success,
   }) {
@@ -542,7 +562,7 @@ class _$ContextSuccess extends ContextSuccess {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(State state)? ignore,
-    TResult Function(State state, String message)? failure,
+    TResult Function(State state, String message, bool artificial)? failure,
     TResult Function(State state, Object? mappedResult, Object? unmappedResult)?
         success,
     required TResult orElse(),

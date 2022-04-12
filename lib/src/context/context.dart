@@ -8,7 +8,11 @@ part "context.freezed.dart";
 class Context with MemoizationEntryValue, _$Context {
   const Context._();
   const factory Context.ignore(State state) = ContextIgnore;
-  const factory Context.failure(State state, String message) = ContextFailure;
+  const factory Context.failure(
+    State state,
+    String message, {
+    @Default(false) bool artificial,
+  }) = ContextFailure;
   const factory Context.success(
     State state,
     ParseResult mappedResult,
@@ -21,7 +25,7 @@ class Context with MemoizationEntryValue, _$Context {
             (result == unmapped) || (const DeepCollectionEquality().equals(result, unmapped))
                 ? "[Success]: $result"
                 : "[Success]: $unmapped --> $result",
-        failure: (_, String message) => "[Failure]: $message",
+        failure: (_, String message, __) => "[Failure]: $message",
         ignore: (_) => "[Ignore]",
       );
 
@@ -39,13 +43,13 @@ class Context with MemoizationEntryValue, _$Context {
   Context advance(int n) => copyWith.state(index: state.index + n);
 
   // Returns a context whose index is set to `n`
-  Context absolute(int n) => copyWith.state(index: n);
+  Context index(int n) => copyWith.state(index: n);
 
   // Returns a context whose `indentStack` is replaced.
   Context indent(List<int> indentStack) => copyWith.state(indentStack: indentStack);
 
   bool get isSpecificSuccess => whenOrNull(success: (_, __, ___) => true) ?? false;
-  bool get isSuccess => whenOrNull(failure: (_, __) => false) ?? true;
+  bool get isSuccess => whenOrNull(failure: (_, __, ___) => false) ?? true;
   bool get isFailure => !isSuccess;
 
   // ignore: avoid_returning_this
@@ -74,6 +78,9 @@ class Context with MemoizationEntryValue, _$Context {
 
     if (pointer < 0) {
       return <String>["", "·", line];
+    }
+    if (pointer > line.length) {
+      return <String>[line, ".", ""];
     }
 
     String before = cleanedLine.substring(0, pointer);
