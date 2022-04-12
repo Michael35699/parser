@@ -6,7 +6,7 @@ class PushParser extends SpecialParser {
   PushParser(this.object);
 
   @override
-  Context parse(Context context, ParserEngine engine) => context.push(object).ignore();
+  Context parse(Context context, ParserMutable mutable) => context.push(object).ignore();
 }
 
 PushParser push(dynamic object) => PushParser(object);

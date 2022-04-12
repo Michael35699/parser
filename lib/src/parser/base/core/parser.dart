@@ -6,6 +6,9 @@ import "package:freezed_annotation/freezed_annotation.dart";
 import "package:parser_peg/internal_all.dart";
 
 abstract class Parser {
+  static final Never never = throw Error();
+  static final Context seedFailure = Context.failure(State(input: ""), "seed");
+
   late final bool leftRecursive = Parser.isLeftRecursive(this);
   late final List<ParserSetMapping> parserSets = Parser.computeParserSets(this);
   late final ParserSetMapping firstSets = parserSets[Parser.firstSetIndex];
@@ -19,11 +22,135 @@ abstract class Parser {
   bool built = false;
 
   @Deprecated("Use the 'parseCtx' method")
-  Context parse(Context context, ParserEngine engine);
+  Context parse(Context context, ParserMutable mutable);
   @Deprecated("Use the 'clone' method")
   Parser cloneSelf(HashMap<Parser, Parser> cloned);
   @Deprecated("Use the 'transform' method")
   Parser transformChildren(TransformHandler handler, HashMap<Parser, Parser> transformed);
+
+  MemoizationEntry? recall(int index, Context context, ParserMutable mutable) {
+    MemoizationEntry? entry = mutable.memoMap.putIfAbsent(this, MemoizationSubMap.new)[index];
+    Head? head = mutable.heads[index];
+
+    // If the head is not being grown, return the memoized result.
+    if (head == null || !head.evaluationSet.contains(this)) {
+      return entry;
+    }
+
+    // If the current parser is not a part of the head and is not evaluated yet,
+    // Add a failure to it.
+    if (entry == null && !(head.involvedSet | <Parser>{head.parser}).contains(this)) {
+      return Parser.seedFailure.index(index).entry();
+    }
+
+    // Remove the current parser from the head's evaluation set.
+    head.evaluationSet.remove(this);
+    entry!.value = parse(context, mutable);
+
+    return entry;
+  }
+
+  Context leftRecursiveResult(int index, MemoizationEntry entry, ParserMutable mutable) {
+    LeftRecursion leftRecursion = entry.value as LeftRecursion;
+    Head head = leftRecursion.head!;
+    Context seed = leftRecursion.seed;
+
+    /// If the rule of the parser is not the one being parsed,
+    /// return the seed.
+    if (head.parser != this) {
+      return seed;
+    }
+
+    /// Since it is the parser, assign it to the seed.
+    Context seedContext = entry.value = seed;
+    if (seedContext is ContextFailure) {
+      return seedContext;
+    }
+
+    mutable.heads[index] = head;
+
+    /// "Grow the seed."
+    for (;;) {
+      head.evaluationSet.addAll(head.involvedSet);
+      Context result = parse(seedContext.index(index), mutable);
+      if (result.state.index <= seedContext.state.index) {
+        break;
+      }
+      entry.value = result;
+    }
+    mutable.heads.remove(index);
+
+    return entry.value as Context;
+  }
+
+  Context runMemoized(Context context, ParserMutable mutable) {
+    int index = context.state.index;
+
+    MemoizationEntry? entry = recall(index, context, mutable);
+    if (entry == null) {
+      /// Create a new LR instance. Then, add it to the stack.
+      LeftRecursion leftRecursion = LeftRecursion(seed: Parser.seedFailure, parser: this, head: null);
+      mutable.parserCallStack.add(leftRecursion);
+
+      /// Save a new entry on `position` with the LR instance.
+      MemoizationSubMap subMap = mutable.memoMap.putIfAbsent(this, MemoizationSubMap.new);
+      subMap[index] = entry = leftRecursion.entry();
+
+      /// Evaluate the parser.
+      Context ans = parse(context, mutable);
+
+      /// Remove the created LR instance from the stack.
+      mutable.parserCallStack.removeLast();
+
+      /// If a descendant parser put a head in the lr then
+      /// return the result of method `leftRecursiveResult`.
+      if (leftRecursion.head != null) {
+        leftRecursion.seed = ans;
+
+        return leftRecursiveResult(index, entry, mutable);
+      }
+
+      /// If it was a normal parser result,
+      /// return the resulting context.
+      else {
+        entry.value = ans;
+
+        return ans;
+      }
+    } else {
+      MemoizationEntryValue result = entry.value;
+
+      if (result is LeftRecursion) {
+        /// If a previous call on this parser on this position
+        /// has placed an LR instance, then this is a left-recursive call.
+        /// Create a new head instance, and assign it to the LR instance.
+        Head head = result.head = Head(parser: this, evaluationSet: <Parser>{}, involvedSet: <Parser>{});
+
+        /// While the LR of the current left-recursive parser is not yet found,
+        /// Assign all the `lrStack` items to have the `lHead` as their own head.
+        /// Also, add the `rule` of `lrStack.item` to the `lHead.involvedSet`
+        for (LeftRecursion left in mutable.parserCallStack.reversed.takeWhile((LeftRecursion lr) => lr.head != head)) {
+          head.involvedSet.add(left.parser);
+          left.head = head;
+        }
+
+        return result.seed;
+      } else if (result is Context) {
+        return result;
+      }
+      Parser.never;
+    }
+  }
+
+  Context apply(Context context, ParserMutable mutable) {
+    if (context is ContextFailure) {
+      return context;
+    }
+
+    return memoize //
+        ? runMemoized(context, mutable)
+        : parse(context, mutable);
+  }
 
   @mustCallSuper
   bool hasEqualProperties(covariant Parser target) {
@@ -146,11 +273,11 @@ abstract class Parser {
     map ??= true;
 
     late Parser built = parser.build();
-    ParserEngine engine = ParserEngine();
-    Parser completed = end ? built.end() : built;
     String formatted = input.replaceAll("\r", "").unindent();
+    ParserMutable mutable = ParserMutable();
+    Parser completed = end ? built.end() : built;
     Context context = Context.ignore(State(input: formatted, map: map));
-    Context result = engine.apply(completed, context);
+    Context result = completed.apply(context, mutable);
 
     if (result is ContextFailure) {
       return result.withFailureMessage();

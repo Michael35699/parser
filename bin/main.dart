@@ -2,32 +2,28 @@ import "package:parser_peg/internal_all.dart";
 
 part "utils.dart";
 
-typedef JsonEntry = MapEntry<String, Object>;
-typedef JsonMap = Map<String, Object>;
-typedef JsonList = List<Object>;
-
-Parser jsonParser() => value.end();
-Parser value() => valueBody.trim();
-Parser valueBody() => array | object | jsonNumber | string | trueValue | falseValue | nullValue;
-
-Parser array() => "[" >> elements.trim() << "]";
-Parser elements() =>
-    value % -",".t | //
-    success(JsonList.empty());
-
-Parser object() => "{" >> members.trim() << "}";
-Parser members() =>
-    pair % -",".t ^ $list<JsonEntry>() ^ $type(JsonMap.fromEntries) | //
-    success(JsonMap.identity());
-
-Parser pair() => string & -":".t & value ^ $2(JsonEntry.new);
-
-Parser string() => jsonString().$at(1);
-
-Parser trueValue = "true" ^ $value(true);
-Parser falseValue = "false" ^ $value(false);
-Parser nullValue = "null" ^ $value(null);
+Parser infixMath() => _addition.$;
+Parser _addition() => _addition & "+" & _multiplication | _multiplication;
+Parser _multiplication() => _multiplication & "*" & _atomic | _atomic;
+Parser _atomic() => "[0-9]+".r ^ $type(int.parse) | "(".t & _addition & ")".t;
 
 void main() {
-  print(jsonParser.run("""[123, "hello", null, 123, 123, {"one": "two"}]"""));
+  Parser built = infixMath.build();
+
+  int indentation = -1;
+  built.transform((Parser p) => p.cc((ParseFunction fn, Context ctx) {
+        ++indentation;
+        String ind = "  " * indentation;
+        print("$ind$p");
+        Context res = fn(ctx);
+        if (res is ContextSuccess) {
+          print("$ind${res.mappedResult}");
+        } else if (res is ContextFailure) {
+          print("$ind${res.message}");
+        }
+        --indentation;
+
+        return res;
+      }));
+  print(built.run("""1+2*3"""));
 }

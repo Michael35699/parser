@@ -69,8 +69,6 @@ class TextGrammarDefinition with Grammar {
             throw Exception("Parser actions should be a function!");
           }
 
-          print([(p.base as SequenceParser).children]);
-
           return Function.apply(
             result,
             <Object>[

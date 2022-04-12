@@ -9,8 +9,8 @@ class ContinuationParser extends WrapParser {
   ContinuationParser.empty(this.handler) : super(<Parser>[]);
 
   @override
-  Context parse(Context context, ParserEngine engine) {
-    return handler((Context ctx) => engine.apply(parser, ctx), context);
+  Context parse(Context context, ParserMutable mutable) {
+    return handler((Context ctx) => parser.apply(ctx, mutable), context);
   }
 
   @override

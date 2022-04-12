@@ -11,13 +11,13 @@ class CycleNParser extends WrapParser with CyclicParser {
   CycleNParser.empty(this.count) : super(<Parser>[]);
 
   @override
-  Context parse(Context context, ParserEngine engine) {
+  Context parse(Context context, ParserMutable mutable) {
     List<ParseResult> mapped = <ParseResult>[];
     List<ParseResult> unmapped = <ParseResult>[];
 
     Context ctx = context;
     for (int i = 0; i < count; i++) {
-      ctx = engine.apply(parser, ctx);
+      ctx = parser.apply(ctx, mutable);
       if (ctx is ContextFailure) {
         return ctx;
       }

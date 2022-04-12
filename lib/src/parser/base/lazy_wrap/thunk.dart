@@ -18,10 +18,10 @@ class ThunkParser extends LazyLoadParser {
         super.eager(parser);
 
   @override
-  Context parse(Context context, ParserEngine engine) {
+  Context parse(Context context, ParserMutable mutable) {
     print("If you're seeing this, something went wrong.");
 
-    return engine.apply(computed, context);
+    return computed.apply(context, mutable);
   }
 
   @override
