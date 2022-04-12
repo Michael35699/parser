@@ -24,7 +24,7 @@ class DropRightParser extends WrapParser with SequentialParser {
       return last.success(ctx.mappedResult, ctx.unmappedResult);
     }
 
-    return last.ignore();
+    return last;
   }
 
   @override
