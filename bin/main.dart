@@ -6,13 +6,15 @@ Parser addition() =>
     addition & "+".t & number | //
     number;
 
-Parser lr() => lr & "l";
+Parser lr() => lr & "l" | "l";
 Parser rr() => "l" & rr | "l";
 
 void main() {
-  Parser built = OptimizedJsonGrammar().start.build();
-  Analyzer analyzer = Analyzer(built);
+  Parser parser = OptimizedJsonGrammar().start.simplified.build();
+  Analyzer analyzer = Analyzer(parser);
   analyzer.deepCheck();
-  print(analyzer.firstSets);
-  print << built.run(""" {"one": "one", "two": ["three", 4, -1.5123e45]} """);
+
+  for (MapEntry<Parser, Set<Parser>> entry in analyzer.firstSets.entries) {
+    print(entry);
+  }
 }

@@ -13,7 +13,9 @@ class Analyzer {
 
   void checkEmptyFirst(Parser parser) {
     if (!parser.isNullable() && firstSets[parser]!.isEmpty) {
-      log.cerror("Parser of type '${parser.runtimeType}' has an empty first set.");
+      log.cerror("Parser of type '${parser.runtimeType}' has an "
+          "empty first set. This is usually indicative of left-recursive "
+          "parsers who have no possible starting-left option.");
       log.cerror(parser.generateAsciiTree(marks: <Parser, String>{
         parser: "No starting terminal, therefore this parser cannot parse anything.",
       }));
