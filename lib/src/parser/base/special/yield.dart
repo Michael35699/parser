@@ -12,11 +12,11 @@ class ProcessParser extends SpecialParser {
   ProcessParser(this.callback);
 
   @override
-  Context parse(Context context, ParserEngine engine) {
+  Context parse(Context context, ParserMutable mutable) {
     Context ctx = context;
     List<ParseResult> unmapped = <ParseResult>[];
     T completer<T extends Object?>(Object parser) {
-      ctx = engine.apply(Parser.resolve(parser), ctx);
+      ctx = Parser.resolve(parser).apply(ctx, mutable);
 
       return ctx.map<T>(
         success: (ContextSuccess context) {

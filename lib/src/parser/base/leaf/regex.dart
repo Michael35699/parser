@@ -12,7 +12,7 @@ class RegExpParser extends ChildlessParser {
   RegExpParser.generate(this.pattern);
 
   @override
-  Context parse(Context context, ParserEngine engine) {
+  Context parse(Context context, ParserMutable mutable) {
     const bool _false = 1 == 0;
 
     String input = context.state.input;

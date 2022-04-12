@@ -7,7 +7,7 @@ class CacheParser extends WrapParser with UnwrappedParser {
   CacheParser.empty() : super(<Parser>[]);
 
   @override
-  Context parse(Context context, ParserEngine engine) => engine.apply(parser, context);
+  Context parse(Context context, ParserMutable mutable) => parser.apply(context, mutable);
 
   @override
   Parser get base => parser.base;

@@ -10,13 +10,13 @@ class CycleStarParser extends WrapParser with CyclicParser {
   CycleStarParser.empty() : super(<Parser>[]);
 
   @override
-  Context parse(Context context, ParserEngine engine) {
+  Context parse(Context context, ParserMutable mutable) {
     List<ParseResult> mapped = <ParseResult>[];
     List<ParseResult> unmapped = <ParseResult>[];
 
     Context ctx = context;
     for (;;) {
-      Context temp = engine.apply(parser, ctx);
+      Context temp = parser.apply(ctx, mutable);
       if (temp is ContextFailure) {
         break;
       }

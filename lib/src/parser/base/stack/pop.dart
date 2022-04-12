@@ -6,7 +6,7 @@ class PopParser extends SpecialParser {
   PopParser(this.object);
 
   @override
-  Context parse(Context context, ParserEngine engine) => context.pop(object).ignore();
+  Context parse(Context context, ParserMutable mutable) => context.pop(object).ignore();
 }
 
 PopParser pop(dynamic object) => PopParser(object);

@@ -15,24 +15,24 @@ class CycleSeparatedParser extends WrapParser with CyclicParser {
   CycleSeparatedParser.empty() : super(<Parser>[]);
 
   @override
-  Context parse(Context context, ParserEngine engine) {
+  Context parse(Context context, ParserMutable mutable) {
     List<ParseResult> mapped = <ParseResult>[];
     List<ParseResult> unmapped = <ParseResult>[];
 
-    Context ctx = engine.apply(parser, context);
+    Context ctx = parser.apply(context, mutable);
     if (ctx is ContextFailure) {
       return ctx;
     }
     ctx.addResult(mapped, unmapped);
 
     for (;;) {
-      Context temp1 = engine.apply(separator, ctx);
+      Context temp1 = separator.apply(ctx, mutable);
       if (temp1 is ContextFailure) {
         break;
       }
       temp1.addResult(mapped, unmapped);
 
-      Context temp2 = engine.apply(parser, temp1);
+      Context temp2 = parser.apply(temp1, mutable);
       if (temp2 is ContextFailure) {
         break;
       }

@@ -8,8 +8,8 @@ class CycleParser extends WrapParser with CyclicParser {
   CycleParser.empty() : super(<Parser>[]);
 
   @override
-  Context parse(Context context, ParserEngine engine) {
-    Context ctx = engine.apply(parser, context);
+  Context parse(Context context, ParserMutable mutable) {
+    Context ctx = parser.apply(context, mutable);
     if (ctx.isFailure) {
       return ctx;
     }
@@ -19,7 +19,7 @@ class CycleParser extends WrapParser with CyclicParser {
     ctx.addResult(mapped, unmapped);
 
     for (;;) {
-      Context temp = engine.apply(parser, ctx);
+      Context temp = parser.apply(ctx, mutable);
       if (temp.isFailure) {
         break;
       }

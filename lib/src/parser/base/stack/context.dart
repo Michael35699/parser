@@ -6,7 +6,8 @@ class ContextualParser<T> extends SpecialParser {
   ContextualParser(this.callback);
 
   @override
-  Context parse(Context context, ParserEngine engine) => engine.apply(callback(context.state.dataSet.cast()), context);
+  Context parse(Context context, ParserMutable mutable) =>
+      callback(context.state.dataSet.cast()).apply(context, mutable);
 }
 
 ContextualParser<T> context<T>(Parser Function(Set<T>) callback) => ContextualParser<T>(callback);

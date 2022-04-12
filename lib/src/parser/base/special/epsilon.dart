@@ -7,7 +7,7 @@ class EpsilonParser extends SpecialParser {
   EpsilonParser._();
 
   @override
-  Context parse(Context context, ParserEngine engine) => context.success("");
+  Context parse(Context context, ParserMutable mutable) => context.success("");
 
   @override
   String toString() => "ε";
