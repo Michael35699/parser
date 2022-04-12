@@ -137,6 +137,7 @@ $noNumberBar
 }
 
 extension ContextFailureMethods on ContextFailure {
-  /// Returns a `ContextFailure`, but the message is generated from `generateFailureMessage`
   ContextFailure withFailureMessage() => copyWith(message: generateFailureMessage());
+
+  ContextFailure generated() => copyWith(artificial: true);
 }

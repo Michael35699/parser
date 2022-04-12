@@ -6,7 +6,7 @@ class FailureParser extends SpecialParser {
   FailureParser(this.message);
 
   @override
-  Context parse(Context context, ParserEngine engine) => context.failure(message);
+  Context parse(Context context, ParserEngine engine) => context.failure(message).generated();
 
   @override
   bool hasEqualProperties(FailureParser target) {
