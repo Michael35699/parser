@@ -1,8 +1,8 @@
 import "package:parser_peg/internal_all.dart";
 
-RegExpParser ws() => r"[ \t]*".r();
-RegExpParser whitespace() => r"[ \t]*".r();
-RegExpParser whitespaceNewline() => r"[ \t\n\r]*".r();
+Parser ws() => r"[ \t]*".r().nullable();
+Parser whitespace() => r"[ \t]*".r().nullable();
+Parser whitespaceNewline() => r"[ \t\n\r]*".r().nullable();
 
 Parser trim(Parser parser) => whitespace() >> parser << whitespace();
 Parser trimLeft(Parser parser) => whitespace() >> parser;

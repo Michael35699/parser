@@ -1,6 +1,6 @@
 import "package:parser_peg/internal_all.dart";
 
-class CacheParser extends WrapParser {
+class CacheParser extends WrapParser with UnwrappedParser {
   @override
   Parser get parser => children[0];
   CacheParser(Parser parser) : super(<Parser>[parser]);

@@ -1,7 +1,9 @@
 library parser.peg.parser.base;
 
+export "base/annotation/nullable.dart";
 export "base/combinator/choice.dart";
 export "base/combinator/sequence.dart";
+export "base/core/abstract/annotation.dart";
 export "base/core/abstract/childless.dart";
 export "base/core/abstract/combinator.dart";
 export "base/core/abstract/lazy.dart";
@@ -10,6 +12,7 @@ export "base/core/abstract/special_parser.dart";
 export "base/core/abstract/wrap.dart";
 export "base/core/mixin/cyclic.dart";
 export "base/core/mixin/sequential.dart";
+export "base/core/mixin/unwrap.dart";
 export "base/core/parser.dart";
 export "base/cycle/cycle.dart";
 export "base/cycle/cycle_end.dart";

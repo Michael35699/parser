@@ -115,7 +115,7 @@ abstract class Parser {
     }
 
     ST built = Parser.clone(parser) //
-        .transformType((CacheParser parser) => parser.parser)
+        .transformType((UnwrappedParser parser) => parser.parser)
         .transformType((ThunkParser parser) => parser.computed..memoize = true)
       ..built = true;
 
@@ -218,13 +218,18 @@ abstract class Parser {
 
   static bool isNullable(Parser parser) {
     bool parserIsEpsilon(Parser p) => p is EpsilonParser || p == "".p();
-    bool parserIsNullable(Parser p) => p is SuccessParser || p is OptionalParser || parserIsEpsilon(p);
+    bool parserIsNullable(Parser p) =>
+        p is NullableAnnotationParser || //
+        p is SuccessParser ||
+        p is OptionalParser ||
+        parserIsEpsilon(p);
 
     late bool isNullable = parserIsNullable(parser);
     late bool isNullableChoice = parser is ChoiceParser && parser.children.any(parserIsNullable);
     late bool isNullableSequential = parser is SequentialParser && parser.children.every(parserIsNullable);
+    late bool isThunkNullable = parser is ThunkParser && parserIsNullable(parser.computed);
 
-    return isNullable || isNullableChoice || isNullableSequential;
+    return isThunkNullable || isNullable || isNullableChoice || isNullableSequential;
   }
 
   static bool isRecursive(Parser root) {
