@@ -151,7 +151,7 @@ abstract class Parser {
       return context;
     }
 
-    return memoize //
+    return memoize
         ? parseMemoized(context, mutable)
         : parse(context, mutable);
   }

@@ -1,5 +1,6 @@
 library parser.peg.parser.synthesized;
 
+export "synthesized/complex/calculator/calculator.dart";
 export "synthesized/complex/json/json.dart";
 export "synthesized/complex/math/infix.dart";
 export "synthesized/complex/math/postfix.dart";
