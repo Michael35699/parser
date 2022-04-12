@@ -7,10 +7,10 @@ class OptimizedJsonGrammar with Grammar {
   Parser value() => valueBody.trim();
   Parser valueBody() => array | object | jsonNumber | string | trueValue | falseValue | nullValue;
 
-  Parser array() => "[" & elements.orElse(<Object>[]).trim() & "]";
+  Parser array() => "[" & (elements ~/ <Object>[]).trim() & "]";
   Parser elements() => value % -",".t;
 
-  Parser object() => "{" & members.orElse(<Object>[]).trim() & "}";
+  Parser object() => "{" & (members ~/ <Object>[]).trim() & "}";
   Parser members() => pair % -",".t;
   Parser pair() => string & ":".t & value;
 

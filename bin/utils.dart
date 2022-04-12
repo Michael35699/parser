@@ -21,7 +21,7 @@ class Analyzer {
   }
 
   void checkUnoptimizedCommonPrefix(Parser parser) {
-    if (this is ChoiceParser) {
+    if (parser is ChoiceParser) {
       List<ParserSet> children = parser.children.map((Parser p) => p.firstSet).toList();
 
       for (int i = 0; i < children.length; i++) {
@@ -36,7 +36,7 @@ class Analyzer {
   }
 
   void checkEqualChoices(Parser parser) {
-    if (this is ChoiceParser) {
+    if (parser is ChoiceParser) {
       for (int i = 0; i < parser.children.length; i++) {
         for (int j = i + 1; j < parser.children.length; j++) {
           if (parser.children[i].equals(parser.children[j])) {
@@ -48,7 +48,7 @@ class Analyzer {
   }
 
   void checkUnreachableChoice(Parser parser) {
-    if (this is ChoiceParser) {
+    if (parser is ChoiceParser) {
       for (int i = 0; i < parser.children.length - 1; i++) {
         if (Parser.isNullable(parser.children[i])) {
           log.print("Choices after the $i-th choice is not reachable.");
