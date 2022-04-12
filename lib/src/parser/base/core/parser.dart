@@ -127,7 +127,7 @@ abstract class Parser {
   }
 
   static T run<T extends ParseResult>(Parser parser, String input, {bool? map, bool? end}) {
-    Context result = runCtx(parser, input, end: end);
+    Context result = runCtx(parser, input, map: map, end: end);
 
     if (result is ContextFailure) {
       throw ParseException(result.message);
@@ -145,11 +145,12 @@ abstract class Parser {
     end ??= false;
     map ??= true;
 
+    late Parser built = parser.build();
     ParserEngine engine = ParserEngine();
-    Parser built = end ? parser.build().end() : parser.build();
+    Parser completed = end ? built.end() : built;
     String formatted = input.replaceAll("\r", "").unindent();
     Context context = Context.ignore(State(input: formatted, map: map));
-    Context result = engine.apply(built, context);
+    Context result = engine.apply(completed, context);
 
     if (result is ContextFailure) {
       return result.withFailureMessage();
@@ -160,12 +161,13 @@ abstract class Parser {
 
   static String generateAsciiTree(Parser parser, {Map<Parser, String>? marks}) {
     int counter = 0;
-    Map<Parser, int> rules = <Parser, int>{for (Parser p in Parser.rules(parser)) p: counter++};
+    Map<Parser, int> rules = <Parser, int>{for (Parser p in Parser.rules(parser)) p: ++counter};
     StringBuffer buffer = StringBuffer("\n");
 
-    for (Parser p in marks == null ? rules.keys : rules.keys.where(marks.keys.contains)) {
-      buffer.writeln("(rule#${rules[p]})");
-      buffer.writeln(_generateAsciiTree(rules, p, "", isLast: true, level: 0, marks: marks));
+    for (Parser p in rules.keys.where(marks?.keys.contains ?? (Parser c) => true)) {
+      buffer
+        ..writeln("(rule#${rules[p]})")
+        ..writeln(_generateAsciiTree(rules, p, "", isLast: true, level: 0, marks: marks));
     }
 
     return buffer.toString().trimRight();
@@ -384,7 +386,7 @@ abstract class Parser {
     if (parser is SequentialParser) {
       return _expandFollowSetOfSequence(parser, parser.children, follows, firsts);
     } else if (parser is CyclicParser) {
-      List<Parser> children = <Parser>[parser.children.first, ...parser.children];
+      List<Parser> children = <Parser>[parser.parser, ...parser.children];
 
       return _expandFollowSetOfSequence(parser, children, follows, firsts);
     } else {
