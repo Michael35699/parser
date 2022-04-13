@@ -11,7 +11,7 @@ class XmlGrammar with Grammar {
   Parser singleTag() => -"<".tr >> identifier & tagAttributes << -"/>".tl;
   Parser tagClose() => -"</".tr >> identifier << -">".tl;
 
-  Parser tagAttributes() => whitespace >> tagAttribute.sep(~whitespace) | success(const <Object>[]);
+  Parser tagAttributes() => whitespace >> tagAttribute.sep(-whitespace) | success(const <Object>[]);
   Parser tagAttribute() =>
       identifier.trim & -"=".t & string.$at(1).or(identifier) | //
       identifier.trim & success("=") & success("true");
