@@ -34,7 +34,7 @@ class DropLeftRightParser extends WrapParser with SequentialParser {
   }
 
   @override
-  void parseGll(Context context, Trampoline trampoline, Continuation continuation) {
+  void parseGll(Context context, Trampoline trampoline, GllContinuation continuation) {
     void runParser(Context context) => trampoline.push(parser, context, continuation);
     void runRight(Context nextContext, ParseResult mapped, ParseResult unmapped, {required bool ignore}) {
       trampoline.push(right, nextContext, (Context context) {

@@ -45,7 +45,7 @@ class CycleSeparatedParser extends WrapParser with CyclicParser {
   }
 
   @override
-  void parseGll(Context context, Trampoline trampoline, Continuation continuation) {
+  void parseGll(Context context, Trampoline trampoline, GllContinuation continuation) {
     void run(Context context, List<ParseResult> mapped, List<ParseResult> unmapped) {
       void parseMain(Context innerContext, ParseResult separator, {required bool putSeparator}) {
         trampoline.push(parser, innerContext, (Context result) {

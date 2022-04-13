@@ -32,7 +32,7 @@ class AlignPointParser extends SpecialParser {
   }
 
   @override
-  void parseGll(Context context, Trampoline trampoline, Continuation continuation) {
+  void parseGll(Context context, Trampoline trampoline, GllContinuation continuation) {
     String input = context.state.input;
     int index = context.state.index;
 

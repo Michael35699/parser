@@ -29,7 +29,7 @@ abstract class LeafParser extends ChildlessParser {
 
   @nonVirtual
   @override
-  void parseGll(Context context, Trampoline trampoline, Continuation continuation) {
+  void parseGll(Context context, Trampoline trampoline, GllContinuation continuation) {
     String input = context.state.input;
     int index = context.state.index;
 

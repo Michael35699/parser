@@ -19,7 +19,7 @@ class WithPrecedenceParser extends WrapParser {
   }
 
   @override
-  void parseGll(Context context, Trampoline trampoline, Continuation continuation) {
+  void parseGll(Context context, Trampoline trampoline, GllContinuation continuation) {
     num searchPrecedence = context.state.precedence;
     if (searchPrecedence < precedence) {
       return continuation(context.failure("Search precedence '$searchPrecedence' is lower than '$precedence'"));

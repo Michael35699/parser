@@ -19,7 +19,7 @@ class ExceptParser extends WrapParser {
   }
 
   @override
-  void parseGll(Context context, Trampoline trampoline, Continuation continuation) {
+  void parseGll(Context context, Trampoline trampoline, GllContinuation continuation) {
     trampoline.push(except, context, (Context ctx) {
       ctx.map(
         success: (ContextSuccess ctx) => continuation(context.failure("Failed except parser")),

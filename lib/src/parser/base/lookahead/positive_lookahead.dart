@@ -17,7 +17,7 @@ class PositiveLookaheadParser extends WrapParser {
   }
 
   @override
-  void parseGll(Context context, Trampoline trampoline, Continuation continuation) {
+  void parseGll(Context context, Trampoline trampoline, GllContinuation continuation) {
     trampoline.push(parser, context, (Context ctx) {
       if (ctx is! ContextFailure) {
         continuation(context.success(#positiveLookahead));

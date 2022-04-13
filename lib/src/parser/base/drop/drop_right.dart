@@ -28,7 +28,7 @@ class DropRightParser extends WrapParser with SequentialParser {
   }
 
   @override
-  void parseGll(Context context, Trampoline trampoline, Continuation continuation) {
+  void parseGll(Context context, Trampoline trampoline, GllContinuation continuation) {
     void runRight(Context nextContext, ParseResult mapped, ParseResult unmapped, {required bool ignore}) {
       trampoline.push(right, nextContext, (Context context) {
         late Context resultContext = ignore ? context.ignore() : context.success(mapped, unmapped);

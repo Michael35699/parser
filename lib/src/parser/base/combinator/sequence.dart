@@ -23,7 +23,7 @@ class SequenceParser extends CombinatorParser with SequentialParser {
   }
 
   @override
-  void parseGll(Context context, Trampoline trampoline, Continuation continuation) {
+  void parseGll(Context context, Trampoline trampoline, GllContinuation continuation) {
     void run(Context context, int i, List<ParseResult> mapped, List<ParseResult> unmapped) {
       if (i >= children.length) {
         return continuation(context.success(mapped, unmapped));

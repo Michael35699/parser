@@ -10,7 +10,7 @@ class BlankParser extends SpecialParser {
   Context parsePeg(Context context, ParserMutable mutable) => context.failure("Blank");
 
   @override
-  void parseGll(Context context, Trampoline trampoline, Continuation continuation) =>
+  void parseGll(Context context, Trampoline trampoline, GllContinuation continuation) =>
       continuation(context.failure("Blank"));
 }
 

@@ -40,7 +40,7 @@ class ChoiceParser extends CombinatorParser {
   }
 
   @override
-  void parseGll(Context context, Trampoline trampoline, Continuation continuation) {
+  void parseGll(Context context, Trampoline trampoline, GllContinuation continuation) {
     for (Parser parser in children) {
       trampoline.push(parser, context, continuation);
     }

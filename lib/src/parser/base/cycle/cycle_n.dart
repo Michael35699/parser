@@ -29,7 +29,7 @@ class CycleNParser extends WrapParser with CyclicParser {
   }
 
   @override
-  void parseGll(Context context, Trampoline trampoline, Continuation continuation) {
+  void parseGll(Context context, Trampoline trampoline, GllContinuation continuation) {
     void run(Context context, List<ParseResult> mapped, List<ParseResult> unmapped, int count) {
       if (count >= this.count) {
         return continuation(context.success(mapped, mapped));

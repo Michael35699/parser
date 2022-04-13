@@ -16,7 +16,7 @@ class EoiParser extends SpecialParser {
   }
 
   @override
-  void parseGll(Context context, Trampoline trampoline, Continuation continuation) {
+  void parseGll(Context context, Trampoline trampoline, GllContinuation continuation) {
     if (context.state.index >= context.state.input.length) {
       continuation(context.success(#eoi));
     } else {

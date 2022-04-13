@@ -17,7 +17,7 @@ class FromPrecedenceParser extends WrapParser {
   }
 
   @override
-  void parseGll(Context context, Trampoline trampoline, Continuation continuation) {
+  void parseGll(Context context, Trampoline trampoline, GllContinuation continuation) {
     num previousPrecedence = context.state.precedence;
 
     trampoline.push(parser, context.copyWith.state(precedence: precedence), (Context context) {

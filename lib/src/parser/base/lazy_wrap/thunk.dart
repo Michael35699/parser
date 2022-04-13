@@ -25,7 +25,7 @@ class ThunkParser extends LazyLoadParser {
   }
 
   @override
-  void parseGll(Context context, Trampoline trampoline, Continuation continuation) {
+  void parseGll(Context context, Trampoline trampoline, GllContinuation continuation) {
     print("If you're seeing this, something went wrong.");
 
     trampoline.push(computed, context, continuation);

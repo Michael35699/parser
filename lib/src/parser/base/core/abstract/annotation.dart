@@ -21,6 +21,6 @@ class AnnotationParser extends WrapParser with UnwrappedParser {
       throw UnsupportedError("Annotation parsers can not parse!");
 
   @override
-  void parseGll(Context context, Trampoline trampoline, Continuation continuation) =>
+  void parseGll(Context context, Trampoline trampoline, GllContinuation continuation) =>
       throw UnsupportedError("Annotation parsers can not parse!");
 }

@@ -9,7 +9,7 @@ class PopParser extends SpecialParser {
   Context parsePeg(Context context, ParserMutable mutable) => context.pop(item).ignore();
 
   @override
-  void parseGll(Context context, Trampoline trampoline, Continuation continuation) =>
+  void parseGll(Context context, Trampoline trampoline, GllContinuation continuation) =>
       continuation(context.pop(item).ignore());
 }
 

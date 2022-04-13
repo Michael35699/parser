@@ -29,7 +29,7 @@ class CycleStarParser extends WrapParser with CyclicParser {
   }
 
   @override
-  void parseGll(Context context, Trampoline trampoline, Continuation continuation) {
+  void parseGll(Context context, Trampoline trampoline, GllContinuation continuation) {
     void run(Context context, List<dynamic> mapped, List<dynamic> unmapped) {
       trampoline.push(parser, context, (Context result) {
         result.map(

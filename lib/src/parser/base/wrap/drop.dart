@@ -19,7 +19,7 @@ class DropParser extends WrapParser {
   }
 
   @override
-  void parseGll(Context context, Trampoline trampoline, Continuation continuation) {
+  void parseGll(Context context, Trampoline trampoline, GllContinuation continuation) {
     trampoline.push(parser, context, (Context context) {
       if (context is! ContextFailure) {
         continuation(context.ignore());

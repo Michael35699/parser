@@ -17,7 +17,7 @@ class ConditionalParser extends SpecialParser {
       ((Context ctx) => function(context).pegApply(ctx, mutable))(parser.pegApply(context, mutable));
 
   @override
-  void parseGll(Context context, Trampoline trampoline, Continuation continuation) =>
+  void parseGll(Context context, Trampoline trampoline, GllContinuation continuation) =>
       trampoline.push(parser, context, (Context ctx) {
         trampoline.push(function(context), ctx, continuation);
       });

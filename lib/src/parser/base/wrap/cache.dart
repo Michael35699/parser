@@ -10,7 +10,7 @@ class CacheParser extends WrapParser with UnwrappedParser {
   Context parsePeg(Context context, ParserMutable mutable) => parser.pegApply(context, mutable);
 
   @override
-  void parseGll(Context context, Trampoline trampoline, Continuation continuation) =>
+  void parseGll(Context context, Trampoline trampoline, GllContinuation continuation) =>
       trampoline.push(parser, context, continuation);
 
   @override

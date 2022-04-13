@@ -16,7 +16,7 @@ class SourceParser extends SpecialParser {
   }
 
   @override
-  void parseGll(Context context, Trampoline trampoline, Continuation continuation) {
+  void parseGll(Context context, Trampoline trampoline, GllContinuation continuation) {
     if (context.state.index >= context.state.input.length) {
       continuation(context.failure("Expected any character, received end of input"));
     } else {

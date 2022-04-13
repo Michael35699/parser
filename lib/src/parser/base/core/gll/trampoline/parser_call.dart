@@ -1,7 +1,5 @@
 import "package:parser/internal_all.dart";
 
-int ticks = 0;
-
 ///
 /// Wrapper class that contains the:
 ///   1. Parser to be called,
@@ -9,17 +7,15 @@ int ticks = 0;
 ///   3. A reference to the trampoline,
 ///   3. A continuation function.
 ///
-class ParserCall {
-  final Parser parser;
+class GllParserCall {
+  final void Function(Context, Trampoline, GllContinuation) function;
   final Context context;
   final Trampoline trampoline;
-  final Continuation continuation;
+  final GllContinuation continuation;
 
-  const ParserCall(this.parser, this.context, this.trampoline, this.continuation);
+  const GllParserCall(this.function, this.context, this.trampoline, this.continuation);
 
   void call() {
-    ticks++;
-    // ignore: deprecated_member_use_from_same_package
-    parser.parseGll(context, trampoline, continuation);
+    function(context, trampoline, continuation);
   }
 }

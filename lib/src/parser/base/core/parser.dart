@@ -27,7 +27,7 @@ abstract class Parser {
   Parser transformChildren(TransformHandler handler, HashMap<Parser, Parser> transformed);
   @Deprecated("Use the 'pegApply' method")
   Context parsePeg(Context context, ParserMutable mutable);
-  void parseGll(Context context, Trampoline trampoline, Continuation continuation);
+  void parseGll(Context context, Trampoline trampoline, GllContinuation continuation);
 
   @internal
   MemoizationEntry? recall(int index, Context context, ParserMutable mutable) {
