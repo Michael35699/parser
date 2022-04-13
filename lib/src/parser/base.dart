@@ -24,6 +24,7 @@ export "base/data_set/context.dart";
 export "base/data_set/pop.dart";
 export "base/data_set/push.dart";
 export "base/drop/drop_left.dart";
+export "base/drop/drop_left_right.dart";
 export "base/drop/drop_right.dart";
 export "base/indent/align_point.dart";
 export "base/indent/dedent.dart";

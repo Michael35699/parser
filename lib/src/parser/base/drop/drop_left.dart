@@ -27,12 +27,12 @@ class DropLeftParser extends WrapParser with SequentialParser {
 
 extension DropLeftParserExtension on Parser {
   DropLeftParser dropLeft(Object right) => DropLeftParser(this, right.$);
-  DropLeftParser operator >>(Object right) => dropLeft(right);
+  Parser operator >>(Object right) => dropLeft(right);
 }
 
 extension LazyDropLeftParserExtension on LazyParser {
   DropLeftParser dropLeft(Object right) => this.$.dropLeft(right);
-  DropLeftParser operator >>(Object right) => this.$ >> right;
+  Parser operator >>(Object right) => this.$ >> right;
 }
 
 extension StringDropLeftParserExtension on String {
