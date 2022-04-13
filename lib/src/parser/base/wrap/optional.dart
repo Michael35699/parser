@@ -8,13 +8,24 @@ class OptionalParser extends WrapParser {
   OptionalParser.empty() : super(<Parser>[]);
 
   @override
-  Context parse(Context context, ParserMutable mutable) {
-    Context result = parser.apply(context, mutable);
+  Context parsePeg(Context context, ParserMutable mutable) {
+    Context result = parser.pegApply(context, mutable);
     if (result is! ContextFailure) {
       return result;
     } else {
       return context.success(null);
     }
+  }
+
+  @override
+  void parseGll(Context context, Trampoline trampoline, Continuation continuation) {
+    trampoline.push(parser, context, (Context context) {
+      if (context is! ContextFailure) {
+        continuation(context);
+      } else {
+        continuation(context.success(null));
+      }
+    });
   }
 
   @override

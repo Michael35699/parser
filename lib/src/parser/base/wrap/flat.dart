@@ -8,13 +8,24 @@ class FlatParser extends WrapParser {
   FlatParser.empty() : super(<Parser>[]);
 
   @override
-  Context parse(Context context, ParserMutable mutable) {
-    Context result = parser.apply(context, mutable);
+  Context parsePeg(Context context, ParserMutable mutable) {
+    Context result = parser.pegApply(context, mutable);
 
     if (result is ContextSuccess) {
       return result.success(result.state.input.substring(context.state.index, result.state.index));
     }
     return result;
+  }
+
+  @override
+  void parseGll(Context context, Trampoline trampoline, Continuation continuation) {
+    trampoline.push(parser, context, (Context context) {
+      if (context is ContextSuccess) {
+        continuation(context.success(context.state.input.substring(context.state.index, context.state.index)));
+      } else {
+        continuation(context);
+      }
+    });
   }
 
   @override

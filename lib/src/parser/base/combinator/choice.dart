@@ -23,11 +23,11 @@ class ChoiceParser extends CombinatorParser {
   }
 
   @override
-  Context parse(Context context, ParserMutable mutable) {
+  Context parsePeg(Context context, ParserMutable mutable) {
     ContextFailure? longestError;
 
     for (Parser parser in children) {
-      Context ctx = parser.apply(context, mutable);
+      Context ctx = parser.pegApply(context, mutable);
 
       if (ctx is ContextFailure) {
         longestError = determineContext(ctx, longestError);
@@ -37,6 +37,13 @@ class ChoiceParser extends CombinatorParser {
     }
 
     return longestError!;
+  }
+
+  @override
+  void parseGll(Context context, Trampoline trampoline, Continuation continuation) {
+    for (Parser parser in children) {
+      trampoline.push(parser, context, continuation);
+    }
   }
 
   @override

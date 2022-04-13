@@ -9,13 +9,24 @@ class ExceptParser extends WrapParser {
   ExceptParser.empty() : super(<Parser>[]);
 
   @override
-  Context parse(Context context, ParserMutable mutable) {
-    Context result = except.apply(context, mutable).maybeMap(
-          failure: (_) => parser.apply(context, mutable),
+  Context parsePeg(Context context, ParserMutable mutable) {
+    Context result = except.pegApply(context, mutable).maybeMap(
+          failure: (_) => parser.pegApply(context, mutable),
           orElse: () => context.failure("Failed except parser"),
         );
 
     return result;
+  }
+
+  @override
+  void parseGll(Context context, Trampoline trampoline, Continuation continuation) {
+    trampoline.push(except, context, (Context ctx) {
+      ctx.map(
+        success: (ContextSuccess ctx) => continuation(context.failure("Failed except parser")),
+        ignore: (ContextIgnore ctx) => continuation(context.failure("Failed except parser")),
+        failure: (ContextFailure ctx) => trampoline.push(parser, context, continuation),
+      );
+    });
   }
 
   @override

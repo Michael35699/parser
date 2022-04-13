@@ -17,5 +17,10 @@ class AnnotationParser extends WrapParser with UnwrappedParser {
   AnnotationParser empty() => AnnotationParser.empty();
 
   @override
-  Context parse(Context context, ParserMutable mutable) => throw UnsupportedError("Annotation parsers can not parse!");
+  Context parsePeg(Context context, ParserMutable mutable) =>
+      throw UnsupportedError("Annotation parsers can not parse!");
+
+  @override
+  void parseGll(Context context, Trampoline trampoline, Continuation continuation) =>
+      throw UnsupportedError("Annotation parsers can not parse!");
 }

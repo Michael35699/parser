@@ -4,13 +4,13 @@ class SequenceParser extends CombinatorParser with SequentialParser {
   SequenceParser(List<Parser> children) : super(children);
 
   @override
-  Context parse(Context context, ParserMutable mutable) {
+  Context parsePeg(Context context, ParserMutable mutable) {
     List<ParseResult> mapped = <ParseResult>[];
     List<ParseResult> unmapped = <ParseResult>[];
 
     Context ctx = context;
     for (int i = 0; i < children.length; i++) {
-      ctx = children[i].apply(ctx, mutable);
+      ctx = children[i].pegApply(ctx, mutable);
 
       if (ctx.isFailure) {
         return ctx;
@@ -20,6 +20,27 @@ class SequenceParser extends CombinatorParser with SequentialParser {
     }
 
     return ctx.success(mapped, unmapped);
+  }
+
+  @override
+  void parseGll(Context context, Trampoline trampoline, Continuation continuation) {
+    void run(Context context, int i, List<ParseResult> mapped, List<ParseResult> unmapped) {
+      if (i >= children.length) {
+        return continuation(context.success(mapped, unmapped));
+      }
+
+      trampoline.push(children[i], context, (Context context) {
+        if (context is ContextSuccess) {
+          return run(context, i + 1, <ParseResult>[...mapped, context.mappedResult],
+              <ParseResult>[...unmapped, context.unmappedResult]);
+        } else if (context is ContextIgnore) {
+          return run(context, i + 1, mapped, unmapped);
+        }
+        return continuation(context);
+      });
+    }
+
+    run(context, 0, <ParseResult>[], <ParseResult>[]);
   }
 
   @override

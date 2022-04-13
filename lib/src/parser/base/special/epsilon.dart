@@ -7,7 +7,10 @@ class EpsilonParser extends SpecialParser {
   EpsilonParser._();
 
   @override
-  Context parse(Context context, ParserMutable mutable) => context.success("");
+  Context parsePeg(Context context, ParserMutable mutable) => context.success("");
+
+  @override
+  void parseGll(Context context, Trampoline trampoline, Continuation continuation) => continuation(context.success(""));
 
   @override
   String toString() => "ε";

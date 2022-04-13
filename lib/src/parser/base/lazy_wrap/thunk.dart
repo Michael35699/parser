@@ -18,10 +18,17 @@ class ThunkParser extends LazyLoadParser {
         super.eager(parser);
 
   @override
-  Context parse(Context context, ParserMutable mutable) {
+  Context parsePeg(Context context, ParserMutable mutable) {
     print("If you're seeing this, something went wrong.");
 
-    return computed.apply(context, mutable);
+    return computed.pegApply(context, mutable);
+  }
+
+  @override
+  void parseGll(Context context, Trampoline trampoline, Continuation continuation) {
+    print("If you're seeing this, something went wrong.");
+
+    trampoline.push(computed, context, continuation);
   }
 
   @override

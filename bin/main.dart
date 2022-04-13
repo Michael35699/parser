@@ -1,10 +1,16 @@
-import "package:parser/example/parser/json/json.dart" as json;
 import "package:parser/internal_all.dart";
 
 part "utils.dart";
 
+Parser S() => A & "a" | "a";
+Parser A() => S & "d" | "d";
+
 void main() {
-  Parser built = json.jsonParser.build().flat();
-  Analyzer(built).deepCheck();
-  print << built.run("""{"one": 1, "two": [2, 3], "four": [5, 6, 7]}""");
+  const String input = "adadadadada";
+  time.named("PEG", () {
+    print << Parser.runPeg(S(), input, end: false);
+  });
+  time.named("GLL", () {
+    Parser.runGll(S(), input).forEach(print);
+  });
 }

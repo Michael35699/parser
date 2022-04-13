@@ -9,8 +9,15 @@ class ContinuationParser extends WrapParser {
   ContinuationParser.empty(this.handler) : super(<Parser>[]);
 
   @override
-  Context parse(Context context, ParserMutable mutable) {
-    return handler((Context ctx) => parser.apply(ctx, mutable), context);
+  Context parsePeg(Context context, ParserMutable mutable) {
+    return handler((Context ctx) => parser.pegApply(ctx, mutable), context);
+  }
+
+  @override
+  void parseGll(Context context, Trampoline trampoline, Continuation continuation) {
+    log.todo("Implement ContinuationParser for GLL.");
+    // return trampoline.push(parser, );
+    // return handler((Context ctx) => parser.pegApply(ctx, mutable), context);
   }
 
   @override

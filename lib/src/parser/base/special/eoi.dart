@@ -7,12 +7,21 @@ class EoiParser extends SpecialParser {
   EoiParser._();
 
   @override
-  Context parse(Context context, ParserMutable mutable) {
+  Context parsePeg(Context context, ParserMutable mutable) {
     if (context.state.index >= context.state.input.length) {
       return context.success(#eoi);
     }
 
     return context.failure(expected("end of input"));
+  }
+
+  @override
+  void parseGll(Context context, Trampoline trampoline, Continuation continuation) {
+    if (context.state.index >= context.state.input.length) {
+      continuation(context.success(#eoi));
+    } else {
+      continuation(context.failure(expected("end of input")));
+    }
   }
 
   @override
@@ -24,13 +33,13 @@ EoiParser eoi() => EoiParser();
 EoiParser end() => EoiParser();
 
 extension EoiExtension on Parser {
-  Parser end() => this << eoi;
+  Parser end() => this << eoi();
 }
 
 extension LazyEoiExtension on Lazy<Parser> {
-  Parser end() => this.$ << eoi;
+  Parser end() => this.$ << eoi();
 }
 
 extension StringEoiExtension on String {
-  Parser end() => this.$ << eoi;
+  Parser end() => this.$ << eoi();
 }

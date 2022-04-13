@@ -15,24 +15,24 @@ class CycleSeparatedParser extends WrapParser with CyclicParser {
   CycleSeparatedParser.empty() : super(<Parser>[]);
 
   @override
-  Context parse(Context context, ParserMutable mutable) {
+  Context parsePeg(Context context, ParserMutable mutable) {
     List<ParseResult> mapped = <ParseResult>[];
     List<ParseResult> unmapped = <ParseResult>[];
 
-    Context ctx = parser.apply(context, mutable);
+    Context ctx = parser.pegApply(context, mutable);
     if (ctx is ContextFailure) {
       return ctx;
     }
     ctx.addResult(mapped, unmapped);
 
     for (;;) {
-      Context temp1 = separator.apply(ctx, mutable);
+      Context temp1 = separator.pegApply(ctx, mutable);
       if (temp1 is ContextFailure) {
         break;
       }
       temp1.addResult(mapped, unmapped);
 
-      Context temp2 = parser.apply(temp1, mutable);
+      Context temp2 = parser.pegApply(temp1, mutable);
       if (temp2 is ContextFailure) {
         break;
       }
@@ -42,6 +42,54 @@ class CycleSeparatedParser extends WrapParser with CyclicParser {
     }
 
     return ctx.success(mapped, unmapped);
+  }
+
+  @override
+  void parseGll(Context context, Trampoline trampoline, Continuation continuation) {
+    void run(Context context, List<ParseResult> mapped, List<ParseResult> unmapped) {
+      void parseMain(Context innerContext, ParseResult separator, {required bool putSeparator}) {
+        trampoline.push(parser, innerContext, (Context result) {
+          if (result is ContextSuccess) {
+            run(result, <ParseResult>[
+              ...mapped,
+              if (putSeparator) separator,
+              result.mappedResult,
+            ], <ParseResult>[
+              ...unmapped,
+              if (putSeparator) separator,
+              result.unmappedResult,
+            ]);
+          } else if (result is ContextIgnore) {
+            run(result, <ParseResult>[
+              ...mapped,
+              if (putSeparator) separator,
+            ], <ParseResult>[
+              ...unmapped,
+              if (putSeparator) separator,
+            ]);
+          } else {
+            continuation(context.success(mapped, unmapped));
+          }
+        });
+      }
+
+      trampoline.push(separator, context, (Context r) {
+        r.map(
+          success: (ContextSuccess context) => parseMain(context, context.mappedResult, putSeparator: true),
+          ignore: (ContextIgnore context) => parseMain(context, null, putSeparator: false),
+          failure: (ContextFailure context) => continuation(context.success(mapped, unmapped)),
+        );
+      });
+    }
+
+    trampoline.push(parser, context, (Context context) {
+      context.map(
+        success: (ContextSuccess context) =>
+            run(context, <ParseResult>[context.mappedResult], <ParseResult>[context.unmappedResult]),
+        ignore: (ContextIgnore context) => run(context, <ParseResult>[], <ParseResult>[]),
+        failure: continuation,
+      );
+    });
   }
 
   @override

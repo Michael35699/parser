@@ -21,16 +21,17 @@ abstract class Parser {
   bool memoize = false;
   bool built = false;
 
-  @Deprecated("Use the 'parseCtx' method")
-  Context parse(Context context, ParserMutable mutable);
   @Deprecated("Use the 'clone' method")
   Parser cloneSelf(HashMap<Parser, Parser> cloned);
   @Deprecated("Use the 'transform' method")
   Parser transformChildren(TransformHandler handler, HashMap<Parser, Parser> transformed);
+  @Deprecated("Use the 'pegApply' method")
+  Context parsePeg(Context context, ParserMutable mutable);
+  void parseGll(Context context, Trampoline trampoline, Continuation continuation);
 
   @internal
   MemoizationEntry? recall(int index, Context context, ParserMutable mutable) {
-    MemoizationEntry? entry = mutable.memoMap.putIfAbsent(this, MemoizationSubMap.new)[index];
+    MemoizationEntry? entry = mutable.memoMap.putIfAbsent(this, PegMemoizationSubMap.new)[index];
     Head? head = mutable.heads[index];
 
     // If the head is not being grown, return the memoized result.
@@ -46,7 +47,7 @@ abstract class Parser {
 
     // Remove the current parser from the head's evaluation set.
     head.evaluationSet.remove(this);
-    entry!.value = parse(context, mutable);
+    entry!.value = parsePeg(context, mutable);
 
     return entry;
   }
@@ -74,7 +75,7 @@ abstract class Parser {
     /// "Grow the seed."
     for (;;) {
       head.evaluationSet.addAll(head.involvedSet);
-      Context result = parse(seedContext.index(index), mutable);
+      Context result = parsePeg(seedContext.index(index), mutable);
       if (result.state.index <= seedContext.state.index) {
         break;
       }
@@ -96,11 +97,11 @@ abstract class Parser {
       mutable.parserCallStack.add(leftRecursion);
 
       /// Save a new entry on `position` with the LR instance.
-      MemoizationSubMap subMap = mutable.memoMap.putIfAbsent(this, MemoizationSubMap.new);
+      PegMemoizationSubMap subMap = mutable.memoMap.putIfAbsent(this, PegMemoizationSubMap.new);
       subMap[index] = entry = leftRecursion.entry();
 
       /// Evaluate the parser.
-      Context ans = parse(context, mutable);
+      Context ans = parsePeg(context, mutable);
 
       /// Remove the created LR instance from the stack.
       mutable.parserCallStack.removeLast();
@@ -146,12 +147,14 @@ abstract class Parser {
   }
 
   @internal
-  Context apply(Context context, ParserMutable mutable) {
+  Context pegApply(Context context, ParserMutable mutable) {
     if (context is ContextFailure) {
       return context;
     }
 
-    return memoize ? parseMemoized(context, mutable) : parse(context, mutable);
+    return memoize //
+        ? parseMemoized(context, mutable)
+        : parsePeg(context, mutable);
   }
 
   @mustCallSuper
@@ -255,8 +258,8 @@ abstract class Parser {
     return Parser.transformType(parser, (WrapParser p) => p.base);
   }
 
-  static T run<T extends ParseResult>(Parser parser, String input, {bool? map, bool? end}) {
-    Context result = runCtx(parser, input, map: map, end: end);
+  static T runPeg<T extends ParseResult>(Parser parser, String input, {bool? map, bool? end}) {
+    Context result = runCtxPeg(parser, input, map: map, end: end);
 
     if (result is ContextFailure) {
       throw ParseException(result.message);
@@ -270,8 +273,8 @@ abstract class Parser {
     throw ParseException("Detected ignore context. Check the grammar.");
   }
 
-  static Context runCtx(Parser parser, String input, {bool? map, bool? end}) {
-    end ??= false;
+  static Context runCtxPeg(Parser parser, String input, {bool? map, bool? end}) {
+    end ??= true;
     map ??= true;
 
     late Parser built = parser.build();
@@ -279,12 +282,69 @@ abstract class Parser {
     ParserMutable mutable = ParserMutable();
     Parser completed = end ? built.end() : built;
     Context context = Context.ignore(State(input: formatted, map: map));
-    Context result = completed.apply(context, mutable);
+    Context result = completed.pegApply(context, mutable);
 
     if (result is ContextFailure) {
       return result.withFailureMessage();
     } else {
       return result;
+    }
+  }
+
+  static Iterable<T> runGll<T extends ParseResult>(Parser parser, String input, {bool? map, bool? end}) sync* {
+    Iterable<Context> results = Parser.runCtxGll(parser, input, map: map, end: end);
+    map ??= true;
+
+    for (Context ctx in results) {
+      if (ctx is ContextSuccess) {
+        ParseResult result = map ? ctx.mappedResult : ctx.unmappedResult;
+
+        yield result as T;
+      } else if (ctx is ContextFailure) {
+        throw ParseException(ctx.message);
+      }
+    }
+  }
+
+  static Iterable<Context> runCtxGll(Parser parser, String input, {bool? map, bool? end}) sync* {
+    end ??= true;
+    map ??= true;
+
+    ContextFailure? longestFailure;
+    late Parser built = parser.build();
+    String formatted = input.replaceAll("\r", "").unindent();
+    Trampoline trampoline = Trampoline();
+    Parser completed = end ? built.end() : built;
+    Context context = Context.ignore(State(input: formatted, map: map));
+    List<ContextSuccess> successes = <ContextSuccess>[];
+
+    trampoline.push(completed, context, (Context context) {
+      if (context is ContextSuccess) {
+        successes.add(context);
+      } else if (context is ContextFailure) {
+        longestFailure = longestFailure == null
+            ? context
+            : longestFailure!.state.index < context.state.index
+                ? context
+                : longestFailure;
+      }
+    });
+
+    bool hasYielded = false;
+    do {
+      while (successes.isEmpty && trampoline.hasNext()) {
+        trampoline.step();
+      }
+
+      while (successes.isNotEmpty) {
+        yield successes.removeAt(0);
+
+        hasYielded |= true;
+      }
+    } while (trampoline.hasNext());
+
+    if (!hasYielded && longestFailure != null) {
+      yield longestFailure!.withFailureMessage();
     }
   }
 
@@ -665,8 +725,8 @@ abstract class Parser {
 }
 
 extension SharedParserExtension<ST extends Parser> on ST {
-  T run<T extends ParseResult>(String input, {bool? map, bool? end}) => Parser.run(this, input, map: map, end: end);
-  Context runCtx(String input, {bool? map, bool? end}) => Parser.runCtx(this, input, map: map, end: end);
+  T run<T extends ParseResult>(String input, {bool? map, bool? end}) => Parser.runPeg(this, input, map: map, end: end);
+  Context runCtx(String input, {bool? map, bool? end}) => Parser.runCtxPeg(this, input, map: map, end: end);
   String generateAsciiTree({Map<Parser, String>? marks}) => Parser.generateAsciiTree(this, marks: marks);
 
   ST build() => Parser.build(this);
@@ -706,8 +766,9 @@ extension SharedParserExtension<ST extends Parser> on ST {
 }
 
 extension LazyParserMethodsExtension on Lazy<Parser> {
-  T run<T extends ParseResult>(String input, {bool? map, bool? end}) => Parser.run(this.$, input, map: map, end: end);
-  Context runCtx(String input, {bool? map, bool? end}) => Parser.runCtx(this.$, input, map: map, end: end);
+  T run<T extends ParseResult>(String input, {bool? map, bool? end}) =>
+      Parser.runPeg(this.$, input, map: map, end: end);
+  Context runCtx(String input, {bool? map, bool? end}) => Parser.runCtxPeg(this.$, input, map: map, end: end);
   String generateAsciiTree({Map<Parser, String>? marks}) => Parser.generateAsciiTree(this.$, marks: marks);
 
   Parser build() => Parser.build(this.$);

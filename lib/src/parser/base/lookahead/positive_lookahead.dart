@@ -8,12 +8,23 @@ class PositiveLookaheadParser extends WrapParser {
   PositiveLookaheadParser.empty() : super(<Parser>[]);
 
   @override
-  Context parse(Context context, ParserMutable mutable) {
-    if (parser.apply(context, mutable) is! ContextFailure) {
+  Context parsePeg(Context context, ParserMutable mutable) {
+    if (parser.pegApply(context, mutable) is! ContextFailure) {
       return context.success(#positiveLookahead);
     } else {
       return context.failure("Positive lookahead failure.");
     }
+  }
+
+  @override
+  void parseGll(Context context, Trampoline trampoline, Continuation continuation) {
+    trampoline.push(parser, context, (Context ctx) {
+      if (ctx is! ContextFailure) {
+        continuation(context.success(#positiveLookahead));
+      } else {
+        continuation(context.failure("Positive lookahead failure."));
+      }
+    });
   }
 
   @override

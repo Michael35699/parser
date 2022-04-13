@@ -4,7 +4,10 @@ class IgnoreParser extends SpecialParser {
   IgnoreParser();
 
   @override
-  Context parse(Context context, ParserMutable mutable) => context.ignore();
+  Context parsePeg(Context context, ParserMutable mutable) => context.ignore();
+
+  @override
+  void parseGll(Context context, Trampoline trampoline, Continuation continuation) => continuation(context.ignore());
 }
 
 IgnoreParser ignore() => IgnoreParser();

@@ -11,13 +11,13 @@ class CycleNParser extends WrapParser with CyclicParser {
   CycleNParser.empty(this.count) : super(<Parser>[]);
 
   @override
-  Context parse(Context context, ParserMutable mutable) {
+  Context parsePeg(Context context, ParserMutable mutable) {
     List<ParseResult> mapped = <ParseResult>[];
     List<ParseResult> unmapped = <ParseResult>[];
 
     Context ctx = context;
     for (int i = 0; i < count; i++) {
-      ctx = parser.apply(ctx, mutable);
+      ctx = parser.pegApply(ctx, mutable);
       if (ctx is ContextFailure) {
         return ctx;
       }
@@ -26,6 +26,35 @@ class CycleNParser extends WrapParser with CyclicParser {
     }
 
     return ctx.success(mapped, unmapped);
+  }
+
+  @override
+  void parseGll(Context context, Trampoline trampoline, Continuation continuation) {
+    void run(Context context, List<ParseResult> mapped, List<ParseResult> unmapped, int count) {
+      if (count >= this.count) {
+        return continuation(context.success(mapped, mapped));
+      }
+
+      trampoline.push(parser, context, (Context context) {
+        if (context is ContextSuccess) {
+          run(context, <ParseResult>[...mapped, context.mappedResult],
+              <ParseResult>[...unmapped, context.unmappedResult], count + 1);
+        } else if (context is ContextIgnore) {
+          run(context, mapped, unmapped, count + 1);
+        } else {
+          continuation(context);
+        }
+      });
+    }
+
+    trampoline.push(parser, context, (Context context) {
+      context.map(
+        success: (ContextSuccess context) =>
+            run(context, <ParseResult>[context.mappedResult], <ParseResult>[context.unmappedResult], 1),
+        ignore: (ContextIgnore context) => run(context, <ParseResult>[], <ParseResult>[], 1),
+        failure: continuation,
+      );
+    });
   }
 
   @override

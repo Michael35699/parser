@@ -6,8 +6,12 @@ class ContextualParser<T> extends SpecialParser {
   ContextualParser(this.callback);
 
   @override
-  Context parse(Context context, ParserMutable mutable) =>
-      callback(context.state.dataSet.cast()).apply(context, mutable);
+  Context parsePeg(Context context, ParserMutable mutable) =>
+      callback(context.state.dataSet.cast()).pegApply(context, mutable);
+
+  @override
+  void parseGll(Context context, Trampoline trampoline, Continuation continuation) =>
+      trampoline.push(callback(context.state.dataSet.cast()), context, continuation);
 }
 
 ContextualParser<T> ctx<T>(Parser Function(Set<T>) callback) => ContextualParser<T>(callback);

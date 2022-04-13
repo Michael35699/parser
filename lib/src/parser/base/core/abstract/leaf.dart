@@ -12,7 +12,7 @@ abstract class LeafParser extends ChildlessParser {
 
   @nonVirtual
   @override
-  Context parse(Context context, ParserMutable mutable) {
+  Context parsePeg(Context context, ParserMutable mutable) {
     String input = context.state.input;
     int index = context.state.index;
 
@@ -24,6 +24,23 @@ abstract class LeafParser extends ChildlessParser {
       String result = input.substring(index, newIndex);
 
       return context.index(newIndex).success(result);
+    }
+  }
+
+  @nonVirtual
+  @override
+  void parseGll(Context context, Trampoline trampoline, Continuation continuation) {
+    String input = context.state.input;
+    int index = context.state.index;
+
+    int? newIndex = parseLeaf(input, index);
+
+    if (newIndex == null) {
+      continuation(context.failure(failureMessage));
+    } else {
+      String result = input.substring(index, newIndex);
+
+      continuation(context.index(newIndex).success(result));
     }
   }
 

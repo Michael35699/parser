@@ -4,7 +4,6 @@ export "context.dart";
 export "exception.dart";
 export "grammar.dart";
 export "mapper.dart";
-export "mutable.dart";
 export "src/parser/base.dart";
 export "src/parser/specialized.dart";
 export "src/parser/synthesized.dart";
