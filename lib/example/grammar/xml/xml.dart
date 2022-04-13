@@ -13,7 +13,7 @@ class XmlGrammar with Grammar {
 
   Parser tagAttributes() => whitespace >> tagAttribute.sep(~whitespace) | success(const <Object>[]);
   Parser tagAttribute() =>
-      identifier.trim & "=".t & string.$at(1).or(identifier) | //
+      identifier.trim & -"=".t & string.$at(1).or(identifier) | //
       identifier.trim & success("=") & success("true");
 
   Parser textNode() => textNodeChar.plus.$join();

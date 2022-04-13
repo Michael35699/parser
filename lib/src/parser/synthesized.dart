@@ -1,8 +1,3 @@
 library parser.peg.parser.synthesized;
 
-export "synthesized/complex/calculator/calculator.dart";
-export "synthesized/complex/json/json.dart";
-export "synthesized/complex/math/infix.dart";
-export "synthesized/complex/math/postfix.dart";
-export "synthesized/complex/math/prefix.dart";
-export "synthesized/simple/builtin/builtin.dart";
+export "synthesized/builtin/builtin.dart";

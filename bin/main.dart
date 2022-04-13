@@ -1,13 +1,9 @@
+import "package:parser_peg/example/parser/json/json.dart" as json;
 import "package:parser_peg/internal_all.dart";
 
 part "utils.dart";
 
-Parser infixMath() => _addition.$;
-Parser _addition() => _addition & "+" & _multiplication | _multiplication;
-Parser _multiplication() => _multiplication & "*" & _atomic | _atomic;
-Parser _atomic() => "[0-9]+".r ^ $type(int.parse) | "(".t & _addition & ")".t;
-
 void main() {
-  Parser built = calculatorParser.build();
-  print << built.simplified().generateAsciiTree();
+  Parser built = json.parser.build();
+  print << built.run("""{"one": 1, "two": [2, 3], "four": [5, 6, 7]}""");
 }

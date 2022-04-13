@@ -1,6 +1,7 @@
+import "package:parser_peg/example/grammar/xml/evaluator/node.dart";
+import "package:parser_peg/example/grammar/xml/evaluator/typedef.dart";
+import "package:parser_peg/example/grammar/xml/xml.dart";
 import "package:parser_peg/parser_peg.dart";
-import "package:parser_peg/src/grammar/example/xml/evaluator/node.dart";
-import "package:parser_peg/src/grammar/example/xml/evaluator/typedef.dart";
 
 class XmlEvaluator extends XmlGrammar {
   @override
@@ -27,7 +28,7 @@ class XmlEvaluator extends XmlGrammar {
   Parser tagAttributes() => super.tagAttributes.$type(List<XmlAttribute>.from);
 
   @override
-  Parser tagAttribute() => super.tagAttribute.$3((String k, _, String v) => XmlAttribute(k, v));
+  Parser tagAttribute() => super.tagAttribute.$2(XmlAttribute.new);
 
   @override
   Parser textNode() => super.textNode.$type(XmlNode.text);
