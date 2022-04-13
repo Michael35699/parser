@@ -902,9 +902,9 @@ extension GeneralParserExtension<T extends Object> on T {
 }
 
 extension RunParserMethodExtension<R> on T Function<T extends R>(String, {ParseMode? mode}) {
-  R pure(String input, {ParseMode? mode}) => this(input, mode: ParseMode.purePeg);
-  R linear(String input, {ParseMode? mode}) => this(input, mode: ParseMode.linearPeg);
-  R squared(String input, {ParseMode? mode}) => this(input, mode: ParseMode.squaredPeg);
+  T pure<T extends R>(String input, {ParseMode? mode}) => this(input, mode: ParseMode.purePeg);
+  T linear<T extends R>(String input, {ParseMode? mode}) => this(input, mode: ParseMode.linearPeg);
+  T squared<T extends R>(String input, {ParseMode? mode}) => this(input, mode: ParseMode.squaredPeg);
 }
 
 extension ContextRunParserMethodExtension<R> on Context Function(String, {ParseMode? mode}) {
