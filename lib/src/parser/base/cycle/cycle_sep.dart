@@ -1,11 +1,5 @@
 import "package:parser/internal_all.dart";
 
-// Parser cycleSeparatedParser(Parser parser, Parser separator) =>
-//     (parser.cache() & (separator.cache() & parser.cache()).star()).map(
-//         $2((ParseResult left, List<ParseResult> rest) =>
-//             <ParseResult>[left, for (List<ParseResult> item in rest.cast()) ...item]),
-//         replace: true);
-
 class CycleSeparatedParser extends WrapParser with CyclicParser {
   @override
   Parser get parser => children[0];
@@ -73,22 +67,25 @@ class CycleSeparatedParser extends WrapParser with CyclicParser {
         });
       }
 
-      trampoline.push(separator, context, (Context r) {
-        r.map(
-          success: (ContextSuccess context) => parseMain(context, context.mappedResult, putSeparator: true),
-          ignore: (ContextIgnore context) => parseMain(context, null, putSeparator: false),
-          failure: (ContextFailure context) => continuation(context.success(mapped, unmapped)),
-        );
+      trampoline.push(separator, context, (Context context) {
+        if (context is ContextSuccess) {
+          parseMain(context, context.mappedResult, putSeparator: true);
+        } else if (context is ContextIgnore) {
+          parseMain(context, null, putSeparator: false);
+        } else {
+          continuation(context.success(mapped, unmapped));
+        }
       });
     }
 
     trampoline.push(parser, context, (Context context) {
-      context.map(
-        success: (ContextSuccess context) =>
-            run(context, <ParseResult>[context.mappedResult], <ParseResult>[context.unmappedResult]),
-        ignore: (ContextIgnore context) => run(context, <ParseResult>[], <ParseResult>[]),
-        failure: continuation,
-      );
+      if (context is ContextSuccess) {
+        run(context, <ParseResult>[context.mappedResult], <ParseResult>[context.unmappedResult]);
+      } else if (context is ContextIgnore) {
+        run(context, <ParseResult>[], <ParseResult>[]);
+      } else {
+        continuation(context);
+      }
     });
   }
 

@@ -33,29 +33,25 @@ class CycleParser extends WrapParser with CyclicParser {
   @override
   void parseGll(Context context, Trampoline trampoline, GllContinuation continuation) {
     void run(Context context, List<ParseResult> mapped, List<ParseResult> unmapped) {
-      trampoline.push(parser, context, (Context result) {
-        result.map(
-          success: (ContextSuccess context) => run(
-            context,
-            <ParseResult>[...mapped, context.mappedResult],
-            <ParseResult>[...unmapped, context.unmappedResult],
-          ),
-          ignore: (ContextIgnore context) => run(context, mapped, unmapped),
-          failure: (ContextFailure context) => continuation(context.success(mapped, unmapped)),
-        );
+      trampoline.push(parser, context, (Context context) {
+        if (context is ContextSuccess) {
+          run(context, mapped << context.mappedResult, unmapped << context.unmappedResult);
+        } else if (context is ContextIgnore) {
+          run(context, mapped, unmapped);
+        } else {
+          continuation(context.success(mapped, unmapped));
+        }
       });
     }
 
     trampoline.push(parser, context, (Context context) {
-      context.map(
-        success: (ContextSuccess context) => run(
-          context,
-          <ParseResult>[context.mappedResult],
-          <ParseResult>[context.unmappedResult],
-        ),
-        ignore: (ContextIgnore context) => run(context, <ParseResult>[], <ParseResult>[]),
-        failure: continuation,
-      );
+      if (context is ContextSuccess) {
+        run(context, <ParseResult>[context.mappedResult], <ParseResult>[context.unmappedResult]);
+      } else if (context is ContextIgnore) {
+        run(context, <ParseResult>[], <ParseResult>[]);
+      } else {
+        continuation(context);
+      }
     });
   }
 
