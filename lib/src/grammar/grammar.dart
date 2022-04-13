@@ -3,6 +3,10 @@ import "package:parser/internal_all.dart";
 mixin Grammar {
   Parser start();
 
-  T run<T extends Object?>(String input, {bool? map, bool? end}) => start().run<T>(input, map: map, end: end);
-  Context runCtx(String input, {bool? end}) => start().runCtx(input, end: end);
+  R run<R extends ParseResult>(String input) => Parser.runPeg(start.$, input);
+  Context runCtx(String input) => Parser.runCtxPeg(start.$, input);
+  R peg<R extends ParseResult>(String input, {ParseMode? mode}) => Parser.runPeg(start.$, input, mode: mode);
+  Context pegCtx(String input, {ParseMode? mode}) => Parser.runCtxPeg(start.$, input, mode: mode);
+  Iterable<R> gll<R extends ParseResult>(String input, {Symbol? gllRun}) => Parser.runGll(start.$, input);
+  Iterable<Context> gllCtx(String input, {Symbol? gllRun}) => Parser.runCtxGll(start.$, input);
 }

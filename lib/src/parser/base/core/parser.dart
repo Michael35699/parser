@@ -134,7 +134,8 @@ abstract class Parser {
         /// While the LR of the current left-recursive parser is not yet found,
         /// Assign all the `lrStack` items to have the `lHead` as their own head.
         /// Also, add the `rule` of `lrStack.item` to the `lHead.involvedSet`
-        for (PegLeftRecursion left in mutable.parserCallStack.reversed.takeWhile((PegLeftRecursion lr) => lr.head != head)) {
+        for (PegLeftRecursion left
+            in mutable.parserCallStack.reversed.takeWhile((PegLeftRecursion lr) => lr.head != head)) {
           head.involvedSet.add(left.parser);
           left.head = head;
         }
@@ -322,6 +323,7 @@ abstract class Parser {
 
   static T runPeg<T extends ParseResult>(Parser parser, String input, {bool? map, bool? end, ParseMode? mode}) {
     assert(mode != ParseMode.gll, "Running `ParseMode.gll` in runPeg method.");
+
     Context result = runCtxPeg(parser, input, map: map, end: end, mode: mode);
 
     if (result is ContextFailure) {
@@ -337,6 +339,8 @@ abstract class Parser {
   }
 
   static Context runCtxPeg(Parser parser, String input, {bool? map, bool? end, ParseMode? mode}) {
+    assert(mode != ParseMode.gll, "Running `ParseMode.gll` in runPeg method.");
+
     end ??= true;
     map ??= true;
     mode ??= ParseMode.squaredPeg;
@@ -789,8 +793,14 @@ abstract class Parser {
 }
 
 extension SharedParserExtension<ST extends Parser> on ST {
-  T run<T extends ParseResult>(String input, {bool? map, bool? end}) => Parser.runPeg(this, input, map: map, end: end);
-  Context runCtx(String input, {bool? map, bool? end}) => Parser.runCtxPeg(this, input, map: map, end: end);
+  R run<R extends ParseResult>(String input) => Parser.runPeg(this, input);
+  Context runCtx(String input) => Parser.runCtxPeg(this, input);
+
+  R peg<R extends ParseResult>(String input, {ParseMode? mode}) => Parser.runPeg(this, input, mode: mode);
+  Context pegCtx(String input, {ParseMode? mode}) => Parser.runCtxPeg(this, input, mode: mode);
+  Iterable<R> gll<R extends ParseResult>(String input, {Symbol? gllRun}) => Parser.runGll(this, input);
+  Iterable<Context> gllCtx(String input, {Symbol? gllRun}) => Parser.runCtxGll(this, input);
+
   String generateAsciiTree({Map<Parser, String>? marks}) => Parser.generateAsciiTree(this, marks: marks);
 
   ST build() => Parser.build(this);
@@ -830,9 +840,14 @@ extension SharedParserExtension<ST extends Parser> on ST {
 }
 
 extension LazyParserMethodsExtension on Lazy<Parser> {
-  T run<T extends ParseResult>(String input, {bool? map, bool? end}) =>
-      Parser.runPeg(this.$, input, map: map, end: end);
-  Context runCtx(String input, {bool? map, bool? end}) => Parser.runCtxPeg(this.$, input, map: map, end: end);
+  R run<R extends ParseResult>(String input) => Parser.runPeg(this.$, input);
+  Context runCtx(String input) => Parser.runCtxPeg(this.$, input);
+
+  R peg<R extends ParseResult>(String input, {ParseMode? mode}) => Parser.runPeg(this.$, input, mode: mode);
+  Context pegCtx(String input, {ParseMode? mode}) => Parser.runCtxPeg(this.$, input, mode: mode);
+  Iterable<R> gll<R extends ParseResult>(String input, {Symbol? gllRun}) => Parser.runGll(this.$, input);
+  Iterable<Context> gllCtx(String input, {Symbol? gllRun}) => Parser.runCtxGll(this.$, input);
+
   String generateAsciiTree({Map<Parser, String>? marks}) => Parser.generateAsciiTree(this.$, marks: marks);
 
   Parser build() => Parser.build(this.$);
@@ -886,6 +901,14 @@ extension GeneralParserExtension<T extends Object> on T {
   Parser get $ => Parser.resolve(this);
 }
 
-extension RunParserMethodExtension<R> on T Function<T extends R>(String, {bool? map, bool? end}) {
-  R unmapped(String input, {bool? map, bool? end}) => this(input, map: false, end: end);
+extension RunParserMethodExtension<R> on T Function<T extends R>(String, {ParseMode? mode}) {
+  R pure(String input, {ParseMode? mode}) => this(input, mode: ParseMode.purePeg);
+  R linear(String input, {ParseMode? mode}) => this(input, mode: ParseMode.linearPeg);
+  R squared(String input, {ParseMode? mode}) => this(input, mode: ParseMode.squaredPeg);
+}
+
+extension ContextRunParserMethodExtension<R> on Context Function(String, {ParseMode? mode}) {
+  Context pure(String input, {ParseMode? mode}) => this(input, mode: ParseMode.purePeg);
+  Context linear(String input, {ParseMode? mode}) => this(input, mode: ParseMode.linearPeg);
+  Context squared(String input, {ParseMode? mode}) => this(input, mode: ParseMode.squaredPeg);
 }

@@ -88,10 +88,10 @@ class TextGrammarDefinition with Grammar {
 extension ParserExtension on String {
   Parser parserString([Map<String, MapFunction> mapFunctions = const <String, MapFunction>{}]) {
     Environment env = Environment();
-    print(TextGrammarDefinition(env).value.run.unmapped(this));
-    print(TextGrammarDefinition(env).value.run<Parser>(this).generateAsciiTree());
+    print(TextGrammarDefinition(env).value.unmapped.peg(this));
+    print(TextGrammarDefinition(env).value.peg<Parser>(this).generateAsciiTree());
     throw Exception("Unfinished.");
-    Parser? result = TextGrammarDefinition(env).run(this);
+    Parser? result = TextGrammarDefinition(env).peg(this);
 
     return result ?? (throw Exception("Rule 'start' is not defined."));
   }

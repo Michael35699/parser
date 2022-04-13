@@ -42,7 +42,7 @@ class XmlTagStart {
 }
 
 extension XmlHelperExtension on String {
-  String get stripXml => XmlEvaluator().start.runCtx(this).maybeWhen<String>(
+  String get stripXml => XmlEvaluator().start.pegCtx(this).maybeWhen<String>(
         success: (_, dynamic r, __) => (r as XmlFragmentNode).textContent,
         orElse: () => this,
       );
