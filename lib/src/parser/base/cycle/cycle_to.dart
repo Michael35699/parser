@@ -1,4 +1,4 @@
-import "package:parser_peg/internal_all.dart";
+import "package:parser/internal_all.dart";
 
 class CycleToParser extends WrapParser with CyclicParser {
   @override
@@ -9,26 +9,26 @@ class CycleToParser extends WrapParser with CyclicParser {
   CycleToParser.empty() : super(<Parser>[]);
 
   @override
-  Context parse(Context context, ParserMutable mutable) {
+  Context parsePeg(Context context, PegParserMutable mutable) {
     List<ParseResult> mapped = <ParseResult>[];
     List<ParseResult> unmapped = <ParseResult>[];
     Context ctx = context;
-    if (delimiter.apply(ctx, mutable) is! ContextFailure) {
+    if (delimiter.pegApply(ctx, mutable) is! ContextFailure) {
       return ctx.failure("Delimiter detected");
     }
 
-    ctx = parser.apply(ctx, mutable);
+    ctx = parser.pegApply(ctx, mutable);
     if (ctx.isFailure) {
       return ctx;
     }
 
     ctx.addResult(mapped, unmapped);
     for (;;) {
-      if (delimiter.apply(ctx, mutable) is! ContextFailure) {
+      if (delimiter.pegApply(ctx, mutable) is! ContextFailure) {
         break;
       }
 
-      Context temp = parser.apply(ctx, mutable);
+      Context temp = parser.pegApply(ctx, mutable);
       if (ctx.isFailure) {
         break;
       }
@@ -37,6 +37,51 @@ class CycleToParser extends WrapParser with CyclicParser {
     }
 
     return ctx.success(mapped, unmapped);
+  }
+
+  @override
+  void parseGll(Context context, Trampoline trampoline, GllContinuation continuation) {
+    void run(Context context, List<ParseResult> mapped, List<ParseResult> unmapped) {
+      trampoline.push(delimiter, context, (Context result) {
+        result.map(
+          success: (ContextSuccess result) => continuation(context.success(mapped, unmapped)),
+          ignore: (ContextIgnore result) => continuation(result.success(mapped, unmapped)),
+          failure: (ContextFailure result) {
+            trampoline.push(parser, context, (Context result) {
+              result.map(
+                success: (ContextSuccess context) => run(
+                  context,
+                  <ParseResult>[...mapped, context.mappedResult],
+                  <ParseResult>[...unmapped, context.unmappedResult],
+                ),
+                ignore: (ContextIgnore context) => run(context, mapped, unmapped),
+                failure: continuation,
+              );
+            });
+          },
+        );
+      });
+    }
+
+    trampoline.push(delimiter, context, (Context context) {
+      context.map(
+        success: (ContextSuccess context) => continuation(context.failure(unexpected("delimiter"))),
+        ignore: (ContextIgnore context) => continuation(context.failure(unexpected("delimiter"))),
+        failure: (ContextFailure context) {
+          trampoline.push(parser, context, (Context context) {
+            context.map(
+              success: (ContextSuccess context) => run(
+                context,
+                <ParseResult>[context.mappedResult],
+                <ParseResult>[context.unmappedResult],
+              ),
+              ignore: (ContextIgnore context) => run(context, <ParseResult>[], <ParseResult>[]),
+              failure: continuation,
+            );
+          });
+        },
+      );
+    });
   }
 
   @override

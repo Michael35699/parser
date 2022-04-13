@@ -1,4 +1,4 @@
-import "package:parser_peg/internal_all.dart";
+import "package:parser/internal_all.dart";
 
 class WithPrecedenceParser extends WrapParser {
   final num precedence;
@@ -9,13 +9,23 @@ class WithPrecedenceParser extends WrapParser {
   WithPrecedenceParser.empty(this.precedence) : super(<Parser>[]);
 
   @override
-  Context parse(Context context, ParserMutable mutable) {
+  Context parsePeg(Context context, PegParserMutable mutable) {
     num searchPrecedence = context.state.precedence;
     if (searchPrecedence < precedence) {
       return context.failure("Search precedence '$searchPrecedence' is lower than '$precedence'");
     }
 
-    return parser.apply(context, mutable);
+    return parser.pegApply(context, mutable);
+  }
+
+  @override
+  void parseGll(Context context, Trampoline trampoline, GllContinuation continuation) {
+    num searchPrecedence = context.state.precedence;
+    if (searchPrecedence < precedence) {
+      return continuation(context.failure("Search precedence '$searchPrecedence' is lower than '$precedence'"));
+    }
+
+    return trampoline.push(parser, context, continuation);
   }
 
   @override

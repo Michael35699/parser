@@ -1,4 +1,4 @@
-import "package:parser_peg/internal_all.dart";
+import "package:parser/internal_all.dart";
 
 class DropRightParser extends WrapParser with SequentialParser {
   @override
@@ -9,13 +9,13 @@ class DropRightParser extends WrapParser with SequentialParser {
   DropRightParser.empty() : super(<Parser>[]);
 
   @override
-  Context parse(Context context, ParserMutable mutable) {
-    Context ctx = parser.apply(context, mutable);
+  Context parsePeg(Context context, PegParserMutable mutable) {
+    Context ctx = parser.pegApply(context, mutable);
     if (ctx is ContextFailure) {
       return ctx;
     }
 
-    Context last = right.apply(ctx, mutable);
+    Context last = right.pegApply(ctx, mutable);
     if (last is ContextFailure) {
       return last;
     }
@@ -25,6 +25,31 @@ class DropRightParser extends WrapParser with SequentialParser {
     }
 
     return last;
+  }
+
+  @override
+  void parseGll(Context context, Trampoline trampoline, GllContinuation continuation) {
+    void runRight(Context nextContext, ParseResult mapped, ParseResult unmapped, {required bool ignore}) {
+      trampoline.push(right, nextContext, (Context context) {
+        late Context resultContext = ignore ? context.ignore() : context.success(mapped, unmapped);
+
+        if (context is! ContextFailure) {
+          continuation(resultContext);
+        } else {
+          continuation(context);
+        }
+      });
+    }
+
+    trampoline.push(parser, context, (Context context) {
+      if (context is ContextSuccess) {
+        runRight(context, context.mappedResult, context.unmappedResult, ignore: false);
+      } else if (context is ContextIgnore) {
+        runRight(context, null, null, ignore: true);
+      } else {
+        continuation(context);
+      }
+    });
   }
 
   @override

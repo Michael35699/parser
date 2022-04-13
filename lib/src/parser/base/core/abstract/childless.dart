@@ -1,7 +1,7 @@
 import "dart:collection";
 
 import "package:freezed_annotation/freezed_annotation.dart";
-import "package:parser_peg/internal_all.dart";
+import "package:parser/internal_all.dart";
 
 abstract class ChildlessParser extends Parser {
   @override

@@ -1,4 +1,4 @@
-import "package:parser_peg/internal_all.dart";
+import "package:parser/internal_all.dart";
 
 class DropParser extends WrapParser {
   @override
@@ -8,14 +8,25 @@ class DropParser extends WrapParser {
   DropParser.empty() : super(<Parser>[]);
 
   @override
-  Context parse(Context context, ParserMutable mutable) {
-    Context ctx = parser.apply(context, mutable);
+  Context parsePeg(Context context, PegParserMutable mutable) {
+    Context ctx = parser.pegApply(context, mutable);
 
     if (ctx is! ContextFailure) {
       return ctx.ignore();
     } else {
       return ctx;
     }
+  }
+
+  @override
+  void parseGll(Context context, Trampoline trampoline, GllContinuation continuation) {
+    trampoline.push(parser, context, (Context context) {
+      if (context is! ContextFailure) {
+        continuation(context.ignore());
+      } else {
+        continuation(context);
+      }
+    });
   }
 
   @override

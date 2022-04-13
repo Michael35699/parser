@@ -1,4 +1,4 @@
-import "package:parser_peg/internal_all.dart";
+import "package:parser/internal_all.dart";
 
 class EpsilonParser extends SpecialParser {
   static final EpsilonParser singleton = EpsilonParser._();
@@ -7,7 +7,10 @@ class EpsilonParser extends SpecialParser {
   EpsilonParser._();
 
   @override
-  Context parse(Context context, ParserMutable mutable) => context.success("");
+  Context parsePeg(Context context, PegParserMutable mutable) => context.success("");
+
+  @override
+  void parseGll(Context context, Trampoline trampoline, GllContinuation continuation) => continuation(context.success(""));
 
   @override
   String toString() => "ε";

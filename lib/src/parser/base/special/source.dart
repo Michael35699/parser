@@ -1,4 +1,4 @@
-import "package:parser_peg/internal_all.dart";
+import "package:parser/internal_all.dart";
 
 class SourceParser extends SpecialParser {
   static final SourceParser singleton = SourceParser._();
@@ -7,12 +7,21 @@ class SourceParser extends SpecialParser {
   SourceParser._();
 
   @override
-  Context parse(Context context, ParserMutable mutable) {
+  Context parsePeg(Context context, PegParserMutable mutable) {
     if (context.state.index >= context.state.input.length) {
       return context.failure("Expected any character, received end of input");
     }
 
     return context.advance(1).success(context.state.input[context.state.index]);
+  }
+
+  @override
+  void parseGll(Context context, Trampoline trampoline, GllContinuation continuation) {
+    if (context.state.index >= context.state.input.length) {
+      continuation(context.failure("Expected any character, received end of input"));
+    } else {
+      continuation(context.advance(1).success(context.state.input[context.state.index]));
+    }
   }
 }
 

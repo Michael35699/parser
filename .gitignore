@@ -1,5 +1,4 @@
-parser_peg
-parser_peg.exe
+parser.exe
 .dart_tool
 .dart_tool/package_config.json
 .vscode

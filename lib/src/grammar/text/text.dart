@@ -1,6 +1,6 @@
-import "package:parser_peg/parser_peg.dart";
-import "package:parser_peg/src/grammar/text/expression/environment.dart";
-import "package:parser_peg/src/grammar/text/expression/node.dart";
+import "package:parser/parser.dart";
+import "package:parser/src/grammar/text/expression/environment.dart";
+import "package:parser/src/grammar/text/expression/node.dart";
 
 Never error(String message) => throw Exception(message);
 

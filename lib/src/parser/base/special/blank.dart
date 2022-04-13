@@ -1,4 +1,4 @@
-import "package:parser_peg/internal_all.dart";
+import "package:parser/internal_all.dart";
 
 class BlankParser extends SpecialParser {
   static final BlankParser singleton = BlankParser._();
@@ -7,7 +7,11 @@ class BlankParser extends SpecialParser {
   BlankParser._();
 
   @override
-  Context parse(Context context, ParserMutable mutable) => context.failure("Blank");
+  Context parsePeg(Context context, PegParserMutable mutable) => context.failure("Blank");
+
+  @override
+  void parseGll(Context context, Trampoline trampoline, GllContinuation continuation) =>
+      continuation(context.failure("Blank"));
 }
 
 BlankParser blank() => BlankParser();

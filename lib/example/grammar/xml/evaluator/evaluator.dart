@@ -1,7 +1,7 @@
-import "package:parser_peg/example/grammar/xml/evaluator/node.dart";
-import "package:parser_peg/example/grammar/xml/evaluator/typedef.dart";
-import "package:parser_peg/example/grammar/xml/xml.dart";
-import "package:parser_peg/parser_peg.dart";
+import "package:parser/example/grammar/xml/evaluator/node.dart";
+import "package:parser/example/grammar/xml/evaluator/typedef.dart";
+import "package:parser/example/grammar/xml/xml.dart";
+import "package:parser/parser.dart";
 
 class XmlEvaluator extends XmlGrammar {
   @override

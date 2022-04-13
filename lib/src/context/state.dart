@@ -1,4 +1,5 @@
 import "package:freezed_annotation/freezed_annotation.dart";
+import "package:parser/src/context/parse_mode.dart";
 
 part "state.freezed.dart";
 
@@ -6,6 +7,7 @@ part "state.freezed.dart";
 class State with _$State {
   factory State({
     required String input,
+    @Default(ParseMode.purePeg) ParseMode mode,
     @Default(0) int index,
     @Default(false) bool map,
     @Default(double.infinity) num precedence,

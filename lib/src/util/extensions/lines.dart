@@ -1,6 +1,6 @@
 // ignore_for_file: always_specify_types
 
-import "package:parser_peg/internal_all.dart";
+import "package:parser/internal_all.dart";
 
 extension LinesExtension on String {
   static MultiMap<Object, int> savedLine = MultiMap<Object, int>();

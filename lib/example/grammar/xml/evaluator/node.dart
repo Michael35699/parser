@@ -1,5 +1,5 @@
 import "package:freezed_annotation/freezed_annotation.dart";
-import "package:parser_peg/example/grammar/xml/evaluator/typedef.dart";
+import "package:parser/example/grammar/xml/evaluator/typedef.dart";
 
 part "node.freezed.dart";
 

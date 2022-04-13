@@ -1,4 +1,4 @@
-import "package:parser_peg/internal_all.dart";
+import "package:parser/internal_all.dart";
 
 class DropLeftParser extends WrapParser with SequentialParser {
   Parser get left => children[0];
@@ -9,13 +9,21 @@ class DropLeftParser extends WrapParser with SequentialParser {
   DropLeftParser.empty() : super(<Parser>[]);
 
   @override
-  Context parse(Context context, ParserMutable mutable) {
-    Context ctx = left.apply(context, mutable);
+  Context parsePeg(Context context, PegParserMutable mutable) {
+    Context ctx = left.pegApply(context, mutable);
     if (ctx is ContextFailure) {
       return ctx;
     }
 
-    return parser.apply(ctx, mutable);
+    return parser.pegApply(ctx, mutable);
+  }
+
+  @override
+  void parseGll(Context context, Trampoline trampoline, GllContinuation continuation) {
+    void runParser(Context context) => trampoline.push(parser, context, continuation);
+    trampoline.push(left, context, (Context context) {
+      context.map(success: runParser, ignore: runParser, failure: continuation);
+    });
   }
 
   @override

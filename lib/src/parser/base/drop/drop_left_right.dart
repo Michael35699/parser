@@ -1,4 +1,4 @@
-import "package:parser_peg/internal_all.dart";
+import "package:parser/internal_all.dart";
 
 class DropLeftRightParser extends WrapParser with SequentialParser {
   Parser get left => children[0];
@@ -10,18 +10,18 @@ class DropLeftRightParser extends WrapParser with SequentialParser {
   DropLeftRightParser.empty() : super(<Parser>[]);
 
   @override
-  Context parse(Context context, ParserMutable mutable) {
-    Context ctx = left.apply(context, mutable);
+  Context parsePeg(Context context, PegParserMutable mutable) {
+    Context ctx = left.pegApply(context, mutable);
     if (ctx is ContextFailure) {
       return ctx;
     }
 
-    Context res = parser.apply(ctx, mutable);
+    Context res = parser.pegApply(ctx, mutable);
     if (res is ContextFailure) {
       return res;
     }
 
-    Context last = right.apply(res, mutable);
+    Context last = right.pegApply(res, mutable);
     if (last is ContextFailure) {
       return last;
     }
@@ -31,6 +31,38 @@ class DropLeftRightParser extends WrapParser with SequentialParser {
     }
 
     return last.ignore();
+  }
+
+  @override
+  void parseGll(Context context, Trampoline trampoline, GllContinuation continuation) {
+    void runParser(Context context) => trampoline.push(parser, context, continuation);
+    void runRight(Context nextContext, ParseResult mapped, ParseResult unmapped, {required bool ignore}) {
+      trampoline.push(right, nextContext, (Context context) {
+        late Context resultContext = ignore ? context.ignore() : context.success(mapped, unmapped);
+
+        if (context is! ContextFailure) {
+          continuation(resultContext);
+        } else {
+          continuation(context);
+        }
+      });
+    }
+
+    trampoline.push(left, context, (Context context) {
+      if (context is! ContextFailure) {
+        trampoline.push(parser, context, (Context context) {
+          if (context is ContextSuccess) {
+            runRight(context, context.mappedResult, context.unmappedResult, ignore: false);
+          } else if (context is ContextIgnore) {
+            runRight(context, null, null, ignore: true);
+          } else {
+            continuation(context);
+          }
+        });
+      } else {
+        continuation(context);
+      }
+    });
   }
 
   @override

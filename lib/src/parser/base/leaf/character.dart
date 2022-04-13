@@ -1,6 +1,6 @@
 import "dart:collection";
 
-import "package:parser_peg/internal_all.dart";
+import "package:parser/internal_all.dart";
 
 class CharacterParser extends LeafParser {
   static HashMap<String, CharacterParser> map = HashMap<String, CharacterParser>();

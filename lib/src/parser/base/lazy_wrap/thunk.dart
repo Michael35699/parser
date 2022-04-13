@@ -1,6 +1,6 @@
 import "dart:collection";
 
-import "package:parser_peg/internal_all.dart";
+import "package:parser/internal_all.dart";
 
 class ThunkParser extends LazyLoadParser {
   static HashMap<LazyParser, ThunkParser> map = HashMap<LazyParser, ThunkParser>();
@@ -18,10 +18,17 @@ class ThunkParser extends LazyLoadParser {
         super.eager(parser);
 
   @override
-  Context parse(Context context, ParserMutable mutable) {
+  Context parsePeg(Context context, PegParserMutable mutable) {
     print("If you're seeing this, something went wrong.");
 
-    return computed.apply(context, mutable);
+    return computed.pegApply(context, mutable);
+  }
+
+  @override
+  void parseGll(Context context, Trampoline trampoline, GllContinuation continuation) {
+    print("If you're seeing this, something went wrong.");
+
+    trampoline.push(computed, context, continuation);
   }
 
   @override

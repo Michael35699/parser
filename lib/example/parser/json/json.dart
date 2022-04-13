@@ -1,4 +1,6 @@
-import "package:parser_peg/parser_peg.dart";
+// ignore_for_file: avoid_private_typedef_functions
+
+import "package:parser/parser.dart";
 
 typedef _JsonEntry = MapEntry<String, Object?>;
 typedef _JsonMap = Map<String, Object?>;
@@ -9,7 +11,7 @@ Parser _value() => _valueBody.trim();
 Parser _valueBody() => _array | _object | jsonNumber | _string | _trueValue | _falseValue | _nullValue;
 
 Parser _array() => "[" >> _elements.trim() << "]";
-Parser _elements() => _value % -",".t ^ $list<_JsonList>() | success(_JsonList.empty());
+Parser _elements() => _value % -",".t | success(_JsonList.empty());
 
 Parser _object() => "{" >> _members.trim() << "}";
 Parser _members() =>

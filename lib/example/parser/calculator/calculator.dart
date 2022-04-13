@@ -1,6 +1,6 @@
 import "dart:math" as math;
 
-import "package:parser_peg/internal_all.dart";
+import "package:parser/internal_all.dart";
 
 typedef _NumFunction = num Function(List<num>);
 

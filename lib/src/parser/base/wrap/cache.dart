@@ -1,4 +1,4 @@
-import "package:parser_peg/internal_all.dart";
+import "package:parser/internal_all.dart";
 
 class CacheParser extends WrapParser with UnwrappedParser {
   @override
@@ -7,7 +7,11 @@ class CacheParser extends WrapParser with UnwrappedParser {
   CacheParser.empty() : super(<Parser>[]);
 
   @override
-  Context parse(Context context, ParserMutable mutable) => parser.apply(context, mutable);
+  Context parsePeg(Context context, PegParserMutable mutable) => parser.pegApply(context, mutable);
+
+  @override
+  void parseGll(Context context, Trampoline trampoline, GllContinuation continuation) =>
+      trampoline.push(parser, context, continuation);
 
   @override
   Parser get base => parser.base;

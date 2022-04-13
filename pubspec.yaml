@@ -1,5 +1,5 @@
 # cspell: disable
-name: parser_peg
+name: parser
 
 environment:
   sdk: ">=2.17.0-0"

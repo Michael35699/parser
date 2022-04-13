@@ -1,4 +1,4 @@
-import "package:parser_peg/internal_all.dart";
+import "package:parser/internal_all.dart";
 
 class ChoiceParser extends CombinatorParser {
   ChoiceParser(List<Parser> parsers) : super(parsers);
@@ -23,11 +23,11 @@ class ChoiceParser extends CombinatorParser {
   }
 
   @override
-  Context parse(Context context, ParserMutable mutable) {
+  Context parsePeg(Context context, PegParserMutable mutable) {
     ContextFailure? longestError;
 
     for (Parser parser in children) {
-      Context ctx = parser.apply(context, mutable);
+      Context ctx = parser.pegApply(context, mutable);
 
       if (ctx is ContextFailure) {
         longestError = determineContext(ctx, longestError);
@@ -37,6 +37,13 @@ class ChoiceParser extends CombinatorParser {
     }
 
     return longestError!;
+  }
+
+  @override
+  void parseGll(Context context, Trampoline trampoline, GllContinuation continuation) {
+    for (Parser parser in children) {
+      trampoline.push(parser, context, continuation);
+    }
   }
 
   @override

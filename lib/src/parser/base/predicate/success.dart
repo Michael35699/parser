@@ -1,4 +1,4 @@
-import "package:parser_peg/internal_all.dart";
+import "package:parser/internal_all.dart";
 
 class SuccessParser extends SpecialParser {
   late final ParseResult mappedResult;
@@ -14,7 +14,11 @@ class SuccessParser extends SpecialParser {
   }
 
   @override
-  Context parse(Context context, ParserMutable mutable) => context.success(mappedResult, unmappedResult);
+  Context parsePeg(Context context, PegParserMutable mutable) => context.success(mappedResult, unmappedResult);
+
+  @override
+  void parseGll(Context context, Trampoline trampoline, GllContinuation continuation) =>
+      continuation(context.success(mappedResult, unmappedResult));
 
   @override
   bool hasEqualProperties(SuccessParser target) {

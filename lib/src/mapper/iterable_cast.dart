@@ -1,4 +1,4 @@
-import "package:parser_peg/internal_all.dart";
+import "package:parser/internal_all.dart";
 
 MapFunction _$list<T>() => (ParseResult r, Context c) => (r as List<ParseResult>?)?.cast<T>();
 MapFunction _$set<T>() => (ParseResult r, Context c) => (r as Set<ParseResult>?)?.cast<T>();

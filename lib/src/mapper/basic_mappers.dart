@@ -1,5 +1,5 @@
 /// Auto-generated. Don't feel bad.
-import "package:parser_peg/internal_all.dart";
+import "package:parser/internal_all.dart";
 
 String _$flatten(dynamic value) => value is List ? value.map(_$flatten).join() : value.toString();
 

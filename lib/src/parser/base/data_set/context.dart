@@ -1,4 +1,4 @@
-import "package:parser_peg/internal_all.dart";
+import "package:parser/internal_all.dart";
 
 class ContextualParser<T> extends SpecialParser {
   final Parser Function(Set<T>) callback;
@@ -6,8 +6,12 @@ class ContextualParser<T> extends SpecialParser {
   ContextualParser(this.callback);
 
   @override
-  Context parse(Context context, ParserMutable mutable) =>
-      callback(context.state.dataSet.cast()).apply(context, mutable);
+  Context parsePeg(Context context, PegParserMutable mutable) =>
+      callback(context.state.dataSet.cast()).pegApply(context, mutable);
+
+  @override
+  void parseGll(Context context, Trampoline trampoline, GllContinuation continuation) =>
+      trampoline.push(callback(context.state.dataSet.cast()), context, continuation);
 }
 
 ContextualParser<T> ctx<T>(Parser Function(Set<T>) callback) => ContextualParser<T>(callback);

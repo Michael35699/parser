@@ -1,8 +1,8 @@
-import "package:parser_peg/internal_all.dart";
+import "package:parser/internal_all.dart";
 
 class DedentParser extends SpecialParser {
   @override
-  Context parse(Context context, ParserMutable mutable) {
+  Context parsePeg(Context context, PegParserMutable mutable) {
     /// I literally don't understand this.
 
     String input = context.state.input;
@@ -61,6 +61,68 @@ class DedentParser extends SpecialParser {
 
     String message = expected.a("dedentation. (Received $column, expected <${stack.isEmpty ? 0 : stack.last})");
     return context.failure(message);
+  }
+
+  @override
+  void parseGll(Context context, Trampoline trampoline, GllContinuation continuation) {
+    /// I literally don't understand this.
+
+    String input = context.state.input;
+    int index = context.state.index;
+
+    if (index >= input.length) {
+      return continuation(context.success("#dedent"));
+    }
+
+    if (input[index] != "\n") {
+      return continuation(context.failure(expected.the("beginning of a line")));
+    }
+
+    int newLines = 0;
+    index++;
+    while (index < input.length && input[index] == "\n") {
+      index++;
+      newLines++;
+    }
+
+    int column = 0;
+    while (<String>{" ", "\t"}.contains(input[index])) {
+      column++;
+      index++;
+    }
+
+    List<int> stack = context.state.indentStack;
+    late List<dynamic> result = <dynamic>[
+      <dynamic>[for (int i = 0; i < newLines; i++) "#newline"],
+      "#dedent"
+    ];
+
+    if (stack.isEmpty) {
+      return continuation(context.failure("Unexpected dedentation call on empty stack"));
+    }
+
+    int indentation = stack.last;
+
+    if (column == 0) {
+      return continuation(context.indent(stack.sublist(0, stack.length - 1)).success(result));
+    }
+
+    if (column < indentation) {
+      List<int> newStack = stack.sublist(0, stack.length - 1);
+
+      if (newStack.isEmpty && column > 0) {
+        String message = "Unexpected illegal dedentation (Received $column, expected =0)";
+
+        return continuation(context.failure(message));
+      }
+
+      if ((newStack.isEmpty && column == 0) || (newStack.last == column)) {
+        return continuation(context.indent(newStack).success(result));
+      }
+    }
+
+    String message = expected.a("dedentation. (Received $column, expected <${stack.isEmpty ? 0 : stack.last})");
+    return continuation(context.failure(message));
   }
 }
 

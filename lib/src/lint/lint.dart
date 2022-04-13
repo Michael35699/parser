@@ -1,4 +1,4 @@
-import "package:parser_peg/parser.dart";
+import "package:parser/parser.dart";
 
 enum LintLevel {
   suggestion(0),

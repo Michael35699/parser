@@ -1,4 +1,4 @@
-import "package:parser_peg/internal_all.dart";
+import "package:parser/internal_all.dart";
 
 Parser cycleEndParser(Parser parser) => parser >>> eoi();
 Parser cycleEnd(Object parser) => cycleEndParser(parser.$);

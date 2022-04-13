@@ -1,4 +1,4 @@
-import "package:parser_peg/internal_all.dart";
+import "package:parser/internal_all.dart";
 
 class PushParser extends SpecialParser {
   final dynamic item;
@@ -6,7 +6,11 @@ class PushParser extends SpecialParser {
   PushParser(this.item);
 
   @override
-  Context parse(Context context, ParserMutable mutable) => context.push(item).ignore();
+  Context parsePeg(Context context, PegParserMutable mutable) => context.push(item).ignore();
+
+  @override
+  void parseGll(Context context, Trampoline trampoline, GllContinuation continuation) =>
+      continuation(context.push(item).ignore());
 }
 
 PushParser push(dynamic item) => PushParser(item);

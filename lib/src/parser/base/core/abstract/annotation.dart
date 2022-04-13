@@ -1,4 +1,4 @@
-import "package:parser_peg/internal_all.dart";
+import "package:parser/internal_all.dart";
 
 class AnnotationParser extends WrapParser with UnwrappedParser {
   AnnotationParser(Parser child) : super(<Parser>[child]);
@@ -17,5 +17,10 @@ class AnnotationParser extends WrapParser with UnwrappedParser {
   AnnotationParser empty() => AnnotationParser.empty();
 
   @override
-  Context parse(Context context, ParserMutable mutable) => throw UnsupportedError("Annotation parsers can not parse!");
+  Context parsePeg(Context context, PegParserMutable mutable) =>
+      throw UnsupportedError("Annotation parsers can not parse!");
+
+  @override
+  void parseGll(Context context, Trampoline trampoline, GllContinuation continuation) =>
+      throw UnsupportedError("Annotation parsers can not parse!");
 }

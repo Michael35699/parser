@@ -1,4 +1,4 @@
-import "package:parser_peg/internal_all.dart";
+import "package:parser/internal_all.dart";
 
 class FailureParser extends SpecialParser {
   final String message;
@@ -6,7 +6,11 @@ class FailureParser extends SpecialParser {
   FailureParser(this.message);
 
   @override
-  Context parse(Context context, ParserMutable mutable) => context.failure(message).generated();
+  Context parsePeg(Context context, PegParserMutable mutable) => context.failure(message).generated();
+
+  @override
+  void parseGll(Context context, Trampoline trampoline, GllContinuation continuation) =>
+      continuation(context.failure(message).generated());
 
   @override
   bool hasEqualProperties(FailureParser target) {

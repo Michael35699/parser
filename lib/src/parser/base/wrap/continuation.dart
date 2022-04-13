@@ -1,4 +1,4 @@
-import "package:parser_peg/internal_all.dart";
+import "package:parser/internal_all.dart";
 
 class ContinuationParser extends WrapParser {
   final ContinuationFunction handler;
@@ -9,8 +9,13 @@ class ContinuationParser extends WrapParser {
   ContinuationParser.empty(this.handler) : super(<Parser>[]);
 
   @override
-  Context parse(Context context, ParserMutable mutable) {
-    return handler((Context ctx) => parser.apply(ctx, mutable), context);
+  Context parsePeg(Context context, PegParserMutable mutable) {
+    return handler((Context ctx) => parser.pegApply(ctx, mutable), context);
+  }
+
+  @override
+  void parseGll(Context context, Trampoline trampoline, GllContinuation continuation) {
+    return trampoline.push(parser, context, continuation);
   }
 
   @override
