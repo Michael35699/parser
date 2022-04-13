@@ -4,7 +4,7 @@ import "package:parser_peg/internal_all.dart";
 part "utils.dart";
 
 void main() {
-  Parser built = json.parser.build();
-
+  Parser built = json.jsonParser.build().flat();
+  Analyzer(built).deepCheck();
   print << built.run("""{"one": 1, "two": [2, 3], "four": [5, 6, 7]}""");
 }

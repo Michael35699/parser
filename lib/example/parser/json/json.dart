@@ -4,7 +4,7 @@ typedef JsonEntry = MapEntry<String, Object>;
 typedef JsonMap = Map<String, Object>;
 typedef JsonList = List<Object>;
 
-Parser parser() => _value.end();
+Parser jsonParser() => _value.end();
 Parser _value() => _valueBody.trim();
 Parser _valueBody() => _array | _object | jsonNumber | _string | _trueValue | _falseValue | _nullValue;
 

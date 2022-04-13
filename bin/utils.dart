@@ -81,6 +81,20 @@ class Analyzer {
     }
   }
 
+  void complexFlatten(Parser parser) {
+    bool isHeavy(Parser p) => p is MappedParser;
+    if (parser is FlatParser) {
+      for (Parser child in parser.traverseBf) {
+        if (isHeavy(child)) {
+          log.warn(//
+              "The parser that is wrapped by a `.flat()` call has heavy computations "
+              "in its descendants. Due to the nature of the `FlatParser`, these will "
+              "be ignored.");
+        }
+      }
+    }
+  }
+
   void deepCheck() {
     allParsers.forEach(check);
   }
