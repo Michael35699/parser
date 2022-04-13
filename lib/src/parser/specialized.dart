@@ -1,1 +1,1 @@
-library parser.peg.parser.specialized;
+library parser.parser.specialized;

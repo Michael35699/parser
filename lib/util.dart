@@ -1,4 +1,4 @@
-library parser.peg.util;
+library parser.util;
 
 export "src/util/classes/callable.dart";
 export "src/util/classes/grammar_magic.dart";

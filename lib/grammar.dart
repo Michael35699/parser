@@ -1,4 +1,4 @@
-library parser.peg.grammar;
+library parser.grammar;
 
 export "src/grammar/grammar.dart";
 export "src/grammar/mixin/disabled_mappers.dart";

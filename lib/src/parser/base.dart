@@ -1,4 +1,4 @@
-library parser.peg.parser.base;
+library parser.parser.base;
 
 export "base/annotation/nullable.dart";
 export "base/combinator/choice.dart";

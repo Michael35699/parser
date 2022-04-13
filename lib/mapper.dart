@@ -1,4 +1,4 @@
-library parser.peg.mapper;
+library parser.mapper;
 
 export "src/mapper/basic_mappers.dart";
 export "src/mapper/iterable_cast.dart";
