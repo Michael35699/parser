@@ -7,10 +7,11 @@ Parser A() => S & "d" | "d";
 
 void main() {
   const String input = "adadadadada";
+  Parser built = S.build();
   time.named("PEG", () {
-    print << Parser.runPeg(S(), input, end: false);
+    print << Parser.runPeg(built, input, end: false);
   });
   time.named("GLL", () {
-    Parser.runGll(S(), input).forEach(print);
+    Parser.runGll(built, input).forEach(print);
   });
 }
