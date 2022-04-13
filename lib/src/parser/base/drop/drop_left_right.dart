@@ -35,33 +35,28 @@ class DropLeftRightParser extends WrapParser with SequentialParser {
 
   @override
   void parseGll(Context context, Trampoline trampoline, GllContinuation continuation) {
-    void runParser(Context context) => trampoline.push(parser, context, continuation);
-    void runRight(Context nextContext, ParseResult mapped, ParseResult unmapped, {required bool ignore}) {
-      trampoline.push(right, nextContext, (Context context) {
-        late Context resultContext = ignore ? context.ignore() : context.success(mapped, unmapped);
-
-        if (context is! ContextFailure) {
-          continuation(resultContext);
-        } else {
-          continuation(context);
-        }
-      });
-    }
-
-    trampoline.push(left, context, (Context context) {
-      if (context is! ContextFailure) {
-        trampoline.push(parser, context, (Context context) {
-          if (context is ContextSuccess) {
-            runRight(context, context.mappedResult, context.unmappedResult, ignore: false);
-          } else if (context is ContextIgnore) {
-            runRight(context, null, null, ignore: true);
-          } else {
-            continuation(context);
-          }
-        });
-      } else {
-        continuation(context);
+    trampoline.push(left, context, (Context ctx) {
+      if (ctx is ContextFailure) {
+        return continuation(ctx);
       }
+
+      trampoline.push(parser, ctx, (Context res) {
+        if (res is ContextFailure) {
+          return continuation(res);
+        }
+
+        trampoline.push(right, res, (Context last) {
+          if (last is ContextFailure) {
+            return continuation(last);
+          }
+
+          if (res is ContextSuccess) {
+            return continuation(last.success(res.mappedResult, res.unmappedResult));
+          }
+
+          return continuation(res);
+        });
+      });
     });
   }
 

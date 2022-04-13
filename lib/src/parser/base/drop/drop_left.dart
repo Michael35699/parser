@@ -20,9 +20,12 @@ class DropLeftParser extends WrapParser with SequentialParser {
 
   @override
   void parseGll(Context context, Trampoline trampoline, GllContinuation continuation) {
-    void runParser(Context context) => trampoline.push(parser, context, continuation);
-    trampoline.push(left, context, (Context context) {
-      context.map(success: runParser, ignore: runParser, failure: continuation);
+    trampoline.push(left, context, (Context ctx) {
+      if (ctx is ContextFailure) {
+        return continuation(ctx);
+      }
+
+      return trampoline.push(parser, ctx, continuation);
     });
   }
 
