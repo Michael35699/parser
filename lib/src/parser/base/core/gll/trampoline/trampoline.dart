@@ -6,31 +6,27 @@ import "package:parser/internal_all.dart";
 
 class Trampoline {
   final Queue<GllParserCall> stack;
-  final HashMap<Parser, HashMap<Context, GllTableEntry>> table;
+  final GllMemoizationTable table;
 
   Trampoline()
       : stack = Queue<GllParserCall>(),
-        table = HashMap<Parser, HashMap<Context, GllTableEntry>>();
+        table = GllMemoizationTable();
 
   void step() {
     stack.removeLast().call();
   }
 
   void push(Parser parser, Context context, GllContinuation continuation) {
-    GllTableEntry? tableEntry = table.putIfAbsent(parser, HashMap<Context, GllTableEntry>.new)[context];
+    int index = context.state.index;
+    GllTableEntry tableEntry = table.putIfAbsent(parser, GllSubTable.new)[index] ??= GllTableEntry();
 
-    if (tableEntry == null) {
-      tableEntry = table[parser]![context] = GllTableEntry.empty();
+    if (tableEntry.isEmpty) {
       tableEntry.continuations.add(continuation);
-
       stack.add(GllParserCall(parser.parseGll, context, this, (Context result) {
-        if (tableEntry!.results.contains(result)) {
-          return;
-        }
-
-        tableEntry.results.add(result);
-        for (GllContinuation continuation in tableEntry.continuations.toList()) {
-          continuation(result);
+        if (tableEntry.results.add(result)) {
+          for (GllContinuation continuation in tableEntry.continuations.toSet()) {
+            continuation(result);
+          }
         }
       }));
     } else {
