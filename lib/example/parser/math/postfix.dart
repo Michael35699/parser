@@ -1,6 +1,6 @@
 import "dart:math";
 
-import "package:parser_peg/parser_peg.dart";
+import "package:parser/parser.dart";
 
 Parser postfixMath() => _expression.$;
 Parser _expression() =>

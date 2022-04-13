@@ -1,4 +1,4 @@
-import "package:parser_peg/parser_peg.dart";
+import "package:parser/parser.dart";
 
 typedef _JsonEntry = MapEntry<String, Object?>;
 typedef _JsonMap = Map<String, Object?>;

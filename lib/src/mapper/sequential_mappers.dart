@@ -1,5 +1,5 @@
 /// Auto-generated. Don't feel bad.
-import "package:parser_peg/internal_all.dart";
+import "package:parser/internal_all.dart";
 
 MapFunction _$0(ParseResult Function() callback) =>
     (ParseResult result, Context context) => Function.apply(callback, null);

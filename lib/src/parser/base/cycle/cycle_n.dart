@@ -1,4 +1,4 @@
-import "package:parser_peg/internal_all.dart";
+import "package:parser/internal_all.dart";
 
 // Parser cycleNParser(Parser parser, int count) => SequenceParser(<Parser>[for (int _ in count.times) parser]);
 

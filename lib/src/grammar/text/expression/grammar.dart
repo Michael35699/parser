@@ -1,5 +1,5 @@
-import "package:parser_peg/internal_all.dart";
-import "package:parser_peg/src/grammar/text/expression/node.dart";
+import "package:parser/internal_all.dart";
+import "package:parser/src/grammar/text/expression/node.dart";
 
 enum UnaryOperator { negative, factorial }
 

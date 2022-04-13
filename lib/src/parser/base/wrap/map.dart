@@ -1,6 +1,6 @@
 // ignore_for_file: avoid_dynamic_calls, avoid_catching_errors
 
-import "package:parser_peg/internal_all.dart";
+import "package:parser/internal_all.dart";
 
 class MappedParser extends WrapParser {
   final MapFunction mapper;

@@ -1,4 +1,4 @@
-import "package:parser_peg/util.dart";
+import "package:parser/util.dart";
 
 class Predicate {
   static GenericPredicate<T> tautology<T>() => (T item) => true;

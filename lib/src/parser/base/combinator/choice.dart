@@ -1,4 +1,4 @@
-import "package:parser_peg/internal_all.dart";
+import "package:parser/internal_all.dart";
 
 class ChoiceParser extends CombinatorParser {
   ChoiceParser(List<Parser> parsers) : super(parsers);

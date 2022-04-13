@@ -4,7 +4,7 @@ import "dart:io";
 import "dart:math";
 
 import "package:ansicolor/ansicolor.dart" as ansi;
-import "package:parser_peg/internal_all.dart";
+import "package:parser/internal_all.dart";
 import "package:path/path.dart" as path;
 
 final ansi.AnsiPen _red = ansi.AnsiPen()..red();

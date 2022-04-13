@@ -1,4 +1,4 @@
-import "package:parser_peg/internal_all.dart";
+import "package:parser/internal_all.dart";
 
 class DropLeftParser extends WrapParser with SequentialParser {
   Parser get left => children[0];

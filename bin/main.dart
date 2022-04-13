@@ -1,5 +1,5 @@
-import "package:parser_peg/example/parser/json/json.dart" as json;
-import "package:parser_peg/internal_all.dart";
+import "package:parser/example/parser/json/json.dart" as json;
+import "package:parser/internal_all.dart";
 
 part "utils.dart";
 

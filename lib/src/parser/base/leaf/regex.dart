@@ -1,6 +1,6 @@
 import "dart:collection";
 
-import "package:parser_peg/internal_all.dart";
+import "package:parser/internal_all.dart";
 
 class RegExpParser extends ChildlessParser {
   static HashMap<RegExp, RegExpParser> _saved = HashMap<RegExp, RegExpParser>();

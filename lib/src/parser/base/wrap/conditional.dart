@@ -1,6 +1,6 @@
 import "dart:collection";
 
-import "package:parser_peg/internal_all.dart";
+import "package:parser/internal_all.dart";
 
 class ConditionalParser extends SpecialParser {
   final HashMap<Context, Parser> _saved = HashMap<Context, Parser>();

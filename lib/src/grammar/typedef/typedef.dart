@@ -1,4 +1,4 @@
-import "package:parser_peg/internal_all.dart";
+import "package:parser/internal_all.dart";
 
 typedef MapFunction$1 = MapFunction Function<V1>(ParseResult Function(V1));
 typedef MapFunction$2 = MapFunction Function<V1, V2>(ParseResult Function(V1, V2));

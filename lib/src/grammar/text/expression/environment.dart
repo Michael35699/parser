@@ -1,4 +1,4 @@
-import "package:parser_peg/src/grammar/text/expression/node.dart";
+import "package:parser/src/grammar/text/expression/node.dart";
 
 class Environment {
   final Map<String, Node> definitions;

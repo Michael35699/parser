@@ -1,4 +1,4 @@
-import "package:parser_peg/parser_peg.dart";
+import "package:parser/parser.dart";
 
 class PrimitiveJsonGrammar with Grammar {
   @override

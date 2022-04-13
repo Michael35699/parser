@@ -1,4 +1,4 @@
-import "package:parser_peg/internal_all.dart";
+import "package:parser/internal_all.dart";
 
 // Parser cycleSeparatedParser(Parser parser, Parser separator) =>
 //     (parser.cache() & (separator.cache() & parser.cache()).star()).map(
