@@ -20,6 +20,7 @@ class _$StateTearOff {
 
   StateDefault call(
       {required String input,
+      ParseMode mode = ParseMode.purePeg,
       int index = 0,
       bool map = false,
       num precedence = double.infinity,
@@ -27,6 +28,7 @@ class _$StateTearOff {
       Set<dynamic> dataSet = const <dynamic>{}}) {
     return StateDefault(
       input: input,
+      mode: mode,
       index: index,
       map: map,
       precedence: precedence,
@@ -42,6 +44,7 @@ const $State = _$StateTearOff();
 /// @nodoc
 mixin _$State {
   String get input => throw _privateConstructorUsedError;
+  ParseMode get mode => throw _privateConstructorUsedError;
   int get index => throw _privateConstructorUsedError;
   bool get map => throw _privateConstructorUsedError;
   num get precedence => throw _privateConstructorUsedError;
@@ -58,6 +61,7 @@ abstract class $StateCopyWith<$Res> {
       _$StateCopyWithImpl<$Res>;
   $Res call(
       {String input,
+      ParseMode mode,
       int index,
       bool map,
       num precedence,
@@ -76,6 +80,7 @@ class _$StateCopyWithImpl<$Res> implements $StateCopyWith<$Res> {
   @override
   $Res call({
     Object? input = freezed,
+    Object? mode = freezed,
     Object? index = freezed,
     Object? map = freezed,
     Object? precedence = freezed,
@@ -87,6 +92,10 @@ class _$StateCopyWithImpl<$Res> implements $StateCopyWith<$Res> {
           ? _value.input
           : input // ignore: cast_nullable_to_non_nullable
               as String,
+      mode: mode == freezed
+          ? _value.mode
+          : mode // ignore: cast_nullable_to_non_nullable
+              as ParseMode,
       index: index == freezed
           ? _value.index
           : index // ignore: cast_nullable_to_non_nullable
@@ -119,6 +128,7 @@ abstract class $StateDefaultCopyWith<$Res> implements $StateCopyWith<$Res> {
   @override
   $Res call(
       {String input,
+      ParseMode mode,
       int index,
       bool map,
       num precedence,
@@ -139,6 +149,7 @@ class _$StateDefaultCopyWithImpl<$Res> extends _$StateCopyWithImpl<$Res>
   @override
   $Res call({
     Object? input = freezed,
+    Object? mode = freezed,
     Object? index = freezed,
     Object? map = freezed,
     Object? precedence = freezed,
@@ -150,6 +161,10 @@ class _$StateDefaultCopyWithImpl<$Res> extends _$StateCopyWithImpl<$Res>
           ? _value.input
           : input // ignore: cast_nullable_to_non_nullable
               as String,
+      mode: mode == freezed
+          ? _value.mode
+          : mode // ignore: cast_nullable_to_non_nullable
+              as ParseMode,
       index: index == freezed
           ? _value.index
           : index // ignore: cast_nullable_to_non_nullable
@@ -179,6 +194,7 @@ class _$StateDefaultCopyWithImpl<$Res> extends _$StateCopyWithImpl<$Res>
 class _$StateDefault extends StateDefault {
   _$StateDefault(
       {required this.input,
+      this.mode = ParseMode.purePeg,
       this.index = 0,
       this.map = false,
       this.precedence = double.infinity,
@@ -188,6 +204,9 @@ class _$StateDefault extends StateDefault {
 
   @override
   final String input;
+  @JsonKey()
+  @override
+  final ParseMode mode;
   @JsonKey()
   @override
   final int index;
@@ -206,7 +225,7 @@ class _$StateDefault extends StateDefault {
 
   @override
   String toString() {
-    return 'State(input: $input, index: $index, map: $map, precedence: $precedence, indentStack: $indentStack, dataSet: $dataSet)';
+    return 'State(input: $input, mode: $mode, index: $index, map: $map, precedence: $precedence, indentStack: $indentStack, dataSet: $dataSet)';
   }
 
   @override
@@ -215,6 +234,7 @@ class _$StateDefault extends StateDefault {
         (other.runtimeType == runtimeType &&
             other is StateDefault &&
             const DeepCollectionEquality().equals(other.input, input) &&
+            const DeepCollectionEquality().equals(other.mode, mode) &&
             const DeepCollectionEquality().equals(other.index, index) &&
             const DeepCollectionEquality().equals(other.map, map) &&
             const DeepCollectionEquality()
@@ -228,6 +248,7 @@ class _$StateDefault extends StateDefault {
   int get hashCode => Object.hash(
       runtimeType,
       const DeepCollectionEquality().hash(input),
+      const DeepCollectionEquality().hash(mode),
       const DeepCollectionEquality().hash(index),
       const DeepCollectionEquality().hash(map),
       const DeepCollectionEquality().hash(precedence),
@@ -243,6 +264,7 @@ class _$StateDefault extends StateDefault {
 abstract class StateDefault extends State {
   factory StateDefault(
       {required String input,
+      ParseMode mode,
       int index,
       bool map,
       num precedence,
@@ -252,6 +274,8 @@ abstract class StateDefault extends State {
 
   @override
   String get input;
+  @override
+  ParseMode get mode;
   @override
   int get index;
   @override
