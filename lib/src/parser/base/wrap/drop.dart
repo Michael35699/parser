@@ -8,7 +8,7 @@ class DropParser extends WrapParser {
   DropParser.empty() : super(<Parser>[]);
 
   @override
-  Context parsePeg(Context context, ParserMutable mutable) {
+  Context parsePeg(Context context, PegParserMutable mutable) {
     Context ctx = parser.pegApply(context, mutable);
 
     if (ctx is! ContextFailure) {

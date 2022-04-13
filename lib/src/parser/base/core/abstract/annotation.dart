@@ -17,7 +17,7 @@ class AnnotationParser extends WrapParser with UnwrappedParser {
   AnnotationParser empty() => AnnotationParser.empty();
 
   @override
-  Context parsePeg(Context context, ParserMutable mutable) =>
+  Context parsePeg(Context context, PegParserMutable mutable) =>
       throw UnsupportedError("Annotation parsers can not parse!");
 
   @override

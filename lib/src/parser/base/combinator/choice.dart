@@ -23,7 +23,7 @@ class ChoiceParser extends CombinatorParser {
   }
 
   @override
-  Context parsePeg(Context context, ParserMutable mutable) {
+  Context parsePeg(Context context, PegParserMutable mutable) {
     ContextFailure? longestError;
 
     for (Parser parser in children) {

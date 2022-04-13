@@ -2,7 +2,7 @@ import "package:parser/internal_all.dart";
 
 class AlignPointParser extends SpecialParser {
   @override
-  Context parsePeg(Context context, ParserMutable mutable) {
+  Context parsePeg(Context context, PegParserMutable mutable) {
     String input = context.state.input;
     int index = context.state.index;
 

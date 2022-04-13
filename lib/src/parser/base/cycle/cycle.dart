@@ -8,7 +8,7 @@ class CycleParser extends WrapParser with CyclicParser {
   CycleParser.empty() : super(<Parser>[]);
 
   @override
-  Context parsePeg(Context context, ParserMutable mutable) {
+  Context parsePeg(Context context, PegParserMutable mutable) {
     Context ctx = parser.pegApply(context, mutable);
     if (ctx.isFailure) {
       return ctx;

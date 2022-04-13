@@ -8,7 +8,7 @@ class PositiveLookaheadParser extends WrapParser {
   PositiveLookaheadParser.empty() : super(<Parser>[]);
 
   @override
-  Context parsePeg(Context context, ParserMutable mutable) {
+  Context parsePeg(Context context, PegParserMutable mutable) {
     if (parser.pegApply(context, mutable) is! ContextFailure) {
       return context.success(#positiveLookahead);
     } else {

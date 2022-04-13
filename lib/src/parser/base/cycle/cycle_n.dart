@@ -11,7 +11,7 @@ class CycleNParser extends WrapParser with CyclicParser {
   CycleNParser.empty(this.count) : super(<Parser>[]);
 
   @override
-  Context parsePeg(Context context, ParserMutable mutable) {
+  Context parsePeg(Context context, PegParserMutable mutable) {
     List<ParseResult> mapped = <ParseResult>[];
     List<ParseResult> unmapped = <ParseResult>[];
 

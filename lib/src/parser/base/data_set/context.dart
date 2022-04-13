@@ -6,7 +6,7 @@ class ContextualParser<T> extends SpecialParser {
   ContextualParser(this.callback);
 
   @override
-  Context parsePeg(Context context, ParserMutable mutable) =>
+  Context parsePeg(Context context, PegParserMutable mutable) =>
       callback(context.state.dataSet.cast()).pegApply(context, mutable);
 
   @override

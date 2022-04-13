@@ -7,7 +7,7 @@ class SourceParser extends SpecialParser {
   SourceParser._();
 
   @override
-  Context parsePeg(Context context, ParserMutable mutable) {
+  Context parsePeg(Context context, PegParserMutable mutable) {
     if (context.state.index >= context.state.input.length) {
       return context.failure("Expected any character, received end of input");
     }

@@ -9,7 +9,7 @@ class ExceptParser extends WrapParser {
   ExceptParser.empty() : super(<Parser>[]);
 
   @override
-  Context parsePeg(Context context, ParserMutable mutable) {
+  Context parsePeg(Context context, PegParserMutable mutable) {
     Context result = except.pegApply(context, mutable).maybeMap(
           failure: (_) => parser.pegApply(context, mutable),
           orElse: () => context.failure("Failed except parser"),

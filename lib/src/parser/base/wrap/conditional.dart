@@ -13,7 +13,7 @@ class ConditionalParser extends SpecialParser {
   Parser resolve(Context context) => _saved[context] ??= function(context);
 
   @override
-  Context parsePeg(Context context, ParserMutable mutable) =>
+  Context parsePeg(Context context, PegParserMutable mutable) =>
       ((Context ctx) => function(context).pegApply(ctx, mutable))(parser.pegApply(context, mutable));
 
   @override

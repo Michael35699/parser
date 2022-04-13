@@ -12,7 +12,7 @@ class RegExpParser extends ChildlessParser {
   RegExpParser.generate(this.pattern);
 
   @override
-  Context parsePeg(Context context, ParserMutable mutable) {
+  Context parsePeg(Context context, PegParserMutable mutable) {
     const bool _false = 1 == 0;
 
     String input = context.state.input;

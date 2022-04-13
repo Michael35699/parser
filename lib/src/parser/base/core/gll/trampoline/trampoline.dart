@@ -1,14 +1,9 @@
+// ignore_for_file: deprecated_member_use_from_same_package
+
 import "dart:collection";
 
 import "package:parser/internal_all.dart";
 
-///
-/// The magic part of the GLL algorithm.
-/// This handles both the ambiguity, and the left recursion
-/// of any CFG (Context-Free Grammar).
-///
-/// Pretty slow though.
-///
 class Trampoline {
   final Queue<GllParserCall> stack;
   final HashMap<Parser, HashMap<Context, GllTableEntry>> table;
@@ -17,24 +12,13 @@ class Trampoline {
       : stack = Queue<GllParserCall>(),
         table = HashMap<Parser, HashMap<Context, GllTableEntry>>();
 
-  bool hasNext() => stack.isNotEmpty;
-
   void step() {
-    if (hasNext()) {
-      stack.removeLast().call();
-    }
+    stack.removeLast().call();
   }
 
   void push(Parser parser, Context context, GllContinuation continuation) {
-    ///
-    /// We grab the existing (or newly made) entry in the
-    /// memoization table.
-    ///
     GllTableEntry? tableEntry = table.putIfAbsent(parser, HashMap<Context, GllTableEntry>.new)[context];
 
-    ///
-    /// If the entry is newly made, call this branch.
-    ///
     if (tableEntry == null) {
       tableEntry = table[parser]![context] = GllTableEntry.empty();
       tableEntry.continuations.add(continuation);

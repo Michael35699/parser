@@ -8,7 +8,7 @@ class UnmappedParser extends WrapParser {
   UnmappedParser.empty() : super(<Parser>[]);
 
   @override
-  Context parsePeg(Context context, ParserMutable mutable) =>
+  Context parsePeg(Context context, PegParserMutable mutable) =>
       parser.pegApply(context.copyWith.state(map: false), mutable);
 
   @override

@@ -2,8 +2,8 @@
 
 import "package:parser/internal_all.dart";
 
-class ParserMutable {
-  final List<LeftRecursion> parserCallStack = <LeftRecursion>[];
+class PegParserMutable {
+  final List<PegLeftRecursion> parserCallStack = <PegLeftRecursion>[];
   final PegMemoizationMap memoMap = PegMemoizationMap();
-  final Heads heads = Heads();
+  final PegHeads heads = PegHeads();
 }

@@ -1,11 +1,11 @@
 mixin MemoizationEntryValue {}
 
-class MemoizationEntry {
+class PegMemoizationEntry {
   MemoizationEntryValue value;
 
-  MemoizationEntry(this.value);
+  PegMemoizationEntry(this.value);
 }
 
 extension MemoizationExtensionEntry on MemoizationEntryValue {
-  MemoizationEntry entry() => MemoizationEntry(this);
+  PegMemoizationEntry entry() => PegMemoizationEntry(this);
 }

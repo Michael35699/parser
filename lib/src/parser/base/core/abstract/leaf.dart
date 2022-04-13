@@ -12,7 +12,7 @@ abstract class LeafParser extends ChildlessParser {
 
   @nonVirtual
   @override
-  Context parsePeg(Context context, ParserMutable mutable) {
+  Context parsePeg(Context context, PegParserMutable mutable) {
     String input = context.state.input;
     int index = context.state.index;
 

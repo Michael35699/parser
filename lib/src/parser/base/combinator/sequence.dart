@@ -4,7 +4,7 @@ class SequenceParser extends CombinatorParser with SequentialParser {
   SequenceParser(List<Parser> children) : super(children);
 
   @override
-  Context parsePeg(Context context, ParserMutable mutable) {
+  Context parsePeg(Context context, PegParserMutable mutable) {
     List<ParseResult> mapped = <ParseResult>[];
     List<ParseResult> unmapped = <ParseResult>[];
 
