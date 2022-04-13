@@ -2,10 +2,6 @@ import "dart:collection";
 
 import "package:parser/internal_all.dart";
 
-int calls = 0;
-HashMap<Parser, int> parsersTimeSpent = HashMap<Parser, int>();
-HashMap<Parser, int> parsersCallCount = HashMap<Parser, int>();
-
 ///
 /// The magic part of the GLL algorithm.
 /// This handles both the ambiguity, and the left recursion
