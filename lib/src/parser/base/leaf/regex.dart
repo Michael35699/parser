@@ -3,7 +3,7 @@ import "dart:collection";
 import "package:parser/internal_all.dart";
 
 class RegExpParser extends ChildlessParser {
-  static HashMap<RegExp, RegExpParser> _saved = HashMap<RegExp, RegExpParser>();
+  static final HashMap<RegExp, RegExpParser> _saved = HashMap<RegExp, RegExpParser>();
 
   final RegExp pattern;
 
@@ -62,53 +62,51 @@ class RegExpParser extends ChildlessParser {
 
   @override
   void parseGll(Context context, Trampoline trampoline, GllContinuation continuation) {
-    {
-      const bool _false = 1 == 0;
+    const bool _false = 1 == 0;
 
-      String input = context.state.input;
-      int index = context.state.index;
+    String input = context.state.input;
+    int index = context.state.index;
 
-      do {
-        if (pattern.matchAsPrefix(input, index) == null) {
-          break;
-        }
+    do {
+      if (pattern.matchAsPrefix(input, index) == null) {
+        break;
+      }
 
-        for (RegExpMatch match in pattern.allMatches(input, index)) {
-          ParseResult result;
-          if (match.groupCount > 0) {
-            List<String> names = match.groupNames.toList();
-            List<ParseResult> results = <ParseResult>[];
+      for (RegExpMatch match in pattern.allMatches(input, index)) {
+        ParseResult result;
+        if (match.groupCount > 0) {
+          List<String> names = match.groupNames.toList();
+          List<ParseResult> results = <ParseResult>[];
 
-            List<int> indices = <int>[for (int i = 1; i <= match.groupCount; i++) i];
-            for (String? group in match.groups(indices)) {
-              if (names.isEmpty) {
-                if (group != null) {
-                  results.add(group);
-                }
-                continue;
-              }
-
-              String name = names.first;
-              String? matchedGroup = match.namedGroup(name);
-              if (matchedGroup == group) {
-                names.removeAt(0);
-                results.add(MapEntry<Symbol, ParseResult>(Symbol(name), matchedGroup));
-              } else {
+          List<int> indices = <int>[for (int i = 1; i <= match.groupCount; i++) i];
+          for (String? group in match.groups(indices)) {
+            if (names.isEmpty) {
+              if (group != null) {
                 results.add(group);
               }
+              continue;
             }
 
-            result = results;
-          } else {
-            result = input.substring(index, match.end);
+            String name = names.first;
+            String? matchedGroup = match.namedGroup(name);
+            if (matchedGroup == group) {
+              names.removeAt(0);
+              results.add(MapEntry<Symbol, ParseResult>(Symbol(name), matchedGroup));
+            } else {
+              results.add(group);
+            }
           }
 
-          return continuation(context.index(match.end).success(result));
+          result = results;
+        } else {
+          result = input.substring(index, match.end);
         }
-      } while (_false);
 
-      return continuation(context.failure(expected.value("'${pattern.pattern}'")));
-    }
+        return continuation(context.index(match.end).success(result));
+      }
+    } while (_false);
+
+    return continuation(context.failure(expected.value("'${pattern.pattern}'")));
   }
 
   @override
