@@ -360,8 +360,8 @@ abstract class Parser {
   }
 
   static Iterable<T> runGll<T extends ParseResult>(Parser parser, String input, {bool? map, bool? end}) sync* {
-    Iterable<Context> results = Parser.runCtxGll(parser, input, map: map, end: end);
     map ??= true;
+    Iterable<Context> results = Parser.runCtxGll(parser, input, map: map, end: end);
 
     for (Context ctx in results) {
       if (ctx is ContextSuccess) {
@@ -405,7 +405,7 @@ abstract class Parser {
       }
 
       while (successes.isNotEmpty) {
-        yield successes.removeAt(0);
+        yield successes.removeLast();
 
         hasYielded |= true;
       }

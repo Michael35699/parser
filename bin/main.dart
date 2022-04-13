@@ -2,15 +2,12 @@ import "package:parser/internal_all.dart";
 
 part "utils.dart";
 
-Parser S() => "a" & S | "a";
+Parser S() => S & "a" | "a";
 
 void main() {
-  const String input = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
+  const String input = "aaaaaaaa";
 
   Parser built = S.build();
-  time.named("GLL", () => built.gll(input).first);
-  time.named("PEG^0", () => built.peg.pure(input));
-  time.named("PEG^1", () => built.peg.linear(input));
-  time.named("PEG^2", () => built.peg.squared(input));
-  time.named("PEG^3", () => built.run(input));
+  time.named("GLL", () => built.gll(input).toList());
+  time.named("PEG", () => built.peg(input));
 }
