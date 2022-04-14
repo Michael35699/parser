@@ -263,17 +263,17 @@ abstract class Parser {
     };
   }
 
-  static ST clone<ST extends Parser>(ST parser, [HashMap<Parser, Parser>? cloned]) {
+  static Parser clone(Parser parser, [HashMap<Parser, Parser>? cloned]) {
     cloned ??= HashMap<Parser, Parser>.identity();
-    ST clone = (cloned[parser] ??= parser.cloneSelf(cloned)
+    Parser clone = cloned[parser] ??= parser.cloneSelf(cloned)
       ..memoize = parser.memoize
-      ..built = parser.built) as ST;
+      ..built = parser.built;
 
     return clone;
   }
 
-  static ST transformWhere<T extends Parser, ST extends Parser>(
-    ST parser,
+  static Parser transformWhere<T extends Parser>(
+    Parser parser,
     ParserPredicate predicate,
     TransformHandler<T> handler,
   ) {
@@ -285,7 +285,7 @@ abstract class Parser {
     });
   }
 
-  static ST transformType<T extends Parser, ST extends Parser>(ST parser, TransformHandler<T> handler) {
+  static Parser transformType<T extends Parser>(Parser parser, TransformHandler<T> handler) {
     return Parser.transform(parser, (Parser parser) {
       if (parser is T) {
         return handler(parser);
@@ -294,22 +294,22 @@ abstract class Parser {
     });
   }
 
-  static ST transformReplace<ST extends Parser>(ST parser, Parser target, Parser replace) {
+  static Parser transformReplace(Parser parser, Parser target, Parser replace) {
     return Parser.transform(parser, (Parser p) => p == target ? replace : p);
   }
 
-  static ST transform<ST extends Parser>(ST parser, TransformHandler handler, [HashMap<Parser, Parser>? transformed]) {
+  static Parser transform(Parser parser, TransformHandler handler, [HashMap<Parser, Parser>? transformed]) {
     transformed ??= HashMap<Parser, Parser>.identity();
 
-    return (transformed[parser] ??= handler(parser.transformChildren(handler, transformed))) as ST;
+    return transformed[parser] ??= handler(parser.transformChildren(handler, transformed));
   }
 
-  static ST build<ST extends Parser>(ST parser) {
+  static Parser build(Parser parser) {
     if (parser.built) {
       return parser;
     }
 
-    ST built = Parser.clone(parser) //
+    Parser built = Parser.clone(parser) //
         .transformType((UnwrappedParser parser) => parser.parser)
         .transformType((ThunkParser parser) => parser.computed..memoize = true)
       ..built = true;
@@ -317,7 +317,7 @@ abstract class Parser {
     return built;
   }
 
-  static ST simplified<ST extends Parser>(ST parser) {
+  static Parser simplified(Parser parser) {
     return Parser.transformType(parser, (WrapParser p) => p.base);
   }
 
@@ -381,8 +381,8 @@ abstract class Parser {
     ContextFailure? longestFailure;
     late Parser built = parser.build();
     String formatted = input.replaceAll("\r", "").unindent();
-    Trampoline trampoline = Trampoline();
     Parser completed = end ? built.end() : built;
+    Trampoline trampoline = Trampoline();
     Context context = Context.ignore(State(input: formatted, map: map, mode: ParseMode.gll));
     List<ContextSuccess> successes = <ContextSuccess>[];
 
@@ -612,10 +612,8 @@ abstract class Parser {
       }
       changed |= firstSet.add(startSentinel);
     } else {
-      for (Parser child in parser.children) {
-        for (Parser first in firstSets[child]!) {
-          changed |= firstSet.add(first);
-        }
+      for (Parser first in parser.children.flatMap((Parser child) => firstSets[child]!)) {
+        changed |= firstSet.add(first);
       }
     }
 
@@ -792,7 +790,7 @@ abstract class Parser {
   }
 }
 
-extension SharedParserExtension<ST extends Parser> on ST {
+extension SharedParserExtension on Parser {
   R run<R extends ParseResult>(String input) => Parser.runPeg(this, input);
   Context runCtx(String input) => Parser.runCtxPeg(this, input);
 
@@ -803,17 +801,17 @@ extension SharedParserExtension<ST extends Parser> on ST {
 
   String generateAsciiTree({Map<Parser, String>? marks}) => Parser.generateAsciiTree(this, marks: marks);
 
-  ST build() => Parser.build(this);
-  ST simplified() => Parser.simplified(this);
-  ST clone([HashMap<Parser, Parser>? cloned]) => Parser.clone(this, cloned);
+  Parser build() => Parser.build(this);
+  Parser simplified() => Parser.simplified(this);
+  Parser clone([HashMap<Parser, Parser>? cloned]) => Parser.clone(this, cloned);
 
-  ST transformReplace(Parser target, Parser result) => //
+  Parser transformReplace(Parser target, Parser result) => //
       Parser.transformReplace(this, target, result);
-  ST transformWhere<T extends Parser>(ParserPredicate predicate, TransformHandler<T> handler) =>
+  Parser transformWhere<T extends Parser>(ParserPredicate predicate, TransformHandler<T> handler) =>
       Parser.transformWhere(this, predicate, handler);
-  ST transformType<T extends Parser>(TransformHandler<T> handler) => //
+  Parser transformType<T extends Parser>(TransformHandler<T> handler) => //
       Parser.transformType(this, handler);
-  ST transform<T extends Parser>(TransformHandler handler, [HashMap<Parser, Parser>? transformed]) =>
+  Parser transform<T extends Parser>(TransformHandler handler, [HashMap<Parser, Parser>? transformed]) =>
       Parser.transform(this, handler, transformed);
 
   bool isMemoized() => Parser.isMemoized(this);
