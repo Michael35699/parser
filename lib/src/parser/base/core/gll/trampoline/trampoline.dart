@@ -31,7 +31,9 @@ class Trampoline {
       }));
     } else {
       tableEntry.continuations.add(continuation);
-      tableEntry.results.toSet().forEach(continuation);
+      for (Context result in tableEntry.results.toSet()) {
+        continuation(result);
+      }
     }
   }
 }

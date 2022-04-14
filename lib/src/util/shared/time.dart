@@ -1,16 +1,14 @@
-T time<T>(T Function() callback, {String? name, Symbol? functionSignature}) {
+void time(void Function() callback, {String? name, Symbol? functionSignature}) {
   Stopwatch watch = Stopwatch()..start();
-  T result = callback();
+  callback();
   watch.stop();
 
   print("Time${name == null ? "" : "[$name]"}: ${formatMicroseconds(watch.elapsedMicroseconds)}");
-
-  return result;
 }
 
-extension NamedTimeFunctionExtension<T> on V Function<V extends T>(V Function() callback,
+extension NamedTimeFunctionExtension on void Function(void Function() callback,
     {String? name, Symbol? functionSignature}) {
-  T named(String name, T Function() callback) => this(callback, name: name);
+  void named(String name, void Function() callback) => this(callback, name: name);
 }
 
 String formatMicroseconds(int value) {
