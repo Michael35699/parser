@@ -320,11 +320,11 @@ abstract class Parser {
   }
 
   static Parser simplified(Parser parser) {
-    return Parser.transformType(parser, (WrapParser p) => p.base);
+    return Parser.transformType(Parser.clone(parser), (WrapParser p) => p.base);
   }
 
   static Parser unmapped(Parser root) {
-    return Parser.transformType(root, (MappedParser p) => p.parser);
+    return Parser.transformType(Parser.clone(root), (MappedParser p) => p.parser);
   }
 
   static T runPeg<T extends ParseResult>(Parser parser, String input, {bool? map, bool? end, ParseMode? mode}) {
