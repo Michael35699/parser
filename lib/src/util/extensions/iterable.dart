@@ -14,4 +14,10 @@ extension IterableExtensions<T> on Iterable<T> {
   }
 
   Iterable<T> whereNotType<R>() => where((T item) => item is! R);
+
+  Iterable<R> flatMap<R>(Iterable<R> Function(T) handler) sync* {
+    for (T item in this) {
+      yield* handler(item);
+    }
+  }
 }
