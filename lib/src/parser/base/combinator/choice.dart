@@ -3,7 +3,7 @@ import "package:parser/internal_all.dart";
 class ChoiceParser extends CombinatorParser {
   ChoiceParser(List<Parser> parsers) : super(parsers);
 
-  ContextFailure determineContext(ContextFailure ctx, ContextFailure? longestError) {
+  ContextFailure determineFailure(ContextFailure ctx, ContextFailure? longestError) {
     if (longestError == null) {
       return ctx;
     }
@@ -22,21 +22,29 @@ class ChoiceParser extends CombinatorParser {
     return ctx.state.index > longestError.state.index ? ctx : longestError;
   }
 
+  Context determineSuccess(Context ctx, Context? longest) {
+    if (longest == null) {
+      return ctx;
+    }
+
+    return ctx.state.index > longest.state.index ? ctx : longest;
+  }
+
   @override
   Context parsePeg(Context context, PegParserMutable mutable) {
     ContextFailure? longestError;
-
+    Context? longestSuccess;
     for (Parser parser in children) {
       Context ctx = parser.pegApply(context, mutable);
 
       if (ctx is ContextFailure) {
-        longestError = determineContext(ctx, longestError);
+        longestError = determineFailure(ctx, longestError);
       } else {
-        return ctx;
+        longestSuccess = determineSuccess(ctx, longestSuccess);
       }
     }
 
-    return longestError!;
+    return longestSuccess ?? longestError!;
   }
 
   @override
