@@ -2,12 +2,10 @@ import "package:parser/internal_all.dart";
 
 part "utils.dart";
 
-Parser S() => S & "a" | "a";
-
+Parser S() => "a" | S & S;
 void main() {
-  const String input = "aaaaaaaa";
+  const String input = "aaaaaaaaa";
 
   Parser built = S.build();
-  time.named("GLL", () => built.gll(input).toList());
-  time.named("PEG", () => built.peg(input));
+  time.named("PEG", () => print << built.gll(input).toList().length);
 }
