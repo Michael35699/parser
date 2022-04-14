@@ -4,8 +4,11 @@ part "utils.dart";
 
 Parser S() => "a" | S & S;
 void main() {
-  const String input = "aaaaaaaaa";
+  const String input = "aaaaa";
 
   Parser built = S.build();
-  time.named("PEG", () => print << built.gll(input).toList().length);
+  time.named("PEG", () {
+    built.gll(input).forEach(print);
+    return null;
+  });
 }
