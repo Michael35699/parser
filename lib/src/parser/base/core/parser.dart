@@ -323,6 +323,10 @@ abstract class Parser {
     return Parser.transformType(parser, (WrapParser p) => p.base);
   }
 
+  static Parser unmapped(Parser root) {
+    return Parser.transformType(root, (MappedParser p) => p.parser);
+  }
+
   static T runPeg<T extends ParseResult>(Parser parser, String input, {bool? map, bool? end, ParseMode? mode}) {
     assert(mode != ParseMode.gll, "Running `ParseMode.gll` in runPeg method.");
 
@@ -347,7 +351,7 @@ abstract class Parser {
     map ??= true;
     mode ??= ParseMode.squaredPeg;
 
-    late Parser built = parser.build();
+    Parser built = parser.build();
     String formatted = input.replaceAll("\r", "").unindent();
     PegParserMutable mutable = PegParserMutable();
     Parser completed = end ? built.end() : built;
@@ -381,7 +385,7 @@ abstract class Parser {
     map ??= true;
 
     ContextFailure? longestFailure;
-    late Parser built = parser.build();
+    Parser built = parser.build();
     String formatted = input.replaceAll("\r", "").unindent();
     Parser completed = end ? built.end() : built;
     Trampoline trampoline = Trampoline();
@@ -419,8 +423,9 @@ abstract class Parser {
   }
 
   static String generateAsciiTree(Parser parser, {Map<Parser, String>? marks}) {
+    Parser built = parser.build();
     int counter = 0;
-    Map<Parser, int> rules = <Parser, int>{for (Parser p in Parser.rules(parser)) p: ++counter};
+    Map<Parser, int> rules = <Parser, int>{for (Parser p in Parser.rules(built)) p: ++counter};
     StringBuffer buffer = StringBuffer("\n");
 
     for (Parser p in rules.keys.where(marks?.keys.contains ?? (Parser c) => true)) {
@@ -804,6 +809,7 @@ extension SharedParserExtension on Parser {
   String generateAsciiTree({Map<Parser, String>? marks}) => Parser.generateAsciiTree(this, marks: marks);
 
   Parser build() => Parser.build(this);
+  Parser unmapped() => Parser.unmapped(this);
   Parser simplified() => Parser.simplified(this);
   Parser clone([HashMap<Parser, Parser>? cloned]) => Parser.clone(this, cloned);
 
@@ -851,6 +857,7 @@ extension LazyParserMethodsExtension on Lazy<Parser> {
   String generateAsciiTree({Map<Parser, String>? marks}) => Parser.generateAsciiTree(this.$, marks: marks);
 
   Parser build() => Parser.build(this.$);
+  Parser unmapped() => Parser.unmapped(this.$);
   Parser simplified() => Parser.simplified(this.$);
   Parser clone([HashMap<Parser, Parser>? cloned]) => Parser.clone(this.$);
 

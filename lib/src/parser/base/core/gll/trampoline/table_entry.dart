@@ -7,8 +7,8 @@ class GllTableEntry {
   final HashSet<Context> results;
 
   GllTableEntry()
-      : continuations = HashSet<GllContinuation>.identity(),
-        results = HashSet<Context>.identity();
+      : continuations = HashSet<GllContinuation>(),
+        results = HashSet<Context>();
 
   bool get isEmpty => continuations.isEmpty && results.isEmpty;
 }

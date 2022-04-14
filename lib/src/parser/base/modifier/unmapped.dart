@@ -27,5 +27,5 @@ extension UnmappedParserExtension on Parser {
 }
 
 extension LazyUnmappedParserExtension on LazyParser {
-  UnmappedParser unmapped() => this.$.unmapped();
+  // UnmappedParser unmapped() => this.$.unmapped();
 }
