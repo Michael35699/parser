@@ -176,8 +176,8 @@ abstract class Parser {
         subMap[index] = ctx.entry();
       }
     } else {
-      PegMemoizationEntry resolved = subMap[index] = parsePeg(context, mutable).entry();
-      Context result = resolved.value as Context;
+      Context result = parsePeg(context, mutable);
+      subMap[index] = result.entry();
 
       return result;
     }
@@ -193,8 +193,10 @@ abstract class Parser {
       return entry.value as Context;
     } else {
       subMap[index] = context.failure("Left recursion is not supported in `ParseMode.purePeg`!").entry();
+      Context result = parsePeg(context, mutable);
+      subMap[index] = result.entry();
 
-      return (subMap[index] = parsePeg(context, mutable).entry()).value as Context;
+      return result;
     }
   }
 
