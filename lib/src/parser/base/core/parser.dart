@@ -540,12 +540,20 @@ abstract class Parser {
     return parser.memoize;
   }
 
+  static bool isType<T extends Parser>(Parser parser) {
+    return parser is T;
+  }
+
   static Iterable<Parser> rules(Parser root) sync* {
     yield root;
     yield* root
         .transformType((ThunkParser p) => p..computed.memoize = true) //
         .traverseBreadthFirst()
-        .where(~Parser.equals(root) & Parser.isMemoized & ~Parser.isTerminal);
+        .where((Parser parser) =>
+            parser != root &&
+            parser.memoize &&
+            !parser.isTerminal() &&
+            (parser is WrapParser ? !parser.parser.isTerminal() : parser is! WrapParser));
   }
 
   static List<Parser> firstChildren(Parser root) {
@@ -828,6 +836,7 @@ extension SharedParserExtension on Parser {
   bool isRecursive() => Parser.isRecursive(this);
   bool isMemoizable() => Parser.isMemoizable(this);
   bool isLeftRecursive() => Parser.isLeftRecursive(this);
+  bool isType<T extends Parser>() => Parser.isType<T>(this);
   bool equals(Object target) => Parser.equals(this)(target.$);
 
   List<ParserSetMapping> computeParserSets() => Parser.computeParserSets(this);
@@ -876,6 +885,7 @@ extension LazyParserMethodsExtension on Lazy<Parser> {
   bool isRecursive() => Parser.isRecursive(this.$);
   bool isMemoizable() => Parser.isMemoizable(this.$);
   bool isLeftRecursive() => Parser.isLeftRecursive(this.$);
+  bool isType<T extends Parser>() => Parser.isType<T>(this.$);
   bool equals(Object target) => Parser.equals(this.$)(target.$);
 
   List<ParserSetMapping> computeParserSets() => Parser.computeParserSets(this.$);
