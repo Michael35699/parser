@@ -9,6 +9,15 @@ void time(void Function() callback, {String? name, Symbol? functionSignature}) {
 extension NamedTimeFunctionExtension on void Function(void Function() callback,
     {String? name, Symbol? functionSignature}) {
   void named(String name, void Function() callback) => this(callback, name: name);
+  void average(int count, void Function() callback) {
+    Stopwatch watch = Stopwatch()..start();
+    for (int i = 0; i < count; i++) {
+      callback();
+    }
+    watch.stop();
+
+    print("Time: ${formatMicroseconds(watch.elapsedMicroseconds ~/ count)}");
+  }
 }
 
 String formatMicroseconds(int value) {
