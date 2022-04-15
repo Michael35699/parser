@@ -323,8 +323,12 @@ abstract class Parser {
     return Parser.transformType(Parser.clone(parser), (WrapParser p) => p.base);
   }
 
-  static Parser unmapped(Parser root) {
-    return Parser.transformType(Parser.clone(root), (MappedParser p) => p.parser);
+  static Parser unmapped(Parser parser) {
+    return Parser.transformType(Parser.clone(parser), (MappedParser p) => p.parser);
+  }
+
+  static Parser undropped(Parser parser) {
+    return Parser.transformType(Parser.clone(parser), (DropParser p) => p.parser);
   }
 
   static T runPeg<T extends ParseResult>(Parser parser, String input, {bool? map, bool? end, ParseMode? mode}) {
@@ -818,6 +822,7 @@ extension SharedParserExtension on Parser {
 
   Parser build() => Parser.build(this);
   Parser unmapped() => Parser.unmapped(this);
+  Parser undropped() => Parser.undropped(this);
   Parser simplified() => Parser.simplified(this);
   Parser clone([HashMap<Parser, Parser>? cloned]) => Parser.clone(this, cloned);
 
@@ -867,6 +872,7 @@ extension LazyParserMethodsExtension on Lazy<Parser> {
 
   Parser build() => Parser.build(this.$);
   Parser unmapped() => Parser.unmapped(this.$);
+  Parser undropped() => Parser.undropped(this.$);
   Parser simplified() => Parser.simplified(this.$);
   Parser clone([HashMap<Parser, Parser>? cloned]) => Parser.clone(this.$);
 
