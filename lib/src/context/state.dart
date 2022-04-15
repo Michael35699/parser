@@ -16,6 +16,8 @@ class State with _$State {
   }) = StateDefault;
   State._();
 
+  StateSnapshot get snapshot => StateSnapshot(index, precedence);
+
   String get padded => input.split("\n").map((String c) => "$c ").join("\n");
   State get normalize => copyWith(precedence: -1);
 
@@ -24,4 +26,11 @@ class State with _$State {
 
   /// Given the index and the string, return the column number.
   int get column => padded.substring(0, index + 1).split("\n")[line - 1].length;
+}
+
+class StateSnapshot {
+  final int index;
+  final num precedence;
+
+  const StateSnapshot(this.index, this.precedence);
 }
