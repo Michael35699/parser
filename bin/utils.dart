@@ -184,3 +184,49 @@ Parser changePrecedence(Parser root, num newPrecedence) {
 
   return cloned;
 }
+
+const String indentCode = "#INDENT";
+const String dedentCode = "#DEDENT";
+const String newlineCode = "#NEWLINE#";
+
+String preProcessString(String input) {
+  List<int> indentStack = <int>[0];
+  List<String> lines = input.split("\n");
+  StringBuffer buffer = StringBuffer()..write(lines.first);
+
+  for (String line in lines.skip(1)) {
+    if (line.trim().isEmpty) {
+      buffer.write(newlineCode);
+      continue;
+    }
+
+    int indentation = line.split("").takeWhile((String char) => char == " " || char == "\t").length;
+    String cut = line.substring(indentation);
+    if (indentation > indentStack.last) {
+      indentStack.add(indentation);
+      buffer.write(indentCode);
+    } else if (indentation < indentStack.last) {
+      while (indentStack.length > 1 && indentation < indentStack[indentStack.length - 1]) {
+        indentStack.removeLast();
+        buffer.write(dedentCode);
+      }
+      buffer.write(newlineCode);
+    } else {
+      buffer.write(newlineCode);
+    }
+    buffer.write(cut);
+  }
+  while (indentStack.length > 1) {
+    indentStack.removeLast();
+    buffer.write(dedentCode);
+  }
+
+  return buffer.toString();
+}
+
+Parser indent() => indentCode.p().drop();
+Parser dedent() => dedentCode.p().drop();
+Parser newline() => newlineCode.cycle().drop();
+
+Parser parser() => "block:" & indent & body % newline & dedent & (newline >> "end").optional();
+Parser body() => parser | (newline.not() >> dedent.not() >> source()).cycle().$join();
