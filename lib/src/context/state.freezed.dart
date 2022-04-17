@@ -291,3 +291,154 @@ abstract class StateDefault extends State {
   $StateDefaultCopyWith<StateDefault> get copyWith =>
       throw _privateConstructorUsedError;
 }
+
+/// @nodoc
+class _$StateSnapshotTearOff {
+  const _$StateSnapshotTearOff();
+
+  StateSnapshotDefault call(int index, num precedence) {
+    return StateSnapshotDefault(
+      index,
+      precedence,
+    );
+  }
+}
+
+/// @nodoc
+const $StateSnapshot = _$StateSnapshotTearOff();
+
+/// @nodoc
+mixin _$StateSnapshot {
+  int get index => throw _privateConstructorUsedError;
+  num get precedence => throw _privateConstructorUsedError;
+
+  @JsonKey(ignore: true)
+  $StateSnapshotCopyWith<StateSnapshot> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class $StateSnapshotCopyWith<$Res> {
+  factory $StateSnapshotCopyWith(
+          StateSnapshot value, $Res Function(StateSnapshot) then) =
+      _$StateSnapshotCopyWithImpl<$Res>;
+  $Res call({int index, num precedence});
+}
+
+/// @nodoc
+class _$StateSnapshotCopyWithImpl<$Res>
+    implements $StateSnapshotCopyWith<$Res> {
+  _$StateSnapshotCopyWithImpl(this._value, this._then);
+
+  final StateSnapshot _value;
+  // ignore: unused_field
+  final $Res Function(StateSnapshot) _then;
+
+  @override
+  $Res call({
+    Object? index = freezed,
+    Object? precedence = freezed,
+  }) {
+    return _then(_value.copyWith(
+      index: index == freezed
+          ? _value.index
+          : index // ignore: cast_nullable_to_non_nullable
+              as int,
+      precedence: precedence == freezed
+          ? _value.precedence
+          : precedence // ignore: cast_nullable_to_non_nullable
+              as num,
+    ));
+  }
+}
+
+/// @nodoc
+abstract class $StateSnapshotDefaultCopyWith<$Res>
+    implements $StateSnapshotCopyWith<$Res> {
+  factory $StateSnapshotDefaultCopyWith(StateSnapshotDefault value,
+          $Res Function(StateSnapshotDefault) then) =
+      _$StateSnapshotDefaultCopyWithImpl<$Res>;
+  @override
+  $Res call({int index, num precedence});
+}
+
+/// @nodoc
+class _$StateSnapshotDefaultCopyWithImpl<$Res>
+    extends _$StateSnapshotCopyWithImpl<$Res>
+    implements $StateSnapshotDefaultCopyWith<$Res> {
+  _$StateSnapshotDefaultCopyWithImpl(
+      StateSnapshotDefault _value, $Res Function(StateSnapshotDefault) _then)
+      : super(_value, (v) => _then(v as StateSnapshotDefault));
+
+  @override
+  StateSnapshotDefault get _value => super._value as StateSnapshotDefault;
+
+  @override
+  $Res call({
+    Object? index = freezed,
+    Object? precedence = freezed,
+  }) {
+    return _then(StateSnapshotDefault(
+      index == freezed
+          ? _value.index
+          : index // ignore: cast_nullable_to_non_nullable
+              as int,
+      precedence == freezed
+          ? _value.precedence
+          : precedence // ignore: cast_nullable_to_non_nullable
+              as num,
+    ));
+  }
+}
+
+/// @nodoc
+
+class _$StateSnapshotDefault implements StateSnapshotDefault {
+  const _$StateSnapshotDefault(this.index, this.precedence);
+
+  @override
+  final int index;
+  @override
+  final num precedence;
+
+  @override
+  String toString() {
+    return 'StateSnapshot(index: $index, precedence: $precedence)';
+  }
+
+  @override
+  bool operator ==(dynamic other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is StateSnapshotDefault &&
+            const DeepCollectionEquality().equals(other.index, index) &&
+            const DeepCollectionEquality()
+                .equals(other.precedence, precedence));
+  }
+
+  @override
+  int get hashCode => Object.hash(
+      runtimeType,
+      const DeepCollectionEquality().hash(index),
+      const DeepCollectionEquality().hash(precedence));
+
+  @JsonKey(ignore: true)
+  @override
+  $StateSnapshotDefaultCopyWith<StateSnapshotDefault> get copyWith =>
+      _$StateSnapshotDefaultCopyWithImpl<StateSnapshotDefault>(
+          this, _$identity);
+}
+
+abstract class StateSnapshotDefault implements StateSnapshot {
+  const factory StateSnapshotDefault(int index, num precedence) =
+      _$StateSnapshotDefault;
+
+  @override
+  int get index;
+  @override
+  num get precedence;
+  @override
+  @JsonKey(ignore: true)
+  $StateSnapshotDefaultCopyWith<StateSnapshotDefault> get copyWith =>
+      throw _privateConstructorUsedError;
+}

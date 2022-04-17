@@ -28,9 +28,7 @@ class State with _$State {
   int get column => padded.substring(0, index + 1).split("\n")[line - 1].length;
 }
 
-class StateSnapshot {
-  final int index;
-  final num precedence;
-
-  const StateSnapshot(this.index, this.precedence);
+@freezed
+class StateSnapshot with _$StateSnapshot {
+  const factory StateSnapshot(int index, num precedence) = StateSnapshotDefault;
 }
