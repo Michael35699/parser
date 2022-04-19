@@ -168,7 +168,7 @@ abstract class Parser {
 
       for (;;) {
         Context inner = parsePeg(context, mutable);
-        if (inner.state.index <= ctx.state.index) {
+        if (inner is ContextFailure || inner.state.index <= ctx.state.index) {
           return ctx;
         }
 
@@ -470,7 +470,7 @@ abstract class Parser {
     }
   }
 
-  static List<ParserSetMapping> computeParserSets(Parser root, [Iterable<Parser>? parsers]) {
+    static List<ParserSetMapping> computeParserSets(Parser root, [Iterable<Parser>? parsers]) {
     parsers ??= root.traverseBf;
 
     ParserSetMapping firstSets = Parser._computeFirstSets(parsers);
@@ -559,13 +559,16 @@ abstract class Parser {
   }
 
   static List<Parser> firstChildren(Parser root) {
-    late Parser? loaded = root.children.skipWhile((Parser c) => c.isNullable()).firstOrNull;
+    if (root is! SequentialParser) {
+      return root.children;
+    }
+
+    int i = 0;
+    List<Parser> nullables = root.children.takeWhile(Parser.isNullable).toList();
     return <Parser>[
-      if (root is SequentialParser) ...<Parser>[
-        ...root.children.takeWhile((Parser c) => c.isNullable()),
-        if (loaded != null) loaded,
-      ] else
-        ...root.children,
+      for (; i < nullables.length; i++) root.children[i],
+      if (i < root.children.length) root.children[i],
+      // If the parser at the index after the index of the last nullable item exists, add it to the list.
     ];
   }
 
