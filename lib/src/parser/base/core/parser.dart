@@ -132,8 +132,8 @@ abstract class Parser {
         Head head = result.head = Head(parser: this, evaluationSet: <Parser>{}, involvedSet: <Parser>{});
 
         /// While the LR of the current left-recursive parser is not yet found,
-        /// Assign all the `lrStack` items to have the `lHead` as their own head.
-        /// Also, add the `rule` of `lrStack.item` to the `lHead.involvedSet`
+        /// Assign all the [lrStack] items to have the [lHead] as their own head.
+        /// Also, add the [rule] of [lrStack.item] to the [lHead.involvedSet]
         for (PegLeftRecursion left
             in mutable.parserCallStack.reversed.takeWhile((PegLeftRecursion lr) => lr.head != head)) {
           head.involvedSet.add(left.parser);
@@ -236,8 +236,6 @@ abstract class Parser {
   static const int firstSetIndex = 0;
   static const int followSetIndex = 1;
   static const int cycleSetIndex = 2;
-
-  static const bool _false = false;
 
   static final Parser startSentinel = epsilon();
   static final Parser endSentinel = dollar();
@@ -561,8 +559,13 @@ abstract class Parser {
   }
 
   static List<Parser> firstChildren(Parser root) {
+    late Parser? loaded = root.children.skipWhile((Parser c) => c.isNullable()).firstOrNull;
     return <Parser>[
-      if (root is SequentialParser) root.children.first else ...root.children,
+      if (root is SequentialParser) ...<Parser>[
+        ...root.children.takeWhile((Parser c) => c.isNullable()),
+        if (loaded != null) loaded,
+      ] else
+        ...root.children,
     ];
   }
 
@@ -769,7 +772,8 @@ abstract class Parser {
   }) {
     StringBuffer buffer = StringBuffer();
 
-    do {
+    block:
+    {
       String marker = isLast ? "└─" : "├─";
 
       buffer
@@ -781,7 +785,7 @@ abstract class Parser {
           ..write(" (rule#${rules[parser]})")
           ..writeln();
 
-        break;
+        break block;
       }
 
       buffer
@@ -803,7 +807,7 @@ abstract class Parser {
           ));
         }
       }
-    } while (_false);
+    }
 
     return buffer.toString();
   }
