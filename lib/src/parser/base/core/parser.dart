@@ -470,7 +470,7 @@ abstract class Parser {
     }
   }
 
-    static List<ParserSetMapping> computeParserSets(Parser root, [Iterable<Parser>? parsers]) {
+  static List<ParserSetMapping> computeParserSets(Parser root, [Iterable<Parser>? parsers]) {
     parsers ??= root.traverseBf;
 
     ParserSetMapping firstSets = Parser._computeFirstSets(parsers);
