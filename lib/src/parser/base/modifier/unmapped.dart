@@ -21,11 +21,3 @@ class UnmappedParser extends WrapParser {
   @override
   UnmappedParser empty() => UnmappedParser.empty();
 }
-
-extension UnmappedParserExtension on Parser {
-  UnmappedParser unmapped() => UnmappedParser(this);
-}
-
-extension LazyUnmappedParserExtension on LazyParser {
-  // UnmappedParser unmapped() => this.$.unmapped();
-}
