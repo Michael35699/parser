@@ -1,8 +1,8 @@
 import "package:parser/internal_all.dart";
 
-Parser ws() => r"[ \t]*".r().nullable();
-Parser whitespace() => r"[ \t]*".r().nullable();
-Parser whitespaceNewline() => r"[ \t\n\r]*".r().nullable();
+Parser ws() => ("\t" | " ").star();
+Parser whitespace() => ("\t" | " ").star();
+Parser whitespaceNewline() => ("\t" | " " | "\n" | "\r").star();
 
 Parser trim(Parser parser) => whitespace() >> parser << whitespace();
 Parser trimLeft(Parser parser) => whitespace() >> parser;

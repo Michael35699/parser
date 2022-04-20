@@ -17,7 +17,9 @@ class Trampoline {
   }
 
   void push(Parser parser, Context context, GllContinuation continuation) {
-    GllTableEntry tableEntry = table.putIfAbsent(parser, GllSubTable.new)[context.state.snapshot] ??= GllTableEntry();
+    GllTableEntry tableEntry = table //
+        .putIfAbsent(parser, GllSubTable.new)
+        .putIfAbsent(context.state.snapshot, GllTableEntry.new);
 
     if (tableEntry.isEmpty) {
       tableEntry.continuations.add(continuation);

@@ -22,4 +22,6 @@ Parser _power() =>
     _negative;
 
 Parser _negative() => "-".tr & _negative ^ $2((_, num v) => -v) | _atomic;
-Parser _atomic() => "[0-9]+".r ^ $type(int.parse) | "(".t & _addition & ")".t;
+Parser _atomic() => _number.flat() ^ $type(int.parse) | "(".t & _addition & ")".t;
+Parser _number() => _number & _digit | _digit;
+Parser _digit() => "0" >> "9";
