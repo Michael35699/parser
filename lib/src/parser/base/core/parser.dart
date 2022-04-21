@@ -98,8 +98,9 @@ abstract class Parser {
       mutable.parserCallStack.add(leftRecursion);
 
       /// Save a new entry on `position` with the LR instance.
-      PegMemoizationSubMap subMap = mutable.memoMap.putIfAbsent(this, PegMemoizationSubMap.new);
-      subMap[index] = entry = leftRecursion.entry();
+      entry = mutable.memoMap //
+          .putIfAbsent(this, PegMemoizationSubMap.new)
+          .putIfAbsent(index, leftRecursion.entry);
 
       /// Evaluate the parser.
       Context ans = parsePeg(context, mutable);
