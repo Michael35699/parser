@@ -88,7 +88,7 @@ abstract class Parser {
   }
 
   @internal
-  Context parseSquareMemoized(Context context, PegParserMutable mutable) {
+  Context parseQuadraticMemoized(Context context, PegParserMutable mutable) {
     int index = context.state.index;
 
     PegMemoizationEntry? entry = recall(index, context, mutable);
@@ -212,8 +212,8 @@ abstract class Parser {
           return parsePureMemoized(context, mutable);
         case ParseMode.linearPeg:
           return parseLinearMemoized(context, mutable);
-        case ParseMode.squaredPeg:
-          return parseSquareMemoized(context, mutable);
+        case ParseMode.quadraticPeg:
+          return parseQuadraticMemoized(context, mutable);
         case ParseMode.gll:
           throw UnsupportedError("`ParseMode.gll` is only for GLL parsing mode!");
       }
@@ -351,9 +351,9 @@ abstract class Parser {
 
     end ??= true;
     map ??= true;
-    mode ??= ParseMode.squaredPeg;
+    mode ??= ParseMode.quadraticPeg;
 
-    Parser built = parser.build();
+    Parser built = parser;
     String formatted = input.replaceAll("\r", "").unindent();
     PegParserMutable mutable = PegParserMutable();
     Parser completed = end ? built.end() : built;
@@ -934,11 +934,11 @@ extension GeneralParserExtension<T extends Object> on T {
 extension RunParserMethodExtension<R> on T Function<T extends R>(String, {ParseMode? mode}) {
   T pure<T extends R>(String input, {ParseMode? mode}) => this(input, mode: ParseMode.purePeg);
   T linear<T extends R>(String input, {ParseMode? mode}) => this(input, mode: ParseMode.linearPeg);
-  T squared<T extends R>(String input, {ParseMode? mode}) => this(input, mode: ParseMode.squaredPeg);
+  T quadratic<T extends R>(String input, {ParseMode? mode}) => this(input, mode: ParseMode.quadraticPeg);
 }
 
 extension ContextRunParserMethodExtension<R> on Context Function(String, {ParseMode? mode}) {
   Context pure(String input, {ParseMode? mode}) => this(input, mode: ParseMode.purePeg);
   Context linear(String input, {ParseMode? mode}) => this(input, mode: ParseMode.linearPeg);
-  Context squared(String input, {ParseMode? mode}) => this(input, mode: ParseMode.squaredPeg);
+  Context quadratic(String input, {ParseMode? mode}) => this(input, mode: ParseMode.quadraticPeg);
 }

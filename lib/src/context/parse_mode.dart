@@ -1,1 +1,1 @@
-enum ParseMode { purePeg, linearPeg, squaredPeg, gll }
+enum ParseMode { purePeg, linearPeg, quadraticPeg, gll }
