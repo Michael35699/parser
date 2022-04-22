@@ -39,13 +39,13 @@ class OnSuccessParser extends WrapParser {
 }
 
 extension OnSuccessParserExtension on Parser {
-  OnSuccessParser success(String message) => OnSuccessParser(this, message);
+  OnSuccessParser success(Object? value) => OnSuccessParser(this, value);
 }
 
 extension LazyOnSuccessParserExtension on LazyParser {
-  OnSuccessParser success(String message) => this.$.success(message);
+  OnSuccessParser success(Object? value) => this.$.success(value);
 }
 
 extension StringOnSuccessParserExtension on String {
-  OnSuccessParser success(String message) => this.$.success(message);
+  OnSuccessParser success(Object? value) => this.$.success(value);
 }
