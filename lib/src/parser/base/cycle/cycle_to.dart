@@ -77,9 +77,6 @@ class CycleToParser extends WrapParser with CyclicParser {
   }
 
   @override
-  Parser get base => parser.base;
-
-  @override
   CycleToParser empty() => CycleToParser.empty();
 }
 

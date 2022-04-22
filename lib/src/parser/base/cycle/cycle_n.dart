@@ -60,9 +60,6 @@ class CycleNParser extends WrapParser with CyclicParser {
 
   @override
   CycleNParser empty() => CycleNParser.empty(count);
-
-  @override
-  Parser get base => parser.base;
 }
 
 Parser cycleN(Object parser, int count) => CycleNParser(parser.$, count);

@@ -55,9 +55,6 @@ class CycleStarParser extends WrapParser with CyclicParser {
 
   @override
   CycleStarParser empty() => CycleStarParser.empty();
-
-  @override
-  Parser get base => parser.base;
 }
 
 CycleStarParser cycleStar(Object parser) => CycleStarParser(parser.$);

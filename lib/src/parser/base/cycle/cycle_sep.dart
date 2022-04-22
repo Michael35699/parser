@@ -91,9 +91,6 @@ class CycleSeparatedParser extends WrapParser with CyclicParser {
 
   @override
   CycleSeparatedParser empty() => CycleSeparatedParser.empty();
-
-  @override
-  Parser get base => parser.base;
 }
 
 CycleSeparatedParser cycleSeparated(Object main, Object sep) => CycleSeparatedParser(main.$, sep.$);
