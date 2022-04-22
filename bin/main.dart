@@ -1,6 +1,5 @@
 import "dart:math";
 
-import "package:parser/example/parser/math/infix.dart";
 import "package:parser/internal_all.dart";
 
 part "utils.dart";
@@ -25,11 +24,8 @@ String generateInput() {
   return buffer.toString();
 }
 
-void main() {
-  Parser parser = infixMath.unmapped.build();
-  String input = generateInput();
-  ParserSetMapping firstSets = parser.firstSets;
+Parser p() => ("a" & "b").flatMap((_, __) => failure("Oh no."));
 
-  time(count: 1, () => parser.gll(input).toList());
-  print(firstSets[parser]);
+void main() {
+  print(p.run("ac"));
 }

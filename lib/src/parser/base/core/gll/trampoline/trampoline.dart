@@ -18,23 +18,23 @@ class Trampoline {
   }
 
   void push(Parser parser, Context context, GllContinuation continuation) {
-    GllTableEntry tableEntry = table //
-        .putIfAbsent(parser, HashMap<int, HashMap<num, GllTableEntry>>.new)
-        .putIfAbsent(context.state.index, HashMap<num, GllTableEntry>.new)
+    GllTableEntry tableEntry = table
+        .putIfAbsent(parser, HashMap.new)
+        .putIfAbsent(context.state.index, HashMap.new)
         .putIfAbsent(context.state.precedence, GllTableEntry.new);
 
-    if (tableEntry.isEmpty) {
+    if (tableEntry.continuations.isEmpty && tableEntry.results.isEmpty) {
       tableEntry.continuations.add(continuation);
       stack.add(GllParserCall(parser.parseGll, context, this, (Context result) {
         if (tableEntry.results.add(result)) {
-          for (GllContinuation continuation in tableEntry.continuations.toSet()) {
+          for (GllContinuation continuation in tableEntry.continuations.toList()) {
             continuation(result);
           }
         }
       }));
     } else {
       tableEntry.continuations.add(continuation);
-      for (Context result in tableEntry.results.toSet()) {
+      for (Context result in tableEntry.results.whereType<ContextSuccess>().toSet()) {
         continuation(result);
       }
     }
