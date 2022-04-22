@@ -34,7 +34,7 @@ class Trampoline {
       }));
     } else {
       tableEntry.continuations.add(continuation);
-      for (Context result in tableEntry.results.whereType<ContextSuccess>().toSet()) {
+      for (Context result in tableEntry.results.toSet()) {
         continuation(result);
       }
     }
