@@ -354,7 +354,7 @@ abstract class Parser {
     map ??= true;
     mode ??= ParseMode.quadraticPeg;
 
-    Parser built = parser;
+    Parser built = parser.build();
     String formatted = input.replaceAll("\r", "").unindent();
     PegParserMutable mutable = PegParserMutable();
     Parser completed = end ? built.end() : built;
