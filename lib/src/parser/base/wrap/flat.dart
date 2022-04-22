@@ -19,11 +19,11 @@ class FlatParser extends WrapParser {
 
   @override
   void parseGll(Context context, Trampoline trampoline, GllContinuation continuation) {
-    trampoline.push(parser, context, (Context context) {
-      if (context is ContextSuccess) {
-        continuation(context.success(context.state.input.substring(context.state.index, context.state.index)));
+    trampoline.push(parser, context, (Context result) {
+      if (result is ContextSuccess) {
+        continuation(result.success(result.state.input.substring(context.state.index, result.state.index)));
       } else {
-        continuation(context);
+        continuation(result);
       }
     });
   }
