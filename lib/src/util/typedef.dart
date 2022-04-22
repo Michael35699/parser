@@ -3,6 +3,8 @@ import "package:parser/internal_all.dart";
 typedef Lazy<T> = T Function();
 typedef LazyParser = Lazy<Parser>;
 typedef MapFunction = ParseResult Function(ParseResult, Context);
+typedef FlatMapFunction = Parser Function(ParseResult, Context);
+typedef FilterFunction = bool Function(ParseResult, Context);
 
 typedef ParseFunction = Context Function(Context);
 typedef ContinuationFunction = Context Function(ParseFunction, Context);
