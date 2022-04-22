@@ -1,23 +1,19 @@
-void time(void Function() callback, {String? name, Symbol? functionSignature}) {
+void time(void Function() callback, {int? count, String? name, Symbol? functionSignature}) {
+  count ??= 1;
+
   Stopwatch watch = Stopwatch()..start();
-  callback();
+  for (int i = 0; i < count; i++) {
+    callback();
+  }
   watch.stop();
 
-  print("Time${name == null ? "" : "[$name]"}: ${formatMicroseconds(watch.elapsedMicroseconds)}");
+  print("Time${name == null ? "" : "[$name]"}: ${formatMicroseconds(watch.elapsedMicroseconds ~/ count)}");
 }
 
 extension NamedTimeFunctionExtension on void Function(void Function() callback,
-    {String? name, Symbol? functionSignature}) {
+    {int? count, String? name, Symbol? functionSignature}) {
   void named(String name, void Function() callback) => this(callback, name: name);
-  void average(int count, void Function() callback) {
-    Stopwatch watch = Stopwatch()..start();
-    for (int i = 0; i < count; i++) {
-      callback();
-    }
-    watch.stop();
-
-    print("Time: ${formatMicroseconds(watch.elapsedMicroseconds ~/ count)}");
-  }
+  void average(int count, void Function() callback) => this(callback, count: count);
 }
 
 String formatMicroseconds(int value) {
