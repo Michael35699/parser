@@ -1,12 +1,13 @@
 import "dart:math";
 
+import "package:parser/example/parser/math/infix.dart";
 import "package:parser/internal_all.dart";
 
 part "utils.dart";
 
 String generateInput() {
   const int max = 100;
-  const List<String> operators = <String>["+", "-", "*", "^"];
+  const List<String> operators = <String>["+", "-", "*", "^", "~/", "/"];
 
   Random random = Random.secure();
   int randomNumber() => random.nextInt(max - 10) + 10;
@@ -24,8 +25,6 @@ String generateInput() {
   return buffer.toString();
 }
 
-Parser p() => ("a" & "b").flatMap((_, __) => failure("Oh no."));
-
 void main() {
-  print(p.run("ac"));
+  print(infixMath.gll(generateInput()));
 }
