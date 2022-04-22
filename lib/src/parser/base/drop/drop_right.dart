@@ -20,11 +20,7 @@ class DropRightParser extends WrapParser with SequentialParser {
       return last;
     }
 
-    if (ctx is ContextSuccess) {
-      return last.success(ctx.mappedResult, ctx.unmappedResult);
-    }
-
-    return last;
+    return ctx.index(last.state.index);
   }
 
   @override
@@ -39,10 +35,7 @@ class DropRightParser extends WrapParser with SequentialParser {
           return continuation(last);
         }
 
-        if (ctx is ContextSuccess) {
-          return continuation(last.success(ctx.mappedResult, ctx.unmappedResult));
-        }
-        return continuation(last);
+        return continuation(ctx.index(last.state.index));
       });
     });
   }
