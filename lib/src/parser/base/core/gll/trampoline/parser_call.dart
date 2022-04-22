@@ -7,6 +7,4 @@ class GllParserCall {
   final GllContinuation continuation;
 
   const GllParserCall(this.function, this.context, this.trampoline, this.continuation);
-
-  void call() => function(context, trampoline, continuation);
 }
