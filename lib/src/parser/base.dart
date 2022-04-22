@@ -35,6 +35,7 @@ export "base/data_set/push.dart";
 export "base/drop/drop_left.dart";
 export "base/drop/drop_left_right.dart";
 export "base/drop/drop_right.dart";
+export "base/functor/bind.dart";
 export "base/functor/filter.dart";
 export "base/functor/flat_map.dart";
 export "base/functor/map.dart";

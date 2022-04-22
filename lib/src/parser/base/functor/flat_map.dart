@@ -21,7 +21,7 @@ class FlatMappedParser extends WrapParser {
     Context ctx = parser.pegApply(context, mutable);
 
     if (ctx is ContextSuccess) {
-      return flatMapper(ctx.mappedResult, ctx).pegApply(ctx, mutable);
+      return flatMapper(ctx.mappedResult, ctx).pegApply(context, mutable);
     } else {
       return ctx;
     }
@@ -31,7 +31,7 @@ class FlatMappedParser extends WrapParser {
   void parseGll(Context context, Trampoline trampoline, GllContinuation continuation) {
     trampoline.push(parser, context, (Context ctx) {
       if (ctx is ContextSuccess) {
-        trampoline.push(flatMapper(ctx.mappedResult, ctx), ctx, continuation);
+        trampoline.push(flatMapper(ctx.mappedResult, ctx), context, continuation);
       } else {
         continuation(ctx);
       }

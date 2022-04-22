@@ -25,5 +25,4 @@ class ConditionalParser extends SpecialParser {
 
 extension ConditionalParserExtension on Parser {
   ConditionalParser conditional(Parser Function(Context) fn) => ConditionalParser(this, fn);
-  ConditionalParser bind(Parser Function(Context) fn) => ConditionalParser(this, fn);
 }
