@@ -71,7 +71,8 @@ Parser _multiplicativeOp() => r"(?:~\/|\/{2})|[*×\/÷]|%".r.t();
 Parser _ws() => -r"\s*".r.nullable();
 Parser _identifier() => r"[A-Za-zΑ-Ωα-ω_$:][A-Za-zΑ-Ωα-ω0-9_$-]*".r();
 Parser _number() =>
-    r"(?:[0-9'_]*\.[0-9'_]+)|(?:[0-9'_]+)".r ^ $type((String c) => c.replaceAll(RegExp("['_]"), "")) >>> num.parse;
+    r"(?:[0-9'_]*\.[0-9'_]+)|(?:[0-9'_]+)".r() ^ //
+    $type((String c) => num.parse(c.replaceAll(RegExp("['_]"), "")));
 
 final Map<String, int> _functionsArgc = <String, int>{
   "sin": 1,

@@ -7,14 +7,14 @@ part "utils.dart";
 
 String generateInput() {
   const int max = 100;
-  const List<String> operators = <String>["+", "-", "*", "/", "~/", "%", "^"];
+  const List<String> operators = <String>["+", "-", "*", "^"];
 
   Random random = Random.secure();
   int randomNumber() => random.nextInt(max - 10) + 10;
   String randomOperator() => operators[random.nextInt(operators.length)];
 
   StringBuffer buffer = StringBuffer(randomNumber());
-  for (int _ in 50.times) {
+  for (int _ in 20.times) {
     buffer
       ..write(" ")
       ..write(randomOperator())
@@ -26,9 +26,10 @@ String generateInput() {
 }
 
 void main() {
-  Parser parser = infixMath.build();
+  Parser parser = infixMath.unmapped.build();
   String input = generateInput();
+  ParserSetMapping firstSets = parser.firstSets;
 
-  time.average(50, () => parser.unmapped.peg.quadratic(input));
-  time.average(50, () => parser.unmapped.peg.linear(input));
+  time(count: 1, () => parser.gll(input).toList());
+  print(firstSets[parser]);
 }

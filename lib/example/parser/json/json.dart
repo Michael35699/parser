@@ -2,9 +2,10 @@
 
 import "package:parser/parser.dart";
 
-typedef _JsonEntry = MapEntry<String, Object?>;
-typedef _JsonMap = Map<String, Object?>;
-typedef _JsonList = List<Object?>;
+typedef _JsonObject = Object?;
+typedef _JsonList = List<_JsonObject>;
+typedef _JsonMap = Map<String, _JsonObject>;
+typedef _JsonEntry = MapEntry<String, _JsonObject>;
 
 Parser jsonParser() => _value.end();
 Parser _value() => _valueBody.trim();
