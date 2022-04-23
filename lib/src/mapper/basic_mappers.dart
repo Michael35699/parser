@@ -6,6 +6,8 @@ String _$flatten(dynamic value) => value is List ? value.map(_$flatten).join() :
 MapFunction _$type<T>(ParseResult Function(T) callback) =>
     (ParseResult result, Context context) => callback(_type(result));
 
+MapFunction _$cast<T extends Object?>() => (ParseResult result, Context context) => result as T;
+
 MapFunction _$join([String sep = ""]) =>
     (ParseResult result, Context context) => (result as List<ParseResult>?)?.join(sep);
 
@@ -66,6 +68,7 @@ T _type<T>(ParseResult v) => v as T;
 
 dynamic $pipe(ParseResult r, Context c) => r;
 MapFunction $type<T extends Object?>(ParseResult Function(T) callback) => _$type(callback);
+MapFunction $cast<T extends Object?>() => _$cast<T>();
 MapFunction $join([String sep = ""]) => _$join(sep);
 MapFunction $named(Function fn) => _$named(fn);
 MapFunction $at(int index) => _$at(index);
