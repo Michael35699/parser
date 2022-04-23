@@ -11,9 +11,9 @@ Parser _addition() =>
 
 Parser _multiplication() =>
     _multiplication & "*".t & _power ^ $3((num l, _, num r) => l * r) |
-    _multiplication & "/".t & _power ^ $3((num l, _, num r) => l / r) |
-    _multiplication & "~/".t & _power ^ $3((num l, _, num r) => l ~/ r) |
-    _multiplication & "%".t & _power ^ $3((num l, _, num r) => l % r) |
+    _multiplication & "/".t & _power ^ $3((num l, _, num r) => r == 0 ? l : l / r) |
+    _multiplication & "~/".t & _power ^ $3((num l, _, num r) => r == 0 ? l : l ~/ r) |
+    _multiplication & "%".t & _power ^ $3((num l, _, num r) => r == 0 ? l : l % r) |
     _power;
 
 Parser _power() =>
