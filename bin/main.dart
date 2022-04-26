@@ -15,11 +15,7 @@ String generateInput() {
 
   StringBuffer buffer = StringBuffer(randomNumber());
   for (int _ in 50.times) {
-    buffer
-      ..write(" ")
-      ..write(randomOperator())
-      ..write(" ")
-      ..write(randomNumber());
+    buffer.write(" ${randomOperator()} ${randomNumber()}");
   }
 
   return buffer.toString();
@@ -29,5 +25,5 @@ void main() {
   String input = generateInput();
   print(input);
 
-  print(infixMath.gll(input));
+  print(infixMath.gll<num>(input).map((num c) => (c.toInt() & (1 << 12)) | 1));
 }

@@ -87,6 +87,15 @@ abstract class Parser {
     return entry.value as Context;
   }
 
+  Context applyPeg(Context context, PegParserMutable mutable) {
+    Context result = mutable.memoMap
+        .putIfAbsent(this, PegMemoizationSubMap.new)
+        .putIfAbsent(context.state.index, () => parsePeg(context, mutable).entry())
+        .value as Context;
+
+    return result;
+  }
+
   @internal
   Context parseQuadraticMemoized(Context context, PegParserMutable mutable) {
     int index = context.state.index;
@@ -108,16 +117,14 @@ abstract class Parser {
       /// Remove the created LR instance from the stack.
       mutable.parserCallStack.removeLast();
 
-      /// If a descendant parser put a head in the lr then
-      /// return the result of method `leftRecursiveResult`.
+      /// If a descendant parser put a head in the lr then return the result of method [leftRecursiveResult()].
       if (leftRecursion.head != null) {
         leftRecursion.seed = ans;
 
         return leftRecursiveResult(index, entry, mutable);
       }
 
-      /// If it was a normal parser result,
-      /// return the resulting context.
+      /// If it was a normal parser result, return the resulting context.
       else {
         entry.value = ans;
 
@@ -188,17 +195,13 @@ abstract class Parser {
   Context parsePureMemoized(Context context, PegParserMutable mutable) {
     int index = context.state.index;
     PegMemoizationSubMap subMap = mutable.memoMap.putIfAbsent(this, PegMemoizationSubMap.new);
-    PegMemoizationEntry? entry = subMap[index];
+    Context result = subMap.putIfAbsent(context.state.index, () {
+      subMap[index] = context.failure("Left recursion detected.").entry();
 
-    if (entry != null) {
-      return entry.value as Context;
-    } else {
-      subMap[index] = context.failure("Left recursion is not supported in `ParseMode.purePeg`!").entry();
-      Context result = parsePeg(context, mutable);
-      subMap[index] = result.entry();
+      return subMap[index] = parsePeg(context, mutable).entry();
+    }).value as Context;
 
-      return result;
-    }
+    return result;
   }
 
   @internal
@@ -535,6 +538,23 @@ abstract class Parser {
     return false;
   }
 
+  static bool isRightRecursive(Parser root) {
+    Iterable<Parser> toAdd = Parser.followChildren(root);
+    Queue<Parser> parsers = Queue<Parser>()..addAll(toAdd);
+    Set<Parser> visited = <Parser>{...toAdd};
+
+    while (parsers.isNotEmpty) {
+      Parser current = parsers.removeFirst();
+      if (current == root) {
+        return true;
+      }
+
+      Parser.followChildren(current).where(visited.add).forEach(parsers.add);
+    }
+
+    return false;
+  }
+
   static bool isMemoizable(Parser parser) {
     return parser is ThunkParser || parser.memoize;
   }
@@ -571,6 +591,14 @@ abstract class Parser {
       if (i < root.children.length) root.children[i],
       // If the parser at the index after the index of the last nullable item exists, add it to the list.
     ];
+  }
+
+  static List<Parser> followChildren(Parser root) {
+    if (root is! SequentialParser) {
+      return root.children;
+    }
+
+    return root.children.skip(1).toList();
   }
 
   static Parser resolve(Object object) {
