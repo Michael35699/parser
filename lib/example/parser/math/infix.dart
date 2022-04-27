@@ -2,7 +2,7 @@ import "dart:math";
 
 import "package:parser/parser.dart";
 
-Parser infixMath() => _addition.$;
+Parser infixMath() => _addition.thunk();
 
 Parser _addition() =>
     _addition & "+".t & _multiplication ^ $3((num l, _, num r) => l + r) |

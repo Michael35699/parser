@@ -6,11 +6,11 @@ import "package:parser/internal_all.dart";
 
 class Trampoline {
   final Queue<GllParserCall> stack;
-  final HashMap<Parser, HashMap<int, HashMap<num, GllTableEntry>>> table;
+  final GllMemoizationMap table;
 
   Trampoline()
       : stack = Queue<GllParserCall>(),
-        table = HashMap<Parser, HashMap<int, HashMap<num, GllTableEntry>>>();
+        table = GllMemoizationMap();
 
   void step() {
     GllParserCall latest = stack.removeLast();
