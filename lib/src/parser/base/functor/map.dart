@@ -21,7 +21,7 @@ class MappedParser extends WrapParser {
     Context ctx = parser.pegApply(context, mutable);
 
     if (ctx is ContextSuccess) {
-      ParseResult mappedResult = replaceResult || ctx.state.map ? mapper(ctx.mappedResult, ctx) : ctx.mappedResult;
+      ParseResult mappedResult = mapper(ctx.mappedResult, ctx);
       ParseResult unmappedResult = replaceResult ? mapper(ctx.unmappedResult, ctx) : ctx.unmappedResult;
 
       return ctx.success(mappedResult, unmappedResult);
@@ -34,7 +34,7 @@ class MappedParser extends WrapParser {
   void parseGll(Context context, Trampoline trampoline, GllContinuation continuation) {
     trampoline.push(parser, context, (Context ctx) {
       if (ctx is ContextSuccess) {
-        ParseResult mappedResult = replaceResult || ctx.state.map ? mapper(ctx.mappedResult, ctx) : ctx.mappedResult;
+        ParseResult mappedResult = mapper(ctx.mappedResult, ctx);
         ParseResult unmappedResult = replaceResult ? mapper(ctx.unmappedResult, ctx) : ctx.unmappedResult;
 
         continuation(ctx.success(mappedResult, unmappedResult));

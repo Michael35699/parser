@@ -9,7 +9,6 @@ class State with _$State {
     required String input,
     @Default(ParseMode.purePeg) ParseMode mode,
     @Default(0) int index,
-    @Default(false) bool map,
     @Default(double.infinity) num precedence,
     @Default(<int>[]) List<int> indentStack,
     @Default(<dynamic>{}) Set<dynamic> dataSet,

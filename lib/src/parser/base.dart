@@ -49,7 +49,6 @@ export "base/leaf/string.dart";
 export "base/leaf/unicode_range.dart";
 export "base/lookahead/negative_lookahead.dart";
 export "base/lookahead/positive_lookahead.dart";
-export "base/modifier/unmapped.dart";
 export "base/on/failure.dart";
 export "base/on/success.dart";
 export "base/precedence/from_precedence.dart";

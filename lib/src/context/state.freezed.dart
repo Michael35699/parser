@@ -12,41 +12,13 @@ part of 'state.dart';
 T _$identity<T>(T value) => value;
 
 final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more informations: https://github.com/rrousselGit/freezed#custom-getters-and-methods');
-
-/// @nodoc
-class _$StateTearOff {
-  const _$StateTearOff();
-
-  StateDefault call(
-      {required String input,
-      ParseMode mode = ParseMode.purePeg,
-      int index = 0,
-      bool map = false,
-      num precedence = double.infinity,
-      List<int> indentStack = const <int>[],
-      Set<dynamic> dataSet = const <dynamic>{}}) {
-    return StateDefault(
-      input: input,
-      mode: mode,
-      index: index,
-      map: map,
-      precedence: precedence,
-      indentStack: indentStack,
-      dataSet: dataSet,
-    );
-  }
-}
-
-/// @nodoc
-const $State = _$StateTearOff();
+    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#custom-getters-and-methods');
 
 /// @nodoc
 mixin _$State {
   String get input => throw _privateConstructorUsedError;
   ParseMode get mode => throw _privateConstructorUsedError;
   int get index => throw _privateConstructorUsedError;
-  bool get map => throw _privateConstructorUsedError;
   num get precedence => throw _privateConstructorUsedError;
   List<int> get indentStack => throw _privateConstructorUsedError;
   Set<dynamic> get dataSet => throw _privateConstructorUsedError;
@@ -63,7 +35,6 @@ abstract class $StateCopyWith<$Res> {
       {String input,
       ParseMode mode,
       int index,
-      bool map,
       num precedence,
       List<int> indentStack,
       Set<dynamic> dataSet});
@@ -82,7 +53,6 @@ class _$StateCopyWithImpl<$Res> implements $StateCopyWith<$Res> {
     Object? input = freezed,
     Object? mode = freezed,
     Object? index = freezed,
-    Object? map = freezed,
     Object? precedence = freezed,
     Object? indentStack = freezed,
     Object? dataSet = freezed,
@@ -100,10 +70,6 @@ class _$StateCopyWithImpl<$Res> implements $StateCopyWith<$Res> {
           ? _value.index
           : index // ignore: cast_nullable_to_non_nullable
               as int,
-      map: map == freezed
-          ? _value.map
-          : map // ignore: cast_nullable_to_non_nullable
-              as bool,
       precedence: precedence == freezed
           ? _value.precedence
           : precedence // ignore: cast_nullable_to_non_nullable
@@ -130,7 +96,6 @@ abstract class $StateDefaultCopyWith<$Res> implements $StateCopyWith<$Res> {
       {String input,
       ParseMode mode,
       int index,
-      bool map,
       num precedence,
       List<int> indentStack,
       Set<dynamic> dataSet});
@@ -151,7 +116,6 @@ class _$StateDefaultCopyWithImpl<$Res> extends _$StateCopyWithImpl<$Res>
     Object? input = freezed,
     Object? mode = freezed,
     Object? index = freezed,
-    Object? map = freezed,
     Object? precedence = freezed,
     Object? indentStack = freezed,
     Object? dataSet = freezed,
@@ -169,10 +133,6 @@ class _$StateDefaultCopyWithImpl<$Res> extends _$StateCopyWithImpl<$Res>
           ? _value.index
           : index // ignore: cast_nullable_to_non_nullable
               as int,
-      map: map == freezed
-          ? _value.map
-          : map // ignore: cast_nullable_to_non_nullable
-              as bool,
       precedence: precedence == freezed
           ? _value.precedence
           : precedence // ignore: cast_nullable_to_non_nullable
@@ -196,36 +156,43 @@ class _$StateDefault extends StateDefault {
       {required this.input,
       this.mode = ParseMode.purePeg,
       this.index = 0,
-      this.map = false,
       this.precedence = double.infinity,
-      this.indentStack = const <int>[],
-      this.dataSet = const <dynamic>{}})
-      : super._();
+      final List<int> indentStack = const <int>[],
+      final Set<dynamic> dataSet = const <dynamic>{}})
+      : _indentStack = indentStack,
+        _dataSet = dataSet,
+        super._();
 
   @override
   final String input;
-  @JsonKey()
   @override
+  @JsonKey()
   final ParseMode mode;
-  @JsonKey()
   @override
+  @JsonKey()
   final int index;
-  @JsonKey()
   @override
-  final bool map;
   @JsonKey()
-  @override
   final num precedence;
-  @JsonKey()
+  final List<int> _indentStack;
   @override
-  final List<int> indentStack;
   @JsonKey()
+  List<int> get indentStack {
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_indentStack);
+  }
+
+  final Set<dynamic> _dataSet;
   @override
-  final Set<dynamic> dataSet;
+  @JsonKey()
+  Set<dynamic> get dataSet {
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableSetView(_dataSet);
+  }
 
   @override
   String toString() {
-    return 'State(input: $input, mode: $mode, index: $index, map: $map, precedence: $precedence, indentStack: $indentStack, dataSet: $dataSet)';
+    return 'State(input: $input, mode: $mode, index: $index, precedence: $precedence, indentStack: $indentStack, dataSet: $dataSet)';
   }
 
   @override
@@ -236,7 +203,6 @@ class _$StateDefault extends StateDefault {
             const DeepCollectionEquality().equals(other.input, input) &&
             const DeepCollectionEquality().equals(other.mode, mode) &&
             const DeepCollectionEquality().equals(other.index, index) &&
-            const DeepCollectionEquality().equals(other.map, map) &&
             const DeepCollectionEquality()
                 .equals(other.precedence, precedence) &&
             const DeepCollectionEquality()
@@ -250,7 +216,6 @@ class _$StateDefault extends StateDefault {
       const DeepCollectionEquality().hash(input),
       const DeepCollectionEquality().hash(mode),
       const DeepCollectionEquality().hash(index),
-      const DeepCollectionEquality().hash(map),
       const DeepCollectionEquality().hash(precedence),
       const DeepCollectionEquality().hash(indentStack),
       const DeepCollectionEquality().hash(dataSet));
@@ -263,49 +228,31 @@ class _$StateDefault extends StateDefault {
 
 abstract class StateDefault extends State {
   factory StateDefault(
-      {required String input,
-      ParseMode mode,
-      int index,
-      bool map,
-      num precedence,
-      List<int> indentStack,
-      Set<dynamic> dataSet}) = _$StateDefault;
+      {required final String input,
+      final ParseMode mode,
+      final int index,
+      final num precedence,
+      final List<int> indentStack,
+      final Set<dynamic> dataSet}) = _$StateDefault;
   StateDefault._() : super._();
 
   @override
-  String get input;
+  String get input => throw _privateConstructorUsedError;
   @override
-  ParseMode get mode;
+  ParseMode get mode => throw _privateConstructorUsedError;
   @override
-  int get index;
+  int get index => throw _privateConstructorUsedError;
   @override
-  bool get map;
+  num get precedence => throw _privateConstructorUsedError;
   @override
-  num get precedence;
+  List<int> get indentStack => throw _privateConstructorUsedError;
   @override
-  List<int> get indentStack;
-  @override
-  Set<dynamic> get dataSet;
+  Set<dynamic> get dataSet => throw _privateConstructorUsedError;
   @override
   @JsonKey(ignore: true)
   $StateDefaultCopyWith<StateDefault> get copyWith =>
       throw _privateConstructorUsedError;
 }
-
-/// @nodoc
-class _$StateSnapshotTearOff {
-  const _$StateSnapshotTearOff();
-
-  StateSnapshotDefault call(int index, num precedence) {
-    return StateSnapshotDefault(
-      index,
-      precedence,
-    );
-  }
-}
-
-/// @nodoc
-const $StateSnapshot = _$StateSnapshotTearOff();
 
 /// @nodoc
 mixin _$StateSnapshot {
@@ -430,13 +377,13 @@ class _$StateSnapshotDefault implements StateSnapshotDefault {
 }
 
 abstract class StateSnapshotDefault implements StateSnapshot {
-  const factory StateSnapshotDefault(int index, num precedence) =
+  const factory StateSnapshotDefault(final int index, final num precedence) =
       _$StateSnapshotDefault;
 
   @override
-  int get index;
+  int get index => throw _privateConstructorUsedError;
   @override
-  num get precedence;
+  num get precedence => throw _privateConstructorUsedError;
   @override
   @JsonKey(ignore: true)
   $StateSnapshotDefaultCopyWith<StateSnapshotDefault> get copyWith =>

@@ -333,36 +333,30 @@ abstract class Parser {
     return Parser.transformType(Parser.clone(parser), (DropParser p) => p.parser);
   }
 
-  static T runPeg<T extends ParseResult>(Parser parser, String input, {bool? map, bool? end, ParseMode? mode}) {
+  static T runPeg<T extends ParseResult>(Parser parser, String input,
+      {ParseMode? mode, T Function(ContextFailure)? except}) {
     assert(mode != ParseMode.gll, "Running `ParseMode.gll` in runPeg method.");
 
-    Context result = runCtxPeg(parser, input, map: map, end: end, mode: mode);
+    Context result = runCtxPeg(parser, input, mode: mode);
 
     if (result is ContextFailure) {
-      throw ParseException(result.message);
+      return except?.call(result) ?? (throw ParseException(result.message));
     } else if (result is ContextSuccess) {
-      if (map ?? true) {
-        return result.mappedResult as T;
-      } else {
-        return result.unmappedResult as T;
-      }
+      return result.mappedResult as T;
     }
     throw ParseException("Detected ignore context. Check the grammar.");
   }
 
-  static Context runCtxPeg(Parser parser, String input, {bool? map, bool? end, ParseMode? mode}) {
+  static Context runCtxPeg(Parser parser, String input, {ParseMode? mode}) {
     assert(mode != ParseMode.gll, "Running `ParseMode.gll` in runPeg method.");
 
-    end ??= true;
-    map ??= true;
     mode ??= ParseMode.quadraticPeg;
 
     Parser built = parser.build();
     String formatted = input.replaceAll("\r", "").unindent();
     PegParserMutable mutable = PegParserMutable();
-    Parser completed = end ? built.end() : built;
-    Context context = Context.ignore(State(input: formatted, map: map, mode: mode));
-    Context result = completed.pegApply(context, mutable);
+    Context context = Context.ignore(State(input: formatted, mode: mode));
+    Context result = built.pegApply(context, mutable);
 
     if (result is ContextFailure) {
       return result.withFailureMessage();
@@ -395,7 +389,7 @@ abstract class Parser {
     String formatted = input.replaceAll("\r", "").unindent();
     Parser completed = end ? built.end() : built;
     Trampoline trampoline = Trampoline();
-    Context context = Context.ignore(State(input: formatted, map: map, mode: ParseMode.gll));
+    Context context = Context.ignore(State(input: formatted, mode: ParseMode.gll));
     List<ContextSuccess> successes = <ContextSuccess>[];
 
     trampoline.push(completed, context, (Context context) {

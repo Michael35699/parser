@@ -12,44 +12,11 @@ part of 'context.dart';
 T _$identity<T>(T value) => value;
 
 final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more informations: https://github.com/rrousselGit/freezed#custom-getters-and-methods');
-
-/// @nodoc
-class _$ContextTearOff {
-  const _$ContextTearOff();
-
-  ContextIgnore ignore(State state) {
-    return ContextIgnore(
-      state,
-    );
-  }
-
-  ContextFailure failure(State state, String message,
-      {bool artificial = false}) {
-    return ContextFailure(
-      state,
-      message,
-      artificial: artificial,
-    );
-  }
-
-  ContextSuccess success(
-      State state, Object? mappedResult, Object? unmappedResult) {
-    return ContextSuccess(
-      state,
-      mappedResult,
-      unmappedResult,
-    );
-  }
-}
-
-/// @nodoc
-const $Context = _$ContextTearOff();
+    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#custom-getters-and-methods');
 
 /// @nodoc
 mixin _$Context {
   State get state => throw _privateConstructorUsedError;
-
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function(State state) ignore,
@@ -276,11 +243,11 @@ class _$ContextIgnore extends ContextIgnore {
 }
 
 abstract class ContextIgnore extends Context {
-  const factory ContextIgnore(State state) = _$ContextIgnore;
+  const factory ContextIgnore(final State state) = _$ContextIgnore;
   const ContextIgnore._() : super._();
 
   @override
-  State get state;
+  State get state => throw _privateConstructorUsedError;
   @override
   @JsonKey(ignore: true)
   $ContextIgnoreCopyWith<ContextIgnore> get copyWith =>
@@ -342,8 +309,8 @@ class _$ContextFailure extends ContextFailure {
   final State state;
   @override
   final String message;
-  @JsonKey()
   @override
+  @JsonKey()
   final bool artificial;
 
   @override
@@ -444,14 +411,14 @@ class _$ContextFailure extends ContextFailure {
 }
 
 abstract class ContextFailure extends Context {
-  const factory ContextFailure(State state, String message, {bool artificial}) =
-      _$ContextFailure;
+  const factory ContextFailure(final State state, final String message,
+      {final bool artificial}) = _$ContextFailure;
   const ContextFailure._() : super._();
 
   @override
-  State get state;
-  String get message;
-  bool get artificial;
+  State get state => throw _privateConstructorUsedError;
+  String get message => throw _privateConstructorUsedError;
+  bool get artificial => throw _privateConstructorUsedError;
   @override
   @JsonKey(ignore: true)
   $ContextFailureCopyWith<ContextFailure> get copyWith =>
@@ -609,15 +576,14 @@ class _$ContextSuccess extends ContextSuccess {
 }
 
 abstract class ContextSuccess extends Context {
-  const factory ContextSuccess(
-          State state, Object? mappedResult, Object? unmappedResult) =
-      _$ContextSuccess;
+  const factory ContextSuccess(final State state, final Object? mappedResult,
+      final Object? unmappedResult) = _$ContextSuccess;
   const ContextSuccess._() : super._();
 
   @override
-  State get state;
-  Object? get mappedResult;
-  Object? get unmappedResult;
+  State get state => throw _privateConstructorUsedError;
+  Object? get mappedResult => throw _privateConstructorUsedError;
+  Object? get unmappedResult => throw _privateConstructorUsedError;
   @override
   @JsonKey(ignore: true)
   $ContextSuccessCopyWith<ContextSuccess> get copyWith =>
