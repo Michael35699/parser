@@ -365,34 +365,28 @@ abstract class Parser {
     }
   }
 
-  static Iterable<T> runGll<T extends ParseResult>(Parser parser, String input, {bool? map, bool? end}) sync* {
-    map ??= true;
-    Iterable<Context> results = Parser.runCtxGll(parser, input, map: map, end: end);
+  static Iterable<T> runGll<T extends ParseResult>(Parser parser, String input,
+      {T Function(ContextFailure)? except}) sync* {
+    Iterable<Context> results = Parser.runCtxGll(parser, input);
 
     for (Context ctx in results) {
       if (ctx is ContextSuccess) {
-        ParseResult result = map ? ctx.mappedResult : ctx.unmappedResult;
-
-        yield result as T;
+        yield ctx.mappedResult as T;
       } else if (ctx is ContextFailure) {
-        throw ParseException(ctx.message);
+        yield except?.call(ctx) ?? (throw ParseException(ctx.message));
       }
     }
   }
 
-  static Iterable<Context> runCtxGll(Parser parser, String input, {bool? map, bool? end}) sync* {
-    end ??= true;
-    map ??= true;
-
+  static Iterable<Context> runCtxGll(Parser parser, String input) sync* {
     ContextFailure? longestFailure;
     Parser built = parser.build();
     String formatted = input.replaceAll("\r", "").unindent();
-    Parser completed = end ? built.end() : built;
     Trampoline trampoline = Trampoline();
     Context context = Context.ignore(State(input: formatted, mode: ParseMode.gll));
     List<ContextSuccess> successes = <ContextSuccess>[];
 
-    trampoline.push(completed, context, (Context context) {
+    trampoline.push(built, context, (Context context) {
       if (context is ContextSuccess) {
         successes.add(context);
       } else if (context is ContextFailure) {
@@ -843,10 +837,12 @@ extension SharedParserExtension on Parser {
   R run<R extends ParseResult>(String input) => Parser.runPeg(this, input);
   Context runCtx(String input) => Parser.runCtxPeg(this, input);
 
-  R peg<R extends ParseResult>(String input, {ParseMode? mode}) => Parser.runPeg(this, input, mode: mode);
+  R peg<R extends ParseResult>(String input, {ParseMode? mode, R Function(ContextFailure)? except}) =>
+      Parser.runPeg(this, input, mode: mode, except: except);
   Context pegCtx(String input, {ParseMode? mode}) => Parser.runCtxPeg(this, input, mode: mode);
-  Iterable<R> gll<R extends ParseResult>(String input, {Symbol? gllRun}) => Parser.runGll(this, input);
-  Iterable<Context> gllCtx(String input, {Symbol? gllRun}) => Parser.runCtxGll(this, input);
+  Iterable<R> gll<R extends ParseResult>(String input, {R Function(ContextFailure)? except}) =>
+      Parser.runGll(this, input, except: except);
+  Iterable<Context> gllCtx(String input) => Parser.runCtxGll(this, input);
 
   String generateAsciiTree({Map<Parser, String>? marks}) => Parser.generateAsciiTree(this, marks: marks);
 
@@ -893,10 +889,12 @@ extension LazyParserMethodsExtension on Lazy<Parser> {
   R run<R extends ParseResult>(String input) => Parser.runPeg(this.$, input);
   Context runCtx(String input) => Parser.runCtxPeg(this.$, input);
 
-  R peg<R extends ParseResult>(String input, {ParseMode? mode}) => Parser.runPeg(this.$, input, mode: mode);
+  R peg<R extends ParseResult>(String input, {ParseMode? mode, R Function(ContextFailure)? except}) =>
+      Parser.runPeg(this.$, input, mode: mode, except: except);
   Context pegCtx(String input, {ParseMode? mode}) => Parser.runCtxPeg(this.$, input, mode: mode);
-  Iterable<R> gll<R extends ParseResult>(String input, {Symbol? gllRun}) => Parser.runGll(this.$, input);
-  Iterable<Context> gllCtx(String input, {Symbol? gllRun}) => Parser.runCtxGll(this.$, input);
+  Iterable<R> gll<R extends ParseResult>(String input, {R Function(ContextFailure)? except}) =>
+      Parser.runGll(this.$, input, except: except);
+  Iterable<Context> gllCtx(String input) => Parser.runCtxGll(this.$, input);
 
   String generateAsciiTree({Map<Parser, String>? marks}) => Parser.generateAsciiTree(this.$, marks: marks);
 
