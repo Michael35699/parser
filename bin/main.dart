@@ -22,7 +22,7 @@ String generateInput() {
   return buffer.toString();
 }
 
-extension<T> on T {
+extension TT<T> on T {
   R also<R>(R Function(T) callback) => callback(this);
 }
 
@@ -31,8 +31,7 @@ extension on StringBuffer {
 }
 
 void main() {
-  String input = generateInput();
-  print(input);
+  Parser parser = infixMath.unmapped.end.build();
 
-  print(infixMath.peg<num>(input).also((_) => _.toInt() & 1 << 12 | 1));
+  print(parser.gll<Object?>("0 * 1 +", except: log.error));
 }
