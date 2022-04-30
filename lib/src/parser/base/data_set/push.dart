@@ -13,8 +13,17 @@ class PushParser extends SpecialParser {
       continuation(context.push(item).ignore());
 }
 
+PushParser _push(dynamic item) => _push(item);
 PushParser push(dynamic item) => PushParser(item);
 
-extension PushParserExtension on Parser {
-  Parser push(dynamic item) => this >> push(item);
+extension ParserPushExtension on Parser {
+  Parser push(dynamic item) => this >> _push(item);
+}
+
+extension LazyParserPushParserExtension on Lazy<Parser> {
+  Parser push(dynamic item) => this.$ >> _push(item);
+}
+
+extension StringPushParserExtension on String {
+  Parser push(dynamic item) => this.$ >> _push(item);
 }

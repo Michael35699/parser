@@ -37,13 +37,13 @@ class NegativeLookaheadParser extends WrapParser {
 NegativeLookaheadParser negativeLookahead(Parser parser) => NegativeLookaheadParser(parser);
 NegativeLookaheadParser not(Parser parser) => NegativeLookaheadParser(parser);
 
-extension NegativeLookaheadExtension on Parser {
+extension ParserNegativeLookaheadExtension on Parser {
   NegativeLookaheadParser negativeLookahead() => NegativeLookaheadParser(this);
   NegativeLookaheadParser not() => negativeLookahead();
   NegativeLookaheadParser operator ~() => negativeLookahead();
 }
 
-extension LazyNegativeLookaheadExtension on LazyParser {
+extension LazyParserNegativeLookaheadExtension on LazyParser {
   NegativeLookaheadParser negativeLookahead() => this.$.negativeLookahead();
   NegativeLookaheadParser not() => this.$.not();
   NegativeLookaheadParser operator ~() => ~this.$;

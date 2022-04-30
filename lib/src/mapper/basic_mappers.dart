@@ -86,7 +86,7 @@ MapFunction $flat() => _$flat();
 MapFunction $trim() => _$trim();
 MapFunction $echo() => _$echo();
 
-extension BasicMappersExtension on Parser {
+extension ParserBasicMappersExtension on Parser {
   MappedParser $join([String sep = ""]) => map(_$join(sep));
   MappedParser $named(Function fn) => map(_$named(fn));
   MappedParser $at(int index) => map(_$at(index));
@@ -106,7 +106,7 @@ extension BasicMappersExtension on Parser {
   MappedParser $type<T extends Object?>(ParseResult Function(T) callback) => map(_$type(callback));
 }
 
-extension LazyBasicMappersExtension on LazyParser {
+extension LazyParserBasicMappersExtension on LazyParser {
   MappedParser $join([String sep = ""]) => map(_$join(sep));
   MappedParser $named(Function fn) => map(_$named(fn));
   MappedParser $at(int index) => map(_$at(index));

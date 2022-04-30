@@ -28,10 +28,10 @@ class ContinuationParser extends WrapParser {
   bool hasEqualProperties(ContinuationParser target) => super.hasEqualProperties(target) && target.handler == handler;
 }
 
-extension ContinuationParserExtension on Parser {
+extension ParserContinuationExtension on Parser {
   ContinuationParser cc(ContinuationFunction fn) => ContinuationParser(this, fn);
 }
 
-extension LazyContinuationParserExtension on Lazy<Parser> {
+extension LazyParserContinuationParserExtension on Lazy<Parser> {
   ContinuationParser cc(ContinuationFunction fn) => ContinuationParser(this.$, fn);
 }

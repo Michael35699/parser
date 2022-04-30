@@ -52,11 +52,11 @@ class BoundParser extends WrapParser {
 BoundParser bound(Parser parser, BindFunction binder, {bool replace = false}) =>
     BoundParser(parser, binder, replace: replace);
 
-extension BoundExtension on Parser {
+extension ParserBoundExtension on Parser {
   BoundParser bind(BindFunction binder, {bool replace = false}) => bound(this, binder, replace: replace);
 }
 
-extension LazyBoundExtension on LazyParser {
+extension LazyParserBoundExtension on LazyParser {
   BoundParser bind(BindFunction binder, {bool replace = false}) => this.$.bind(binder, replace: replace);
 }
 

@@ -64,13 +64,13 @@ class CycleNParser extends WrapParser with CyclicParser {
 
 Parser cycleN(Object parser, int count) => CycleNParser(parser.$, count);
 
-extension CycleNExtension on Parser {
+extension ParserCycleNExtension on Parser {
   CycleNParser cycleN(int c) => CycleNParser(this, c);
   CycleNParser times(int c) => cycleN(c);
   CycleNParser operator *(int c) => cycleN(c);
 }
 
-extension LazyCycleNExtension on LazyParser {
+extension LazyParserCycleNExtension on LazyParser {
   CycleNParser cycleN(int c) => this.$.cycleN(c);
   CycleNParser times(int c) => this.$.times(c);
   CycleNParser operator *(int c) => this.$ * c;

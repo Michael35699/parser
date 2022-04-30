@@ -65,12 +65,12 @@ class AlignPointParser extends SpecialParser {
 
 AlignPointParser align() => AlignPointParser();
 
-extension AlignPointExtension on Parser {
+extension ParserAlignPointExtension on Parser {
   Parser alignLeft() => align() & this;
   Parser alignRight() => this & align();
 }
 
-extension LazyAlignPointExtension on LazyParser {
+extension LazyParserAlignPointExtension on LazyParser {
   Parser alignLeft() => this.$.alignLeft();
   Parser alignRight() => this.$.alignRight();
 }

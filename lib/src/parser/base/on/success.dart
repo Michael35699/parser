@@ -38,11 +38,11 @@ class OnSuccessParser extends WrapParser {
   OnSuccessParser empty() => OnSuccessParser.empty(value);
 }
 
-extension OnSuccessParserExtension on Parser {
+extension ParserOnSuccessExtension on Parser {
   OnSuccessParser success(Object? value) => OnSuccessParser(this, value);
 }
 
-extension LazyOnSuccessParserExtension on LazyParser {
+extension LazyParserOnSuccessParserExtension on LazyParser {
   OnSuccessParser success(Object? value) => this.$.success(value);
 }
 

@@ -52,12 +52,12 @@ class FlatMappedParser extends WrapParser {
 FlatMappedParser flatMapped(Parser parser, FlatMapFunction flatMapper, {bool replace = false}) =>
     FlatMappedParser(parser, flatMapper, replace: replace);
 
-extension FlatMappedExtension on Parser {
+extension ParserFlatMappedExtension on Parser {
   FlatMappedParser flatMap(FlatMapFunction flatMapper, {bool replace = false}) =>
       flatMapped(this, flatMapper, replace: replace);
 }
 
-extension LazyFlatMappedExtension on LazyParser {
+extension LazyParserFlatMappedExtension on LazyParser {
   FlatMappedParser flatMap(FlatMapFunction flatMapper, {bool replace = false}) =>
       this.$.flatMap(flatMapper, replace: replace);
 }

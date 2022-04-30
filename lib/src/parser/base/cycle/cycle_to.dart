@@ -80,13 +80,13 @@ class CycleToParser extends WrapParser with CyclicParser {
   CycleToParser empty() => CycleToParser.empty();
 }
 
-extension CycleToExtension on Parser {
+extension ParserCycleToExtension on Parser {
   Parser cycleTo(Object delimiter) => CycleToParser(Parser.resolve(delimiter), this);
   Parser to(Object delimiter) => cycleTo(delimiter);
   Parser operator >>>(Object delimiter) => cycleTo(delimiter);
 }
 
-extension LazyCycleToExtension on LazyParser {
+extension LazyParserCycleToExtension on LazyParser {
   Parser cycleTo(Object delimiter) => this.$.cycleTo(delimiter);
   Parser to(Object delimiter) => this.$.to(delimiter);
   Parser operator >>>(Object delimiter) => this.$ >>> delimiter;

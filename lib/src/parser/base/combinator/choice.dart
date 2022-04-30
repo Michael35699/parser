@@ -58,7 +58,7 @@ class ChoiceParser extends CombinatorParser {
   ChoiceParser empty() => ChoiceParser(<Parser>[]);
 }
 
-extension ChoiceExtension on Parser {
+extension ParserChoiceExtension on Parser {
   ChoiceParser or(Object other) => ((Parser self) => ((Parser other) => ChoiceParser(<Parser>[
         if (self is ChoiceParser) ...self.children else self,
         if (other is ChoiceParser) ...other.children else other,
@@ -67,7 +67,7 @@ extension ChoiceExtension on Parser {
   ChoiceParser operator /(Object other) => or(other);
 }
 
-extension LazyChoiceExtension on LazyParser {
+extension LazyParserChoiceExtension on LazyParser {
   ChoiceParser or(Object other) => this.$.or(other);
   ChoiceParser operator |(Object other) => this.$ | other;
   ChoiceParser operator /(Object other) => this.$ / other;

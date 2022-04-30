@@ -59,12 +59,12 @@ class CycleStarParser extends WrapParser with CyclicParser {
 
 CycleStarParser cycleStar(Object parser) => CycleStarParser(parser.$);
 
-extension CycleStarExtension on Parser {
+extension ParserCycleStarExtension on Parser {
   CycleStarParser cycleStar() => CycleStarParser(this);
   CycleStarParser star() => cycleStar();
 }
 
-extension LazyCycleStarExtension on LazyParser {
+extension LazyParserCycleStarExtension on LazyParser {
   CycleStarParser cycleStar() => this.$.cycleStar();
   CycleStarParser star() => this.$.star();
 }

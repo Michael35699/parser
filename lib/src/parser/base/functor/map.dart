@@ -58,13 +58,13 @@ class MappedParser extends WrapParser {
 MappedParser mapped(Parser parser, MapFunction mapper, {bool replace = false}) =>
     MappedParser(parser, mapper, replace: replace);
 
-extension MappedExtension on Parser {
+extension ParserMappedExtension on Parser {
   MappedParser map(MapFunction mapper, {bool replace = false}) => mapped(this, mapper, replace: replace);
 
   MappedParser operator ^(MapFunction mapper) => map(mapper);
 }
 
-extension LazyMappedExtension on LazyParser {
+extension LazyParserMappedExtension on LazyParser {
   MappedParser map(MapFunction mapper, {bool replace = false}) => this.$.map(mapper, replace: replace);
 
   MappedParser operator ^(MapFunction mapper) => this.$ ^ mapper;

@@ -22,11 +22,11 @@ class CacheParser extends WrapParser with UnwrappedParser {
 
 CacheParser cache(Parser fn) => CacheParser(fn);
 
-extension CacheExtension on Parser {
+extension ParserCacheExtension on Parser {
   CacheParser cache() => this is CacheParser ? this as CacheParser : CacheParser(this);
 }
 
-extension LazyCacheExtension on Lazy<Parser> {
+extension LazyParserCacheExtension on Lazy<Parser> {
   CacheParser cache() => this.$.cache();
 }
 

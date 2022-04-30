@@ -54,11 +54,11 @@ class FilteredParser extends WrapParser {
 FilteredParser filtered(Parser parser, FilterFunction filter, {bool replace = false}) =>
     FilteredParser(parser, filter, replace: replace);
 
-extension FilteredExtension on Parser {
+extension ParserFilteredExtension on Parser {
   FilteredParser filter(FilterFunction filter, {bool replace = false}) => filtered(this, filter, replace: replace);
 }
 
-extension LazyFilteredExtension on LazyParser {
+extension LazyParserFilteredExtension on LazyParser {
   FilteredParser filter(FilterFunction filter, {bool replace = false}) => this.$.filter(filter, replace: replace);
 }
 

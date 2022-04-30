@@ -3,10 +3,12 @@ import "package:parser/internal_all.dart";
 mixin Grammar {
   Parser start();
 
-  R run<R extends ParseResult>(String input) => Parser.runPeg(start.$, input);
-  Context runCtx(String input) => Parser.runCtxPeg(start.$, input);
-  R peg<R extends ParseResult>(String input, {ParseMode? mode}) => Parser.runPeg(start.$, input, mode: mode);
-  Context pegCtx(String input, {ParseMode? mode}) => Parser.runCtxPeg(start.$, input, mode: mode);
-  Iterable<R> gll<R extends ParseResult>(String input, {Symbol? gllRun}) => Parser.runGll(start.$, input);
-  Iterable<Context> gllCtx(String input, {Symbol? gllRun}) => Parser.runCtxGll(start.$, input);
+  R run<R extends ParseResult>(String input) => start.peg(input);
+  Context runCtx(String input) => start.runCtx(input);
+  R peg<R extends ParseResult>(String input, {ParseMode? mode}) => start.peg(input, mode: mode);
+  Context pegCtx(String input, {ParseMode? mode}) => start.pegCtx(input, mode: mode);
+
+  Iterable<R> gll<R extends ParseResult>(String input, {R Function(ContextFailure)? except}) =>
+      start.gll(input, except: except);
+  Iterable<Context> gllCtx(String input) => start.gllCtx(input);
 }

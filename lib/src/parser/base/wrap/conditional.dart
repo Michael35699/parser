@@ -23,6 +23,10 @@ class ConditionalParser extends SpecialParser {
       });
 }
 
-extension ConditionalParserExtension on Parser {
+extension ParserConditionalExtension on Parser {
   ConditionalParser conditional(Parser Function(Context) fn) => ConditionalParser(this, fn);
+}
+
+extension LazyParserConditionalParserExtension on Lazy<Parser> {
+  ConditionalParser conditional(Parser Function(Context) fn) => ConditionalParser(this.$, fn);
 }

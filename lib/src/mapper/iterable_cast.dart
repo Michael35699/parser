@@ -14,13 +14,13 @@ extension StringIterableCastMappersExtension on String {
   MappedParser $map<K, V>() => map(_$map<K, V>());
 }
 
-extension LazyIterableCastMappersExtension on LazyParser {
+extension LazyParserIterableCastMappersExtension on LazyParser {
   MappedParser $list<T>() => map(_$list<T>());
   MappedParser $set<T>() => map(_$set<T>());
   MappedParser $map<K, V>() => map(_$map<K, V>());
 }
 
-extension IterableCastMappersExtension on Parser {
+extension ParserIterableCastMappersExtension on Parser {
   MappedParser $list<T>() => map(_$list<T>());
   MappedParser $set<T>() => map(_$set<T>());
   MappedParser $map<K, V>() => map(_$map<K, V>());

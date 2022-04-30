@@ -13,8 +13,17 @@ class PopParser extends SpecialParser {
       continuation(context.pop(item).ignore());
 }
 
+PopParser _pop(dynamic item) => _pop(item);
 PopParser pop(dynamic item) => PopParser(item);
 
-extension PopParserExtension on Parser {
-  Parser pop(dynamic item) => this >> pop(item);
+extension ParserPopExtension on Parser {
+  Parser pop(dynamic item) => this >> _pop(item);
+}
+
+extension LazyParserPopParserExtension on Lazy<Parser> {
+  Parser pop(dynamic item) => this.$ >> _pop(item);
+}
+
+extension StringPopParserExtension on String {
+  Parser pop(dynamic item) => this.$ >> _pop(item);
 }

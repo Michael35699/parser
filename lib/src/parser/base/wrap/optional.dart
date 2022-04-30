@@ -37,11 +37,11 @@ class OptionalParser extends WrapParser {
 
 OptionalParser optional(Parser parser) => OptionalParser(parser);
 
-extension OptionalExtension on Parser {
+extension ParserOptionalExtension on Parser {
   OptionalParser optional() => OptionalParser(this);
 }
 
-extension LazyOptionalExtension on LazyParser {
+extension LazyParserOptionalExtension on LazyParser {
   OptionalParser optional() => this.$.optional();
 }
 

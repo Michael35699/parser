@@ -47,7 +47,7 @@ class SequenceParser extends CombinatorParser with SequentialParser {
   SequenceParser empty() => SequenceParser(<Parser>[]);
 }
 
-extension SequenceExtension on Parser {
+extension ParserSequenceExtension on Parser {
   SequenceParser then(Object other) => ((Parser self) => ((Parser other) => SequenceParser(<Parser>[
         if (self is SequenceParser) ...self.children else this,
         if (other is SequenceParser) ...other.children else other,
@@ -55,7 +55,7 @@ extension SequenceExtension on Parser {
   SequenceParser operator &(Object other) => then(other);
 }
 
-extension LazySequenceExtension on LazyParser {
+extension LazyParserSequenceExtension on LazyParser {
   SequenceParser then(Object other) => this.$.then(other);
   SequenceParser operator &(Object other) => this.$ & other;
 }

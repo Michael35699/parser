@@ -59,12 +59,12 @@ class CycleParser extends WrapParser with CyclicParser {
   CycleParser empty() => CycleParser.empty();
 }
 
-extension CycleExtension on Parser {
+extension ParserCycleExtension on Parser {
   CycleParser cycle() => CycleParser(this);
   CycleParser plus() => cycle();
 }
 
-extension LazyCycleExtension on LazyParser {
+extension LazyParserCycleExtension on LazyParser {
   CycleParser cycle() => this.$.cycle();
   CycleParser plus() => this.$.plus();
 }

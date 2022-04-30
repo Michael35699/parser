@@ -38,11 +38,11 @@ class OnFailureParser extends WrapParser {
   OnFailureParser empty() => OnFailureParser.empty(message);
 }
 
-extension OnFailureParserExtension on Parser {
+extension ParserOnFailureExtension on Parser {
   OnFailureParser failure(String message) => OnFailureParser(this, message);
 }
 
-extension LazyOnFailureParserExtension on LazyParser {
+extension LazyParserOnFailureParserExtension on LazyParser {
   OnFailureParser failure(String message) => this.$.failure(message);
 }
 

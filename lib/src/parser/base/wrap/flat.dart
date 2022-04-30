@@ -38,11 +38,11 @@ class FlatParser extends WrapParser {
 FlatParser _flatParser(Parser parser) => FlatParser(parser);
 FlatParser flat(Object parser) => _flatParser(parser.$);
 
-extension FlatExtension on Parser {
+extension ParserFlatExtension on Parser {
   Parser flat() => _flatParser(this);
 }
 
-extension LazyFlatExtension on LazyParser {
+extension LazyParserFlatExtension on LazyParser {
   Parser flat() => this.$.flat();
 }
 

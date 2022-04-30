@@ -38,12 +38,12 @@ class DropParser extends WrapParser {
 
 DropParser drop(Object parser) => DropParser(parser.$);
 
-extension DropExtension on Parser {
+extension ParserDropExtension on Parser {
   DropParser drop() => DropParser(this);
   DropParser operator -() => drop();
 }
 
-extension LazyDropExtension on LazyParser {
+extension LazyParserDropExtension on LazyParser {
   DropParser drop() => this.$.drop();
   DropParser operator -() => -this.$;
 }

@@ -95,14 +95,14 @@ class CycleSeparatedParser extends WrapParser with CyclicParser {
 
 CycleSeparatedParser cycleSeparated(Object main, Object sep) => CycleSeparatedParser(main.$, sep.$);
 
-extension CycleSeparatedExtension on Parser {
+extension ParserCycleSeparatedExtension on Parser {
   CycleSeparatedParser cycleSep(Object separator) => CycleSeparatedParser(this, separator.$);
   CycleSeparatedParser sep(Object separator) => cycleSep(separator);
   CycleSeparatedParser sepBy(Object separator) => cycleSep(separator);
   CycleSeparatedParser operator %(Object separator) => cycleSep(separator);
 }
 
-extension LazyCycleSeparatedExtension on LazyParser {
+extension LazyParserCycleSeparatedExtension on LazyParser {
   CycleSeparatedParser cycleSep(Object separator) => this.$.cycleSep(separator);
   CycleSeparatedParser sepBy(Object separator) => this.$.sepBy(separator);
   CycleSeparatedParser sep(Object separator) => this.$.sep(separator);

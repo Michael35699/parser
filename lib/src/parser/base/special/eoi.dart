@@ -32,11 +32,11 @@ EoiParser dollar() => EoiParser();
 EoiParser eoi() => EoiParser();
 EoiParser end() => EoiParser();
 
-extension EoiExtension on Parser {
+extension ParserEoiExtension on Parser {
   Parser end() => this << eoi();
 }
 
-extension LazyEoiExtension on Lazy<Parser> {
+extension LazyParserEoiExtension on Lazy<Parser> {
   Parser end() => this.$ << eoi();
 }
 

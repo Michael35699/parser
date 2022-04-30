@@ -6,10 +6,10 @@ class NullableAnnotationParser extends AnnotationParser {
   NullableAnnotationParser._(Parser parser) : super(parser);
 }
 
-extension NullableAnnotationExtension on Parser {
+extension ParserNullableAnnotationExtension on Parser {
   NullableAnnotationParser nullable() => NullableAnnotationParser(this);
 }
 
-extension LazyNullableAnnotationExtension on Lazy<Parser> {
+extension LazyParserNullableAnnotationExtension on Lazy<Parser> {
   NullableAnnotationParser nullable() => NullableAnnotationParser(this.$);
 }

@@ -41,11 +41,11 @@ class WithPrecedenceParser extends WrapParser {
 
 WithPrecedenceParser withPrecedence(num precedence, Parser parser) => WithPrecedenceParser(precedence, parser);
 
-extension WithPrecedenceExtension on Parser {
+extension ParserWithPrecedenceExtension on Parser {
   WithPrecedenceParser withPrecedence(num precedence) => WithPrecedenceParser(precedence, this);
 }
 
-extension LazyWithPrecedenceExtension on LazyParser {
+extension LazyParserWithPrecedenceExtension on LazyParser {
   WithPrecedenceParser withPrecedence(num precedence) => this.$.withPrecedence(precedence);
 }
 

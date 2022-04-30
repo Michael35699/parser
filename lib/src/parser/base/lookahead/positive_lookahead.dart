@@ -37,16 +37,16 @@ class PositiveLookaheadParser extends WrapParser {
 PositiveLookaheadParser and(Parser parser) => PositiveLookaheadParser(parser);
 PositiveLookaheadParser positiveLookahead(Parser parser) => PositiveLookaheadParser(parser);
 
-extension PositiveLookaheadExtension on Parser {
+extension ParserPositiveLookaheadExtension on Parser {
   PositiveLookaheadParser positiveLookahead() => PositiveLookaheadParser(this);
   PositiveLookaheadParser and() => positiveLookahead();
 }
 
-extension PositiveLookaheadExtension2 on NegativeLookaheadParser {
+extension ParserPositiveLookaheadExtension2 on NegativeLookaheadParser {
   PositiveLookaheadParser operator ~() => parser.positiveLookahead();
 }
 
-extension LazyPositiveLookaheadExtension on LazyParser {
+extension LazyParserPositiveLookaheadExtension on LazyParser {
   PositiveLookaheadParser positiveLookahead() => this.$.positiveLookahead();
   PositiveLookaheadParser and() => this.$.and();
 }

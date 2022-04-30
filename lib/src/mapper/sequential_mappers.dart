@@ -85,7 +85,7 @@ MapFunction $20<V1, V2, V3, V4, V5, V6, V7, V8, V9, V10, V11, V12, V13, V14, V15
 ) =>
     _$seq(callback);
 
-extension SequentialMappersExtension on Parser {
+extension ParserSequentialMappersExtension on Parser {
   MappedParser $0(ParseResult Function() callback) => map(_$0(callback));
   MappedParser $1<V1>(ParseResult Function(V1) callback) => map(_$seq(callback));
   MappedParser $2<V1, V2>(ParseResult Function(V1, V2) callback) => map(_$seq(callback));
@@ -164,7 +164,7 @@ extension SequentialMappersExtension on Parser {
       map(_$seq(callback));
 }
 
-extension LazySequentialMappersExtension on LazyParser {
+extension LazyParserSequentialMappersExtension on LazyParser {
   MappedParser $0(ParseResult Function() callback) => this.$.map(_$0(callback));
   MappedParser $1<V1>(ParseResult Function(V1) callback) => this.$.map(_$seq(callback));
   MappedParser $2<V1, V2>(ParseResult Function(V1, V2) callback) => this.$.map(_$seq(callback));

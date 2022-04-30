@@ -12,7 +12,7 @@ Parser trimNewline(Parser parser) => whitespaceNewline() >> parser << whitespace
 Parser trimNewlineLeft(Parser parser) => whitespaceNewline() >> parser;
 Parser trimNewlineRight(Parser parser) => parser << whitespaceNewline();
 
-extension ParserTrimmedExtension on Parser {
+extension ParserParserTrimmedExtension on Parser {
   Parser trim() => whitespace() >> this << whitespace();
   Parser trimLeft() => whitespace() >> this;
   Parser trimRight() => this << whitespace();
@@ -30,7 +30,7 @@ extension ParserTrimmedExtension on Parser {
   Parser tnlRight() => trimNewlineRight();
 }
 
-extension LazyParserTrimmedExtension on LazyParser {
+extension LazyParserParserTrimmedExtension on LazyParser {
   Parser trim() => this.$.trim();
   Parser trimLeft() => this.$.trimLeft();
   Parser trimRight() => this.$.trimRight();

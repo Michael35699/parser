@@ -37,6 +37,6 @@ class ThunkParser extends LazyLoadParser {
 
 ThunkParser thunk(LazyParser fn) => ThunkParser(fn);
 
-extension ThunkExtension on Parser {
+extension ParserThunkExtension on Parser {
   ThunkParser thunk() => this is ThunkParser ? this as ThunkParser : ThunkParser(() => this);
 }
