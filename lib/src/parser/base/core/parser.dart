@@ -10,7 +10,7 @@ abstract class Parser {
   static final Context seedFailure = Context.failure(State(input: ""), "seed");
 
   late final bool leftRecursive = Parser.isLeftRecursive(this);
-  late final List<ParserSetMapping> parserSets = Parser.computeParserSets(this);
+  late final List<ParserSetMapping> parserSets = computeParserSets();
   late final ParserSetMapping firstSets = parserSets[Parser.firstSetIndex];
   late final ParserSetMapping followSets = parserSets[Parser.followSetIndex];
   late final ParserSetMapping cycleSets = parserSets[Parser.cycleSetIndex];
@@ -244,14 +244,29 @@ abstract class Parser {
   static final Parser startSentinel = epsilon();
   static final Parser endSentinel = dollar();
 
+  static String generateAsciiTree(Parser parser, {Map<Parser, String>? marks}) {
+    Parser built = parser.build();
+    int counter = 0;
+    Map<Parser, int> rules = <Parser, int>{for (Parser p in Parser.rules(built)) p: ++counter};
+    StringBuffer buffer = StringBuffer("\n");
+
+    for (Parser p in rules.keys.where(marks?.keys.contains ?? Predicate.tautology())) {
+      buffer
+        ..writeln("(rule#${rules[p]})")
+        ..writeln(_generateAsciiTree(rules, p, "", isLast: true, level: 0, marks: marks));
+    }
+
+    return buffer.toString().trimRight();
+  }
+
   static ParserPredicate equals(Parser parser) {
     return (Parser target) {
       if (parser == target) {
         return true;
       }
 
-      Iterable<Parser> leftString = parser.traverseBreadthFirst().whereNotType<ThunkParser>();
-      Iterable<Parser> rightString = target.traverseBreadthFirst().whereNotType<ThunkParser>();
+      Iterable<Parser> leftString = parser.traverseBf.whereNotType<ThunkParser>();
+      Iterable<Parser> rightString = target.traverseBf.whereNotType<ThunkParser>();
       Iterable<List<Parser>> zipped = leftString.zip.rest(rightString);
 
       for (List<Parser> pair in zipped) {
@@ -265,211 +280,6 @@ abstract class Parser {
 
       return true;
     };
-  }
-
-  static Parser clone(Parser parser, [HashMap<Parser, Parser>? cloned]) {
-    cloned ??= HashMap<Parser, Parser>.identity();
-    Parser clone = cloned[parser] ??= parser.cloneSelf(cloned)
-      ..memoize = parser.memoize
-      ..built = parser.built;
-
-    return clone;
-  }
-
-  static Parser transformWhere<T extends Parser>(
-    Parser parser,
-    ParserPredicate predicate,
-    TransformHandler<T> handler,
-  ) {
-    return Parser.transform(parser, (Parser parser) {
-      if (predicate(parser) && parser is T) {
-        return handler(parser);
-      }
-      return parser;
-    });
-  }
-
-  static Parser transformType<T extends Parser>(Parser parser, TransformHandler<T> handler) {
-    return Parser.transform(parser, (Parser parser) {
-      if (parser is T) {
-        return handler(parser);
-      }
-      return parser;
-    });
-  }
-
-  static Parser transformReplace(Parser parser, Parser target, Parser replace) {
-    return Parser.transform(parser, (Parser p) => p == target ? replace : p);
-  }
-
-  static Parser transform(Parser parser, TransformHandler handler, [HashMap<Parser, Parser>? transformed]) {
-    transformed ??= HashMap<Parser, Parser>.identity();
-
-    return transformed[parser] ??= handler(parser.transformChildren(handler, transformed));
-  }
-
-  static Parser build(Parser parser) {
-    if (parser.built) {
-      return parser;
-    }
-
-    Parser built = Parser.clone(parser) //
-        .transformType((UnwrappedParser parser) => parser.parser)
-        .transformType((ThunkParser parser) => parser.computed..memoize = true)
-      ..built = true;
-
-    return built;
-  }
-
-  static Parser simplified(Parser parser) {
-    return Parser.transformType(Parser.clone(parser), (WrapParser p) => p.base);
-  }
-
-  static Parser unmapped(Parser parser) {
-    return Parser.transformType(Parser.clone(parser), (MappedParser p) => p.parser);
-  }
-
-  static Parser undropped(Parser parser) {
-    return Parser.transformType(Parser.clone(parser), (DropParser p) => p.parser);
-  }
-
-  static T runPeg<T extends ParseResult>(Parser parser, String input,
-      {ParseMode? mode, T Function(ContextFailure)? except}) {
-    assert(mode != ParseMode.gll, "Running `ParseMode.gll` in runPeg method.");
-
-    Context result = runCtxPeg(parser, input, mode: mode);
-
-    if (result is ContextFailure) {
-      return except?.call(result) ?? (throw ParseException(result.message));
-    } else if (result is ContextSuccess) {
-      return result.mappedResult as T;
-    }
-    throw ParseException("Detected ignore context. Check the grammar.");
-  }
-
-  static Context runCtxPeg(Parser parser, String input, {ParseMode? mode}) {
-    assert(mode != ParseMode.gll, "Running `ParseMode.gll` in runPeg method.");
-
-    mode ??= ParseMode.quadraticPeg;
-
-    Parser built = parser.build();
-    String formatted = input.replaceAll("\r", "").unindent();
-    PegParserMutable mutable = PegParserMutable();
-    Context context = Context.ignore(State(input: formatted, mode: mode));
-    Context result = built.pegApply(context, mutable);
-
-    if (result is ContextFailure) {
-      return result.withFailureMessage();
-    } else {
-      return result;
-    }
-  }
-
-  static Iterable<T> runGll<T extends ParseResult>(Parser parser, String input,
-      {T Function(ContextFailure)? except}) sync* {
-    Iterable<Context> results = Parser.runCtxGll(parser, input);
-
-    for (Context ctx in results) {
-      if (ctx is ContextSuccess) {
-        yield ctx.mappedResult as T;
-      } else if (ctx is ContextFailure) {
-        yield except?.call(ctx) ?? (throw ParseException(ctx.message));
-      }
-    }
-  }
-
-  static Iterable<Context> runCtxGll(Parser parser, String input) sync* {
-    ContextFailure? longestFailure;
-    Parser built = parser.build();
-    String formatted = input.replaceAll("\r", "").unindent();
-    Trampoline trampoline = Trampoline();
-    Context context = Context.ignore(State(input: formatted, mode: ParseMode.gll));
-    List<ContextSuccess> successes = <ContextSuccess>[];
-
-    trampoline.push(built, context, (Context context) {
-      if (context is ContextSuccess) {
-        successes.add(context);
-      } else if (context is ContextFailure) {
-        longestFailure = longestFailure == null
-            ? context
-            : longestFailure!.state.index < context.state.index
-                ? context
-                : longestFailure;
-      }
-    });
-
-    bool hasYielded = false;
-    do {
-      while (successes.isEmpty && trampoline.stack.isNotEmpty) {
-        trampoline.step();
-      }
-
-      while (successes.isNotEmpty) {
-        yield successes.removeLast();
-
-        hasYielded |= true;
-      }
-    } while (trampoline.stack.isNotEmpty);
-
-    if (!hasYielded && longestFailure != null) {
-      yield longestFailure!.withFailureMessage();
-    }
-  }
-
-  static String generateAsciiTree(Parser parser, {Map<Parser, String>? marks}) {
-    Parser built = parser.build();
-    int counter = 0;
-    Map<Parser, int> rules = <Parser, int>{for (Parser p in Parser.rules(built)) p: ++counter};
-    StringBuffer buffer = StringBuffer("\n");
-
-    for (Parser p in rules.keys.where(marks?.keys.contains ?? (Parser c) => true)) {
-      buffer
-        ..writeln("(rule#${rules[p]})")
-        ..writeln(_generateAsciiTree(rules, p, "", isLast: true, level: 0, marks: marks));
-    }
-
-    return buffer.toString().trimRight();
-  }
-
-  static Iterable<Parser> traverseDepthFirst(Parser root) sync* {
-    Set<Parser> traversed = Set<Parser>.identity();
-    List<Parser> parsers = <Parser>[root];
-
-    while (parsers.isNotEmpty) {
-      Parser current = parsers.removeLast();
-      if (traversed.add(current)) {
-        yield current;
-
-        parsers.addAll(current.children);
-      }
-    }
-  }
-
-  static Iterable<Parser> traverseBreadthFirst(Parser root) sync* {
-    Set<Parser> traversed = Set<Parser>.identity()..add(root);
-    Queue<Parser> parsers = Queue<Parser>()..add(root);
-
-    while (parsers.isNotEmpty) {
-      Parser current = parsers.removeFirst();
-
-      yield current;
-
-      for (Parser child in current.children) {
-        if (traversed.add(child)) {
-          parsers.add(child);
-        }
-      }
-    }
-  }
-
-  static List<ParserSetMapping> computeParserSets(Parser root, [Iterable<Parser>? parsers]) {
-    parsers ??= root.traverseBf;
-
-    ParserSetMapping firstSets = Parser._computeFirstSets(parsers);
-    ParserSetMapping followSets = Parser._computeFollowSets(root, parsers, firstSets);
-    ParserSetMapping cycleSets = Parser._computeCycleSets(parsers, firstSets);
-
-    return <ParserSetMapping>[firstSets, followSets, cycleSets];
   }
 
   static bool isTerminal(Parser parser) {
@@ -493,7 +303,7 @@ abstract class Parser {
   }
 
   static bool isRecursive(Parser root) {
-    List<Parser> parsers = <Parser>[...root.children];
+    Queue<Parser> parsers = Queue<Parser>()..addAll(root.children);
     Set<Parser> visited = <Parser>{};
 
     while (parsers.isNotEmpty) {
@@ -521,23 +331,6 @@ abstract class Parser {
       }
 
       Parser.firstChildren(current).where(visited.add).forEach(parsers.add);
-    }
-
-    return false;
-  }
-
-  static bool isRightRecursive(Parser root) {
-    Iterable<Parser> toAdd = Parser.followChildren(root);
-    Queue<Parser> parsers = Queue<Parser>()..addAll(toAdd);
-    Set<Parser> visited = <Parser>{...toAdd};
-
-    while (parsers.isNotEmpty) {
-      Parser current = parsers.removeFirst();
-      if (current == root) {
-        return true;
-      }
-
-      Parser.followChildren(current).where(visited.add).forEach(parsers.add);
     }
 
     return false;
@@ -581,14 +374,6 @@ abstract class Parser {
     ];
   }
 
-  static List<Parser> followChildren(Parser root) {
-    if (root is! SequentialParser) {
-      return root.children;
-    }
-
-    return root.children.skip(1).toList();
-  }
-
   static Parser resolve(Object object) {
     if (object is Parser) {
       return object;
@@ -610,176 +395,6 @@ abstract class Parser {
     }
 
     throw UnsupportedError("Object of type '${object.runtimeType}' is not a resolvable parser.");
-  }
-
-  static ParserSetMapping _computeFirstSets(Iterable<Parser> parsers) {
-    ParserSetMapping firstSets = <Parser, ParserSet>{
-      for (Parser parser in parsers)
-        parser: <Parser>{
-          if (isTerminal(parser)) parser,
-          if (isNullable(parser)) startSentinel,
-        }
-    };
-
-    bool changed = false;
-    do {
-      changed = false;
-
-      for (Parser parser in parsers) {
-        changed |= _expandFirstSets(parser, firstSets);
-      }
-    } while (changed);
-
-    return firstSets;
-  }
-
-  static bool _expandFirstSets(Parser parser, ParserSetMapping firstSets) {
-    bool changed = false;
-    ParserSet firstSet = firstSets[parser]!;
-
-    conditional:
-    if (parser is SequentialParser) {
-      for (Parser child in parser.children) {
-        bool nullable = false;
-        for (Parser first in firstSets[child]!) {
-          if (Parser.isNullable(first)) {
-            nullable |= true;
-          } else {
-            changed |= firstSet.add(first);
-          }
-        }
-        if (!nullable) {
-          break conditional;
-        }
-      }
-      changed |= firstSet.add(startSentinel);
-    } else {
-      for (Parser first in parser.children.flatMap((Parser child) => firstSets[child]!)) {
-        changed |= firstSet.add(first);
-      }
-    }
-
-    return changed;
-  }
-
-  static ParserSetMapping _computeFollowSets(Parser root, Iterable<Parser> parsers, ParserSetMapping firsts) {
-    ParserSetMapping followSets = <Parser, ParserSet>{
-      for (final Parser parser in parsers)
-        parser: <Parser>{
-          if (parser == root) endSentinel,
-        }
-    };
-    bool changed = false;
-    do {
-      changed = false;
-      for (Parser parser in parsers) {
-        changed |= _expandFollowSet(parser, followSets, firsts);
-      }
-    } while (changed);
-    return followSets;
-  }
-
-  static bool _expandFollowSet(Parser parser, ParserSetMapping follows, ParserSetMapping firsts) {
-    if (parser is SequentialParser) {
-      return _expandFollowSetOfSequence(parser, parser.children, follows, firsts);
-    } else if (parser is CyclicParser) {
-      List<Parser> children = <Parser>[parser.parser, ...parser.children];
-
-      return _expandFollowSetOfSequence(parser, children, follows, firsts);
-    } else {
-      bool changed = false;
-      for (Parser child in parser.children) {
-        for (Parser follow in follows[parser]!) {
-          changed |= follows[child]!.add(follow);
-        }
-      }
-      return changed;
-    }
-  }
-
-  static bool _expandFollowSetOfSequence(
-    Parser parser,
-    List<Parser> children,
-    ParserSetMapping follows,
-    ParserSetMapping firsts,
-  ) {
-    bool changed = false;
-    for (int i = 0; i < children.length - 1; i++) {
-      ParserSet firstSet = <Parser>{};
-      int j = i + 1;
-      for (; j < children.length; j++) {
-        firstSet.addAll(firsts[children[j]]!);
-        if (!firsts[children[j]]!.any(isNullable)) {
-          break;
-        }
-      }
-      if (j == children.length) {
-        for (Parser follow in follows[parser]!) {
-          changed |= follows[children[i]]!.add(follow);
-        }
-      }
-      for (Parser first in firstSet.where((Parser first) => !isNullable(first))) {
-        changed |= follows[children[i]]!.add(first);
-      }
-    }
-
-    for (Parser follow in follows[parser]!) {
-      changed |= follows[children.last]!.add(follow);
-    }
-    return changed;
-  }
-
-  static ParserSetMapping _computeCycleSets(Iterable<Parser> parsers, ParserSetMapping firsts) {
-    ParserSetMapping cycleSets = <Parser, ParserSet>{};
-    for (Parser parser in parsers) {
-      _computeCycleSet(parser, firsts, cycleSets, <Parser>[parser]);
-    }
-    return cycleSets;
-  }
-
-  static void _computeCycleSet(Parser parser, ParserSetMapping firsts, ParserSetMapping cycles, List<Parser> stack) {
-    if (cycles.containsKey(parser)) {
-      return;
-    }
-    if (isTerminal(parser)) {
-      cycles[parser] = const <Parser>{};
-      return;
-    }
-
-    List<Parser> children = _computeCycleChildren(parser, firsts);
-    for (Parser child in children) {
-      int index = stack.indexOf(child);
-
-      if (index >= 0) {
-        List<Parser> cycle = stack.sublist(index);
-        for (Parser parser in cycle) {
-          cycles[parser] = cycle.toSet();
-        }
-        return;
-      } else {
-        stack.add(child);
-        _computeCycleSet(child, firsts, cycles, stack);
-        stack.removeLast();
-      }
-    }
-    if (!cycles.containsKey(parser)) {
-      cycles[parser] = const <Parser>{};
-      return;
-    }
-  }
-
-  static List<Parser> _computeCycleChildren(Parser parser, ParserSetMapping firstSets) {
-    if (parser is SequentialParser) {
-      List<Parser> children = <Parser>[];
-      for (Parser child in parser.children) {
-        children.add(child);
-        if (!firstSets[child]!.any(isNullable)) {
-          break;
-        }
-      }
-      return children;
-    }
-    return parser.children.toList();
   }
 
   static String _generateAsciiTree(
@@ -833,33 +448,8 @@ abstract class Parser {
   }
 }
 
-extension SharedParserExtension on Parser {
-  R run<R extends ParseResult>(String input) => Parser.runPeg(this, input);
-  Context runCtx(String input) => Parser.runCtxPeg(this, input);
-
-  R peg<R extends ParseResult>(String input, {ParseMode? mode, R Function(ContextFailure)? except}) =>
-      Parser.runPeg(this, input, mode: mode, except: except);
-  Context pegCtx(String input, {ParseMode? mode}) => Parser.runCtxPeg(this, input, mode: mode);
-  Iterable<R> gll<R extends ParseResult>(String input, {R Function(ContextFailure)? except}) =>
-      Parser.runGll(this, input, except: except);
-  Iterable<Context> gllCtx(String input) => Parser.runCtxGll(this, input);
-
+extension ParserSharedExtension on Parser {
   String generateAsciiTree({Map<Parser, String>? marks}) => Parser.generateAsciiTree(this, marks: marks);
-
-  Parser build() => Parser.build(this);
-  Parser unmapped() => Parser.unmapped(this);
-  Parser undropped() => Parser.undropped(this);
-  Parser simplified() => Parser.simplified(this);
-  Parser clone([HashMap<Parser, Parser>? cloned]) => Parser.clone(this, cloned);
-
-  Parser transformReplace(Parser target, Parser result) => //
-      Parser.transformReplace(this, target, result);
-  Parser transformWhere<T extends Parser>(ParserPredicate predicate, TransformHandler<T> handler) =>
-      Parser.transformWhere(this, predicate, handler);
-  Parser transformType<T extends Parser>(TransformHandler<T> handler) => //
-      Parser.transformType(this, handler);
-  Parser transform<T extends Parser>(TransformHandler handler, [HashMap<Parser, Parser>? transformed]) =>
-      Parser.transform(this, handler, transformed);
 
   bool isMemoized() => Parser.isMemoized(this);
   bool isNullable() => Parser.isNullable(this);
@@ -870,48 +460,13 @@ extension SharedParserExtension on Parser {
   bool isType<T extends Parser>() => Parser.isType<T>(this);
   bool equals(Object target) => Parser.equals(this)(target.$);
 
-  List<ParserSetMapping> computeParserSets() => Parser.computeParserSets(this);
-
   Iterable<Parser> rules() => Parser.rules(this);
-
-  Iterable<Parser> get traverseBf => traverseBreadthFirst();
-  Iterable<Parser> get traverseDf => traverseDepthFirst();
-
-  Iterable<Parser> traverseBreadthFirst() => Parser.traverseBreadthFirst(this);
-  Iterable<Parser> traverseDepthFirst() => Parser.traverseDepthFirst(this);
-
   Iterable<Parser> get firsts => firstChildren();
-
   Iterable<Parser> firstChildren() => Parser.firstChildren(this);
 }
 
 extension LazyParserMethodsExtension on Lazy<Parser> {
-  R run<R extends ParseResult>(String input) => Parser.runPeg(this.$, input);
-  Context runCtx(String input) => Parser.runCtxPeg(this.$, input);
-
-  R peg<R extends ParseResult>(String input, {ParseMode? mode, R Function(ContextFailure)? except}) =>
-      Parser.runPeg(this.$, input, mode: mode, except: except);
-  Context pegCtx(String input, {ParseMode? mode}) => Parser.runCtxPeg(this.$, input, mode: mode);
-  Iterable<R> gll<R extends ParseResult>(String input, {R Function(ContextFailure)? except}) =>
-      Parser.runGll(this.$, input, except: except);
-  Iterable<Context> gllCtx(String input) => Parser.runCtxGll(this.$, input);
-
   String generateAsciiTree({Map<Parser, String>? marks}) => Parser.generateAsciiTree(this.$, marks: marks);
-
-  Parser build() => Parser.build(this.$);
-  Parser unmapped() => Parser.unmapped(this.$);
-  Parser undropped() => Parser.undropped(this.$);
-  Parser simplified() => Parser.simplified(this.$);
-  Parser clone([HashMap<Parser, Parser>? cloned]) => Parser.clone(this.$);
-
-  Parser transformReplace(Parser target, Parser result) => //
-      Parser.transformReplace(this.$, target, result);
-  Parser transformWhere<T extends Parser>(ParserPredicate predicate, TransformHandler<T> handler) =>
-      Parser.transformWhere(this.$, predicate, handler);
-  Parser transformType<T extends Parser>(TransformHandler<T> handler) => //
-      Parser.transformType(this.$, handler);
-  Parser transform<T extends Parser>(TransformHandler handler, [HashMap<Parser, Parser>? transformed]) =>
-      Parser.transform(this.$, handler, transformed);
 
   bool isMemoized() => Parser.isMemoized(this.$);
   bool isNullable() => Parser.isNullable(this.$);
@@ -922,16 +477,7 @@ extension LazyParserMethodsExtension on Lazy<Parser> {
   bool isType<T extends Parser>() => Parser.isType<T>(this.$);
   bool equals(Object target) => Parser.equals(this.$)(target.$);
 
-  List<ParserSetMapping> computeParserSets() => Parser.computeParserSets(this.$);
-
   Iterable<Parser> rules() => Parser.rules(this.$);
-
-  Iterable<Parser> get traverseBF => traverseBreadthFirst();
-  Iterable<Parser> get traverseDF => traverseDepthFirst();
-
-  Iterable<Parser> traverseBreadthFirst() => Parser.traverseBreadthFirst(this.$);
-  Iterable<Parser> traverseDepthFirst() => Parser.traverseDepthFirst(this.$);
-
   Iterable<Parser> get firsts => firstChildren();
 
   Iterable<Parser> firstChildren() => Parser.firstChildren(this.$);
