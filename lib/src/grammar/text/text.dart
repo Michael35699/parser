@@ -91,8 +91,5 @@ extension ParserExtension on String {
     print(TextGrammarDefinition(env).value.unmapped.peg(this));
     print(TextGrammarDefinition(env).value.peg<Parser>(this).generateAsciiTree());
     throw Exception("Unfinished.");
-    Parser? result = TextGrammarDefinition(env).peg(this);
-
-    return result ?? (throw Exception("Rule 'start' is not defined."));
   }
 }

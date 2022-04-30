@@ -177,7 +177,7 @@ T unwrapToType<T extends Parser>(Parser parser) {
 }
 
 Parser changePrecedence(Parser root, num newPrecedence) {
-  Parser cloned = Parser.clone(root);
+  Parser cloned = root.clone();
   WithPrecedenceParser deepUnwrapped = unwrapToType(cloned);
 
   cloned.transformReplace(deepUnwrapped, deepUnwrapped.parser.withPrecedence(newPrecedence));

@@ -16,7 +16,11 @@ String generateInput() {
 
   StringBuffer buffer = StringBuffer(randomNumber());
   for (int _ in 50.times) {
-    buffer << " " << randomOperator() << " " << randomNumber();
+    buffer
+      ..write(" ")
+      ..write(randomOperator())
+      ..write(" ")
+      ..write(randomNumber());
   }
 
   return buffer.toString();
@@ -24,10 +28,6 @@ String generateInput() {
 
 extension TT<T> on T {
   R also<R>(R Function(T) callback) => callback(this);
-}
-
-extension on StringBuffer {
-  StringBuffer operator <<(Object? item) => this..write(item);
 }
 
 void main() {
