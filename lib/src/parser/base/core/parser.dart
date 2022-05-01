@@ -498,10 +498,14 @@ extension GeneralParserExtension<T extends Object> on T {
   Parser get $ => Parser.resolve(this);
 }
 
-extension RunParserMethodExtension<R> on T Function<T extends R>(String, {ParseMode? mode}) {
-  T pure<T extends R>(String input, {ParseMode? mode}) => this(input, mode: ParseMode.purePeg);
-  T linear<T extends R>(String input, {ParseMode? mode}) => this(input, mode: ParseMode.linearPeg);
-  T quadratic<T extends R>(String input, {ParseMode? mode}) => this(input, mode: ParseMode.quadraticPeg);
+extension RunParserMethodExtension<R> on T Function<T extends R>(String,
+    {ParseMode? mode, T Function(ContextFailure)? except}) {
+  T pure<T extends R>(String input, {ParseMode? mode, T Function(ContextFailure)? except}) =>
+      this(input, mode: ParseMode.purePeg, except: except);
+  T linear<T extends R>(String input, {ParseMode? mode, T Function(ContextFailure)? except}) =>
+      this(input, mode: ParseMode.linearPeg, except: except);
+  T quadratic<T extends R>(String input, {ParseMode? mode, T Function(ContextFailure)? except}) =>
+      this(input, mode: ParseMode.quadraticPeg, except: except);
 }
 
 extension ContextRunParserMethodExtension<R> on Context Function(String, {ParseMode? mode}) {
