@@ -14,6 +14,9 @@ abstract class WrapParser extends Parser {
   @override
   Parser get unwrapped => parser;
 
+  @override
+  Parser get base => parser.base;
+
   @nonVirtual
   @override
   WrapParser cloneSelf(HashMap<Parser, Parser> cloned) {
