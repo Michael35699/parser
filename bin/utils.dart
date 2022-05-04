@@ -228,5 +228,8 @@ Parser indent() => indentCode.p().drop();
 Parser dedent() => dedentCode.p().drop();
 Parser newline() => newlineCode.cycle().drop();
 
-Parser parser() => "block:" & indent & body % newline & dedent & (newline >> "end").optional();
-Parser body() => parser | (newline.not() >> dedent.not() >> source()).cycle().$join();
+Parser block() => "block:" & indent & body % newline & dedent & (newline >> "end").optional();
+Parser body() => block | (newline.not() >> dedent.not() >> source()).cycle().$join();
+
+int bitmap(Set<int> numbers) => numbers.map((int n) => 1 << n).reduce((int acc, int el) => acc + el);
+Set<int> reverseBitmap(int n) => 0.to(n.bitLength).where((int i) => n & 1 << i != 0).toSet();

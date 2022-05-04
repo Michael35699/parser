@@ -1,4 +1,6 @@
 extension IterableExtensions<T> on Iterable<T> {
+  Iterable<List<T>> zipSingle(Iterable<T> other) => zip(<Iterable<T>>[other]);
+
   Iterable<List<T>> zip(Iterable<Iterable<T>> iterables) sync* {
     if (iterables.isEmpty) {
       return;
