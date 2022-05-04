@@ -7,21 +7,12 @@ class EoiParser extends SpecialParser {
   EoiParser._();
 
   @override
-  Context parsePeg(Context context, PegHandler handler) {
+  Context parsePure(Context context) {
     if (context.state.index >= context.state.input.length) {
       return context.success(#eoi);
     }
 
     return context.failure(expected("end of input"));
-  }
-
-  @override
-  void parseGll(Context context, Trampoline trampoline, GllContinuation continuation) {
-    if (context.state.index >= context.state.input.length) {
-      continuation(context.success(#eoi));
-    } else {
-      continuation(context.failure(expected("end of input")));
-    }
   }
 
   @override

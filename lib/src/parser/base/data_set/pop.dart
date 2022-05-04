@@ -6,11 +6,7 @@ class PopParser extends SpecialParser {
   PopParser(this.item);
 
   @override
-  Context parsePeg(Context context, PegHandler handler) => context.pop(item).ignore();
-
-  @override
-  void parseGll(Context context, Trampoline trampoline, GllContinuation continuation) =>
-      continuation(context.pop(item).ignore());
+  Context parsePure(Context context) => context.pop(item).ignore();
 }
 
 PopParser _pop(dynamic item) => _pop(item);

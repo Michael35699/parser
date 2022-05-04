@@ -6,11 +6,7 @@ class FailureParser extends SpecialParser {
   FailureParser(this.message);
 
   @override
-  Context parsePeg(Context context, PegHandler handler) => context.failure(message).generated();
-
-  @override
-  void parseGll(Context context, Trampoline trampoline, GllContinuation continuation) =>
-      continuation(context.failure(message).generated());
+  Context parsePure(Context context) => context.failure(message).generated();
 
   @override
   bool hasEqualProperties(FailureParser target) {

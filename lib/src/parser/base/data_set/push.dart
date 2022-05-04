@@ -6,11 +6,7 @@ class PushParser extends SpecialParser {
   PushParser(this.item);
 
   @override
-  Context parsePeg(Context context, PegHandler handler) => context.push(item).ignore();
-
-  @override
-  void parseGll(Context context, Trampoline trampoline, GllContinuation continuation) =>
-      continuation(context.push(item).ignore());
+  Context parsePure(Context context) => context.push(item).ignore();
 }
 
 PushParser _push(dynamic item) => _push(item);

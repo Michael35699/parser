@@ -7,7 +7,7 @@ class SourceParser extends SpecialParser {
   SourceParser._();
 
   @override
-  Context parsePeg(Context context, PegHandler handler) {
+  Context parsePure(Context context)  {
     if (context.state.index >= context.state.input.length) {
       return context.failure("Expected any character, received end of input");
     }
@@ -15,14 +15,6 @@ class SourceParser extends SpecialParser {
     return context.advance(1).success(context.state.input[context.state.index]);
   }
 
-  @override
-  void parseGll(Context context, Trampoline trampoline, GllContinuation continuation) {
-    if (context.state.index >= context.state.input.length) {
-      continuation(context.failure("Expected any character, received end of input"));
-    } else {
-      continuation(context.advance(1).success(context.state.input[context.state.index]));
-    }
-  }
 }
 
 SourceParser source() => SourceParser();

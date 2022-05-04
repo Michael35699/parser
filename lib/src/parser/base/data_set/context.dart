@@ -1,6 +1,6 @@
 import "package:parser/internal_all.dart";
 
-class ContextualParser<T> extends SpecialParser {
+class ContextualParser<T> extends ChildlessParser {
   final Parser Function(Set<T>) callback;
 
   ContextualParser(this.callback);

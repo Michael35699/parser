@@ -14,11 +14,7 @@ class SuccessParser extends SpecialParser {
   }
 
   @override
-  Context parsePeg(Context context, PegHandler handler) => context.success(mappedResult, unmappedResult);
-
-  @override
-  void parseGll(Context context, Trampoline trampoline, GllContinuation continuation) =>
-      continuation(context.success(mappedResult, unmappedResult));
+  Context parsePure(Context context) => context.success(mappedResult, unmappedResult);
 
   @override
   bool hasEqualProperties(SuccessParser target) {
