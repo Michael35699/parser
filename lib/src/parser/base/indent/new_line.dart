@@ -64,7 +64,7 @@ class NewLineParser extends SpecialParser {
         return continuation(context.failure("Unexpected indentation"));
       }
 
-      return continuation(context.advance(index).success(newlines));
+      return continuation(context.index(index).success(newlines));
     } else {
       int indentation = stack.last;
 
