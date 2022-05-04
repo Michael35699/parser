@@ -1,4 +1,4 @@
-part of "main.dart";
+part of "parser.dart";
 
 class Analyzer {
   final Parser root;
