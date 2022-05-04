@@ -42,9 +42,9 @@ bool _expandFirstSets(Parser parser, ParserSetMapping firstSets) {
     }
     changed |= firstSet.add(Parser.startSentinel);
   } else {
-    for (Parser first in parser.children.flatMap((Parser child) => firstSets[child]!)) {
-      changed |= firstSet.add(first);
-    }
+    changed |= parser.children
+        .flatMap((Parser child) => firstSets[child]!)
+        .fold(false, (bool changed, Parser first) => changed | firstSet.add(first));
   }
 
   return changed;
@@ -97,24 +97,24 @@ bool _expandFollowSetOfSequence(
     int j = i + 1;
     for (; j < children.length; j++) {
       firstSet.addAll(firsts[children[j]]!);
-      if (!firsts[children[j]]!.any(Parser.isNullable)) {
+      if (firsts[children[j]]!.every(~Parser.isNullable)) {
         break;
       }
     }
     if (j == children.length) {
-      for (Parser follow in follows[parser]!) {
-        changed |= follows[children[i]]!.add(follow);
-      }
+      changed |= follows[parser]!
+          .map((Parser follow) => follows[children[i]]!.add(follow))
+          .fold(false, (bool value, bool element) => value | element);
     }
-    for (Parser first in firstSet.where(~Parser.isNullable)) {
-      changed |= follows[children[i]]!.add(first);
-    }
+    changed |= firstSet
+        .where(~Parser.isNullable)
+        .map((Parser first) => follows[children[i]]!.add(first))
+        .fold(false, (bool value, bool element) => value | element);
   }
 
-  for (Parser follow in follows[parser]!) {
-    changed |= follows[children.last]!.add(follow);
-  }
-  return changed;
+  return changed |= follows[parser]!
+      .map((Parser follow) => follows[children.last]!.add(follow))
+      .fold(false, (bool value, bool element) => value | element);
 }
 
 ParserSetMapping _computeCycleSets(Iterable<Parser> parsers, ParserSetMapping firsts) {
@@ -161,7 +161,7 @@ List<Parser> _computeCycleChildren(Parser parser, ParserSetMapping firstSets) {
     List<Parser> children = <Parser>[];
     for (Parser child in parser.children) {
       children.add(child);
-      if (!firstSets[child]!.any(Parser.isNullable)) {
+      if (firstSets[child]!.every(~Parser.isNullable)) {
         break;
       }
     }
