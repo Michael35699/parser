@@ -1,16 +1,18 @@
-import "dart:collection";
-
 import "package:parser/internal_all.dart";
 
-class ConditionalParser extends SpecialParser {
-  final HashMap<Context, Parser> _saved = HashMap<Context, Parser>();
-
+class ConditionalParser extends WrapParser {
   final Parser Function(Context) function;
-  final Parser parser;
 
-  ConditionalParser(this.parser, this.function);
+  @override
+  Parser get parser => children[0];
 
-  Parser resolve(Context context) => _saved[context] ??= function(context);
+  @override
+  Parser get base => parser.base;
+
+  ConditionalParser(Parser parser, this.function) : super(<Parser>[parser]);
+  ConditionalParser.empty(this.function) : super(<Parser>[]);
+
+  Parser resolve(Context context) => function(context);
 
   @override
   Context parsePeg(Context context, PegHandler handler) =>
@@ -21,6 +23,9 @@ class ConditionalParser extends SpecialParser {
       trampoline.push(parser, context, (Context ctx) {
         trampoline.push(function(context), ctx, continuation);
       });
+
+  @override
+  ConditionalParser empty() => ConditionalParser.empty(function);
 }
 
 extension ParserConditionalExtension on Parser {
