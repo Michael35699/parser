@@ -267,7 +267,7 @@ abstract class Parser {
 
       Iterable<Parser> leftString = parser.traverseBf.whereNotType<ThunkParser>();
       Iterable<Parser> rightString = target.traverseBf.whereNotType<ThunkParser>();
-      Iterable<List<Parser>> zipped = leftString.zip.rest(rightString);
+      Iterable<List<Parser>> zipped = leftString.zipSingle(rightString);
 
       for (List<Parser> pair in zipped) {
         Parser left = pair[0];
