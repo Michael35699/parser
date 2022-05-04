@@ -31,11 +31,11 @@ class ChoiceParser extends CombinatorParser {
   }
 
   @override
-  Context parsePeg(Context context, PegParserMutable mutable) {
+  Context parsePeg(Context context, PegHandler handler) {
     ContextFailure? longestError;
     Context? longestSuccess;
     for (Parser parser in children) {
-      Context ctx = parser.pegApply(context, mutable);
+      Context ctx = handler.apply(parser, context);
 
       if (ctx is ContextFailure) {
         longestError = determineFailure(ctx, longestError);

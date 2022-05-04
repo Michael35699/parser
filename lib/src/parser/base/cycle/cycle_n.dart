@@ -11,13 +11,13 @@ class CycleNParser extends WrapParser with CyclicParser {
   CycleNParser.empty(this.count) : super(<Parser>[]);
 
   @override
-  Context parsePeg(Context context, PegParserMutable mutable) {
+  Context parsePeg(Context context, PegHandler handler) {
     List<ParseResult> mapped = <ParseResult>[];
     List<ParseResult> unmapped = <ParseResult>[];
 
     Context ctx = context;
     for (int i = 0; i < count; i++) {
-      ctx = parser.pegApply(ctx, mutable);
+      ctx = handler.apply(parser, ctx);
       if (ctx is ContextFailure) {
         return ctx;
       }

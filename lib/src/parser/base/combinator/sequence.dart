@@ -4,13 +4,13 @@ class SequenceParser extends CombinatorParser with SequentialParser {
   SequenceParser(List<Parser> children) : super(children);
 
   @override
-  Context parsePeg(Context context, PegParserMutable mutable) {
+  Context parsePeg(Context context, PegHandler handler) {
     List<ParseResult> mapped = <ParseResult>[];
     List<ParseResult> unmapped = <ParseResult>[];
 
     Context ctx = context;
-    for (int i = 0; i < children.length; i++) {
-      ctx = children[i].pegApply(ctx, mutable);
+    for (Parser parser in children) {
+      ctx = handler.apply(parser, ctx);
 
       if (ctx.isFailure) {
         return ctx;

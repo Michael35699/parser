@@ -9,13 +9,13 @@ class DropRightParser extends WrapParser with SequentialParser {
   DropRightParser.empty() : super(<Parser>[]);
 
   @override
-  Context parsePeg(Context context, PegParserMutable mutable) {
-    Context ctx = parser.pegApply(context, mutable);
+  Context parsePeg(Context context, PegHandler handler) {
+    Context ctx = handler.apply(parser, context);
     if (ctx is ContextFailure) {
       return ctx;
     }
 
-    Context last = right.pegApply(ctx, mutable);
+    Context last = handler.apply(right, ctx);
     if (last is ContextFailure) {
       return last;
     }

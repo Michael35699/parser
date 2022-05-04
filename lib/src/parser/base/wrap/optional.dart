@@ -8,8 +8,8 @@ class OptionalParser extends WrapParser {
   OptionalParser.empty() : super(<Parser>[]);
 
   @override
-  Context parsePeg(Context context, PegParserMutable mutable) {
-    Context result = parser.pegApply(context, mutable);
+  Context parsePeg(Context context, PegHandler handler) {
+    Context result = handler.apply(parser, context);
     if (result is! ContextFailure) {
       return result;
     } else {

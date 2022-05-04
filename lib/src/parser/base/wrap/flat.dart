@@ -8,8 +8,8 @@ class FlatParser extends WrapParser {
   FlatParser.empty() : super(<Parser>[]);
 
   @override
-  Context parsePeg(Context context, PegParserMutable mutable) {
-    Context result = parser.pegApply(context, mutable);
+  Context parsePeg(Context context, PegHandler handler) {
+    Context result = handler.apply(parser, context);
 
     if (result is ContextSuccess) {
       return result.success(result.state.input.substring(context.state.index, result.state.index));

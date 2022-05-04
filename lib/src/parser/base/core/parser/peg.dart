@@ -20,9 +20,9 @@ Context _runCtxPeg(Parser parser, String input, {ParseMode? mode}) {
 
   Parser built = parser.build();
   String formatted = input.replaceAll("\r", "").unindent();
-  PegParserMutable mutable = PegParserMutable();
+  PegHandler handler = PegHandler(PegParserMutable());
   Context context = Context.ignore(State(input: formatted, mode: mode));
-  Context result = built.pegApply(context, mutable);
+  Context result = handler.apply(built, context);
 
   if (result is ContextFailure) {
     return result.withFailureMessage();

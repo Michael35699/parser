@@ -8,8 +8,8 @@ class NegativeLookaheadParser extends WrapParser {
   NegativeLookaheadParser.empty() : super(<Parser>[]);
 
   @override
-  Context parsePeg(Context context, PegParserMutable mutable) {
-    if (parser.pegApply(context, mutable) is! ContextFailure) {
+  Context parsePeg(Context context, PegHandler handler) {
+    if (handler.apply(parser, context) is! ContextFailure) {
       return context.failure("Negative lookahead failure.");
     } else {
       return context.success(#negativeLookahead);

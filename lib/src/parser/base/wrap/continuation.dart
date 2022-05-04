@@ -1,16 +1,16 @@
 import "package:parser/internal_all.dart";
 
 class ContinuationParser extends WrapParser {
-  final ContinuationFunction handler;
+  final ContinuationFunction function;
   @override
   Parser get parser => children[0];
 
-  ContinuationParser(Parser parser, this.handler) : super(<Parser>[parser]);
-  ContinuationParser.empty(this.handler) : super(<Parser>[]);
+  ContinuationParser(Parser parser, this.function) : super(<Parser>[parser]);
+  ContinuationParser.empty(this.function) : super(<Parser>[]);
 
   @override
-  Context parsePeg(Context context, PegParserMutable mutable) {
-    return handler((Context ctx) => parser.pegApply(ctx, mutable), context);
+  Context parsePeg(Context context, PegHandler handler) {
+    return function((Context ctx) => handler.apply(parser, ctx), context);
   }
 
   @override
@@ -22,10 +22,10 @@ class ContinuationParser extends WrapParser {
   Parser get base => parser.base;
 
   @override
-  ContinuationParser empty() => ContinuationParser.empty(handler);
+  ContinuationParser empty() => ContinuationParser.empty(function);
 
   @override
-  bool hasEqualProperties(ContinuationParser target) => super.hasEqualProperties(target) && target.handler == handler;
+  bool hasEqualProperties(ContinuationParser target) => super.hasEqualProperties(target) && target.function == function;
 }
 
 extension ParserContinuationExtension on Parser {

@@ -9,9 +9,9 @@ class FromPrecedenceParser extends WrapParser {
   FromPrecedenceParser.empty(this.precedence) : super(<Parser>[]);
 
   @override
-  Context parsePeg(Context context, PegParserMutable mutable) {
+  Context parsePeg(Context context, PegHandler handler) {
     num previousPrecedence = context.state.precedence;
-    Context ctx = parser.pegApply(context.copyWith.state(precedence: precedence), mutable);
+    Context ctx = handler.apply(parser, context.copyWith.state(precedence: precedence));
 
     return ctx.copyWith.state(precedence: previousPrecedence);
   }

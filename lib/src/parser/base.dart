@@ -23,6 +23,7 @@ export "base/core/parser/gll.dart";
 export "base/core/parser/peg.dart";
 export "base/core/parser/transform.dart";
 export "base/core/parser/traverse.dart";
+export "base/core/peg/handler/handler.dart";
 export "base/core/peg/mutable/head.dart";
 export "base/core/peg/mutable/left_recursion.dart";
 export "base/core/peg/mutable/memo_entry.dart";

@@ -7,7 +7,7 @@ class EoiParser extends SpecialParser {
   EoiParser._();
 
   @override
-  Context parsePeg(Context context, PegParserMutable mutable) {
+  Context parsePeg(Context context, PegHandler handler) {
     if (context.state.index >= context.state.input.length) {
       return context.success(#eoi);
     }

@@ -10,13 +10,13 @@ class CycleStarParser extends WrapParser with CyclicParser {
   CycleStarParser.empty() : super(<Parser>[]);
 
   @override
-  Context parsePeg(Context context, PegParserMutable mutable) {
+  Context parsePeg(Context context, PegHandler handler) {
     List<ParseResult> mapped = <ParseResult>[];
     List<ParseResult> unmapped = <ParseResult>[];
 
     Context ctx = context;
     for (;;) {
-      Context temp = parser.pegApply(ctx, mutable);
+      Context temp = handler.apply(parser, ctx);
       if (temp is ContextFailure) {
         break;
       }

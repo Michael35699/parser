@@ -9,13 +9,13 @@ class WithPrecedenceParser extends WrapParser {
   WithPrecedenceParser.empty(this.precedence) : super(<Parser>[]);
 
   @override
-  Context parsePeg(Context context, PegParserMutable mutable) {
+  Context parsePeg(Context context, PegHandler handler) {
     num searchPrecedence = context.state.precedence;
     if (searchPrecedence < precedence) {
       return context.failure("Search precedence '$searchPrecedence' is lower than '$precedence'");
     }
 
-    return parser.pegApply(context, mutable);
+    return handler.apply(parser, context);
   }
 
   @override

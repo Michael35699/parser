@@ -18,10 +18,10 @@ class ThunkParser extends LazyLoadParser {
         super.eager(parser);
 
   @override
-  Context parsePeg(Context context, PegParserMutable mutable) {
+  Context parsePeg(Context context, PegHandler handler) {
     print("If you're seeing this, something went wrong.");
 
-    return computed.pegApply(context, mutable);
+    return handler.apply(computed, context);
   }
 
   @override

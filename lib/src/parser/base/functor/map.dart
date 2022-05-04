@@ -17,8 +17,8 @@ class MappedParser extends WrapParser {
         super(<Parser>[]);
 
   @override
-  Context parsePeg(Context context, PegParserMutable mutable) {
-    Context ctx = parser.pegApply(context, mutable);
+  Context parsePeg(Context context, PegHandler handler) {
+    Context ctx = handler.apply(parser, context);
 
     if (ctx is ContextSuccess) {
       ParseResult mappedResult = mapper(ctx.mappedResult, ctx);
