@@ -1,8 +1,8 @@
 import "package:parser/internal_all.dart";
 
-MapFunction _$list<T>() => (ParseResult r, Context c) => (r as List<ParseResult>?)?.cast<T>();
-MapFunction _$set<T>() => (ParseResult r, Context c) => (r as Set<ParseResult>?)?.cast<T>();
-MapFunction _$map<K, V>() => (ParseResult r, Context c) => (r as Map<ParseResult, ParseResult>?)?.cast<K, V>();
+MapFunction _$list<T>() => $maybe(List<T>.from);
+MapFunction _$set<T>() => $maybe(Set<T>.from);
+MapFunction _$map<K, V>() => $maybe(Map<K, V>.from);
 
 MapFunction $list<T>() => _$list<T>();
 MapFunction $set<T>() => _$set<T>();
