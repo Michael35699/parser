@@ -1,17 +1,29 @@
 import "package:parser/parser.dart" as parser;
 
-parser.Parser expr() {
-  parser.Parser built = parser.never();
+// Declarative style
+parser.Parser expr() =>
+    expr & "+" & expr ^ parser.$3((num l, _, num r) => l + r) | //
+    expr & "-" & expr ^ parser.$3((num l, _, num r) => l - r) |
+    parser.number;
 
-  built |= expr & "+" & expr;
-  built |= expr & "-" & expr;
-  built |= parser.number;
-  // built <<= parser.leftRecursive();
+int count = 0;
 
-  return built;
+// Imperative style (WARNING: These are memoized, so as much as possible make them PURE FUNCTIONS.)
+parser.Parser expression() {
+  parser.Parser addition = expression & "+" & expression;
+  addition ^= parser.$3((num left, _, num right) {
+    return left + right;
+  });
+
+  parser.Parser subtraction = expression & "-" & expression;
+  subtraction ^= parser.$3((num left, _, num right) {
+    return left - right;
+  });
+
+  return addition | subtraction | parser.number();
 }
 
 void main() {
-  print(expr.end.run("1-2-3", except: print));
-  print(expr.generateAsciiTree());
+  print(expression.end.run("1+2+3", except: print));
+  print(count);
 }
