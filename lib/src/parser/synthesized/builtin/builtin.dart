@@ -64,8 +64,6 @@ class Parsers {
   // JSON STRING
   static Parser jsonStringSlow() => _jsonStringSlow();
   static Parser jsonString() => _jsonString();
-
-  static Parser never() => _never();
 }
 
 // BASIC
@@ -127,5 +125,3 @@ Parser jsonNumber() => _jsonNumber();
 // JSON STRING
 Parser jsonStringSlow() => _jsonStringSlow();
 Parser jsonString() => _jsonString();
-
-Parser never() => _never();
