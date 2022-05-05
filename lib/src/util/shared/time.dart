@@ -1,19 +1,22 @@
-void time(void Function() callback, {int? count, String? name, Symbol? functionSignature}) {
+R time<R extends Object?>(R Function() callback, {int? count, String? name, Symbol? functionSignature}) {
   count ??= 1;
 
   Stopwatch watch = Stopwatch()..start();
-  for (int i = 0; i < count; i++) {
+  for (int i = 0; i < count - 1; i++) {
     callback();
   }
+  R result = callback();
   watch.stop();
 
   print("Time${name == null ? "" : "[$name]"}: ${formatMicroseconds(watch.elapsedMicroseconds ~/ count)}");
+
+  return result;
 }
 
-extension NamedTimeFunctionExtension on void Function(void Function() callback,
+extension NamedTimeFunctionExtension<R> on R Function(R Function() callback,
     {int? count, String? name, Symbol? functionSignature}) {
-  void named(String name, void Function() callback) => this(callback, name: name);
-  void average(int count, void Function() callback) => this(callback, count: count);
+  R named(String name, R Function() callback) => this(callback, name: name);
+  R average(int count, R Function() callback) => this(callback, count: count);
 }
 
 String formatMicroseconds(int value) {
