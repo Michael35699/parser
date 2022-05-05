@@ -7,6 +7,8 @@ mixin Grammar {
   Context runCtx(String input) => start.runCtx(input);
   R packrat<R extends ParseResult>(String input, {PackratMode? mode}) => start.packrat(input, mode: mode);
   Context packratCtx(String input, {PackratMode? mode}) => start.packratCtx(input, mode: mode);
+  R peg<R extends ParseResult>(String input, {PegMode? mode}) => start.peg(input, mode: mode);
+  Context pegCtx(String input, {PegMode? mode}) => start.pegCtx(input, mode: mode);
 
   Iterable<R> gll<R extends ParseResult>(String input, {R Function(ContextFailure)? except}) =>
       start.gll(input, except: except);

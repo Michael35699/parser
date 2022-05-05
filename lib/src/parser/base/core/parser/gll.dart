@@ -54,14 +54,14 @@ Iterable<Context> _runCtxGll(Parser parser, String input) sync* {
 }
 
 extension ParserGllExtension on Parser {
-  Iterable<R> gll<R extends ParseResult>(String input, {R Function(ContextFailure)? except}) =>
+  Iterable<R> gll<R extends ParseResult>(String input, {ExceptFunction<R>? except}) =>
       _runGll(this, input, except: except);
 
   Iterable<Context> gllCtx(String input) => _runCtxGll(this, input);
 }
 
 extension LazyParserGllParserExtension on Lazy<Parser> {
-  Iterable<R> gll<R extends ParseResult>(String input, {R Function(ContextFailure)? except}) =>
+  Iterable<R> gll<R extends ParseResult>(String input, {ExceptFunction<R>? except}) =>
       _runGll(this.$, input, except: except);
 
   Iterable<Context> gllCtx(String input) => _runCtxGll(this.$, input);

@@ -31,13 +31,27 @@ Context _runCtxPeg(Parser parser, String input, {PegMode? mode}) {
 }
 
 extension ParserPegExtension on Parser {
-  R peg<R extends ParseResult>(String input, {PegMode? mode, R Function(ContextFailure)? except}) =>
+  R peg<R extends ParseResult>(String input, {PegMode? mode, ExceptFunction<R>? except}) =>
       _runPeg(this, input, mode: mode, except: except);
   Context pegCtx(String input, {PegMode? mode}) => _runCtxPeg(this, input, mode: mode);
 }
 
 extension LazyParserPegParserExtension on Lazy<Parser> {
-  R peg<R extends ParseResult>(String input, {R Function(ContextFailure)? except}) => //
-      this.$.peg(input, except: except);
-  Context pegCtx(String input) => this.$.pegCtx(input);
+  R peg<R extends ParseResult>(String input, {PegMode? mode, ExceptFunction<R>? except}) => //
+      this.$.peg(input, mode: mode, except: except);
+  Context pegCtx(String input, {PegMode? mode}) => this.$.pegCtx(input, mode: mode);
+}
+
+extension PegExtendedFunctionExtension on //
+    R Function<R extends ParseResult>(String input, {PegMode? mode, ExceptFunction<R>? except}) {
+  R pure<R extends ParseResult>(String input, {ExceptFunction<R>? except}) =>
+      this(input, mode: PegMode.pure, except: except);
+  R left<R extends ParseResult>(String input, {ExceptFunction<R>? except}) =>
+      this(input, mode: PegMode.left, except: except);
+}
+
+extension PegContextExtendedFunctionExtension on //
+    Context Function(String input, {PegMode? mode}) {
+  Context pure(String input) => this(input, mode: PegMode.pure);
+  Context left(String input) => this(input, mode: PegMode.left);
 }
