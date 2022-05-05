@@ -12,38 +12,7 @@ part of 'node.dart';
 T _$identity<T>(T value) => value;
 
 final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more informations: https://github.com/rrousselGit/freezed#custom-getters-and-methods');
-
-/// @nodoc
-class _$XmlNodeTearOff {
-  const _$XmlNodeTearOff();
-
-  XmlTextNode text(String value) {
-    return XmlTextNode(
-      value,
-    );
-  }
-
-  XmlFragmentNode fragment({required List<XmlNode> children}) {
-    return XmlFragmentNode(
-      children: children,
-    );
-  }
-
-  XmlTagNode tag(
-      {required String name,
-      required Map<String, String> attributes,
-      List<XmlNode>? children}) {
-    return XmlTagNode(
-      name: name,
-      attributes: attributes,
-      children: children,
-    );
-  }
-}
-
-/// @nodoc
-const $XmlNode = _$XmlNodeTearOff();
+    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#custom-getters-and-methods');
 
 /// @nodoc
 mixin _$XmlNode {
@@ -251,10 +220,10 @@ class _$XmlTextNode extends XmlTextNode {
 }
 
 abstract class XmlTextNode extends XmlNode {
-  const factory XmlTextNode(String value) = _$XmlTextNode;
+  const factory XmlTextNode(final String value) = _$XmlTextNode;
   const XmlTextNode._() : super._();
 
-  String get value;
+  String get value => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
   $XmlTextNodeCopyWith<XmlTextNode> get copyWith =>
       throw _privateConstructorUsedError;
@@ -294,10 +263,16 @@ class _$XmlFragmentNodeCopyWithImpl<$Res> extends _$XmlNodeCopyWithImpl<$Res>
 /// @nodoc
 
 class _$XmlFragmentNode extends XmlFragmentNode {
-  const _$XmlFragmentNode({required this.children}) : super._();
+  const _$XmlFragmentNode({required final List<XmlNode> children})
+      : _children = children,
+        super._();
 
+  final List<XmlNode> _children;
   @override
-  final List<XmlNode> children;
+  List<XmlNode> get children {
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_children);
+  }
 
   @override
   String toString() {
@@ -397,11 +372,11 @@ class _$XmlFragmentNode extends XmlFragmentNode {
 }
 
 abstract class XmlFragmentNode extends XmlNode {
-  const factory XmlFragmentNode({required List<XmlNode> children}) =
+  const factory XmlFragmentNode({required final List<XmlNode> children}) =
       _$XmlFragmentNode;
   const XmlFragmentNode._() : super._();
 
-  List<XmlNode> get children;
+  List<XmlNode> get children => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
   $XmlFragmentNodeCopyWith<XmlFragmentNode> get copyWith =>
       throw _privateConstructorUsedError;
@@ -452,15 +427,30 @@ class _$XmlTagNodeCopyWithImpl<$Res> extends _$XmlNodeCopyWithImpl<$Res>
 
 class _$XmlTagNode extends XmlTagNode {
   const _$XmlTagNode(
-      {required this.name, required this.attributes, this.children})
-      : super._();
+      {required this.name,
+      required final Map<String, String> attributes,
+      final List<XmlNode>? children})
+      : _attributes = attributes,
+        _children = children,
+        super._();
 
   @override
   final String name;
+  final Map<String, String> _attributes;
   @override
-  final Map<String, String> attributes;
+  Map<String, String> get attributes {
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableMapView(_attributes);
+  }
+
+  final List<XmlNode>? _children;
   @override
-  final List<XmlNode>? children;
+  List<XmlNode>? get children {
+    final value = _children;
+    if (value == null) return null;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(value);
+  }
 
   @override
   String toString() {
@@ -567,14 +557,14 @@ class _$XmlTagNode extends XmlTagNode {
 
 abstract class XmlTagNode extends XmlNode {
   const factory XmlTagNode(
-      {required String name,
-      required Map<String, String> attributes,
-      List<XmlNode>? children}) = _$XmlTagNode;
+      {required final String name,
+      required final Map<String, String> attributes,
+      final List<XmlNode>? children}) = _$XmlTagNode;
   const XmlTagNode._() : super._();
 
-  String get name;
-  Map<String, String> get attributes;
-  List<XmlNode>? get children;
+  String get name => throw _privateConstructorUsedError;
+  Map<String, String> get attributes => throw _privateConstructorUsedError;
+  List<XmlNode>? get children => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
   $XmlTagNodeCopyWith<XmlTagNode> get copyWith =>
       throw _privateConstructorUsedError;

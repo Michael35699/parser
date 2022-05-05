@@ -9,7 +9,7 @@ MapFunction _$maybe<T>(ParseResult Function(T) callback) =>
 MapFunction _$type<T>(ParseResult Function(T) callback) =>
     (ParseResult result, Context context) => callback(_type(result));
 
-MapFunction _$cast<T extends Object?>() => (ParseResult result, Context context) => result as T;
+MapFunction _$cast<T extends ParseResult>() => (ParseResult result, Context context) => result as T;
 
 MapFunction _$join([String sep = ""]) =>
     (ParseResult result, Context context) => (result as List<ParseResult>?)?.join(sep);
@@ -70,9 +70,9 @@ MapFunction _$flat() => $type(_$flatten);
 T _type<T>(ParseResult v) => v as T;
 
 dynamic $pipe(ParseResult r, Context c) => r;
-MapFunction $type<T extends Object?>(ParseResult Function(T) callback) => _$type(callback);
-MapFunction $maybe<T extends Object?>(ParseResult Function(T) callback) => _$maybe(callback);
-MapFunction $cast<T extends Object?>() => _$cast<T>();
+MapFunction $type<T extends ParseResult>(ParseResult Function(T) callback) => _$type(callback);
+MapFunction $maybe<T extends ParseResult>(ParseResult Function(T) callback) => _$maybe(callback);
+MapFunction $cast<T extends ParseResult>() => _$cast<T>();
 MapFunction $join([String sep = ""]) => _$join(sep);
 MapFunction $named(Function fn) => _$named(fn);
 MapFunction $at(int index) => _$at(index);
@@ -107,8 +107,8 @@ extension ParserBasicMappersExtension on Parser {
   MappedParser $ctx(dynamic Function(Context) fn) => map(_$ctx(fn));
   MappedParser $res(dynamic Function(ParseResult) fn) => map(_$res(fn));
   MappedParser $tagged(dynamic Function(Symbol, ParseResult) function) => map(_$tagged(function));
-  MappedParser $type<T extends Object?>(ParseResult Function(T) callback) => map(_$type(callback));
-  MappedParser $maybe<T extends Object?>(ParseResult Function(T) callback) => map(_$maybe(callback));
+  MappedParser $type<T extends ParseResult>(ParseResult Function(T) callback) => map(_$type(callback));
+  MappedParser $maybe<T extends ParseResult>(ParseResult Function(T) callback) => map(_$maybe(callback));
 }
 
 extension LazyParserBasicMappersExtension on LazyParser {
@@ -128,8 +128,8 @@ extension LazyParserBasicMappersExtension on LazyParser {
   MappedParser $ctx(dynamic Function(Context) fn) => map(_$ctx(fn));
   MappedParser $res(dynamic Function(ParseResult) fn) => map(_$res(fn));
   MappedParser $tagged(dynamic Function(Symbol, ParseResult) function) => map(_$tagged(function));
-  MappedParser $type<T extends Object?>(ParseResult Function(T) callback) => map(_$type(callback));
-  MappedParser $maybe<T extends Object?>(ParseResult Function(T) callback) => map(_$maybe(callback));
+  MappedParser $type<T extends ParseResult>(ParseResult Function(T) callback) => map(_$type(callback));
+  MappedParser $maybe<T extends ParseResult>(ParseResult Function(T) callback) => map(_$maybe(callback));
 }
 
 extension StringBasicMappersExtension on String {
@@ -149,8 +149,8 @@ extension StringBasicMappersExtension on String {
   MappedParser $ctx(dynamic Function(Context) fn) => map(_$ctx(fn));
   MappedParser $res(dynamic Function(ParseResult) fn) => map(_$res(fn));
   MappedParser $tagged(dynamic Function(Symbol, ParseResult) function) => map(_$tagged(function));
-  MappedParser $type<T extends Object?>(ParseResult Function(T) callback) => map(_$type(callback));
-  MappedParser $maybe<T extends Object?>(ParseResult Function(T) callback) => map(_$maybe(callback));
+  MappedParser $type<T extends ParseResult>(ParseResult Function(T) callback) => map(_$type(callback));
+  MappedParser $maybe<T extends ParseResult>(ParseResult Function(T) callback) => map(_$maybe(callback));
 }
 
 extension BuiltBasicMappersExtension on MappedParser Function(MapFunction mapper, {bool replace}) {
@@ -171,6 +171,6 @@ extension BuiltBasicMappersExtension on MappedParser Function(MapFunction mapper
   MappedParser $ctx(dynamic Function(Context) fn) => this(_$ctx(fn));
   MappedParser $res(dynamic Function(ParseResult) fn) => this(_$res(fn));
   MappedParser $tagged(dynamic Function(Symbol, ParseResult) function) => this(_$tagged(function));
-  MappedParser $type<T extends Object?>(ParseResult Function(T) callback) => this(_$type(callback));
-  MappedParser $maybe<T extends Object?>(ParseResult Function(T) callback) => this(_$maybe(callback));
+  MappedParser $type<T extends ParseResult>(ParseResult Function(T) callback) => this(_$type(callback));
+  MappedParser $maybe<T extends ParseResult>(ParseResult Function(T) callback) => this(_$maybe(callback));
 }
