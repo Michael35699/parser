@@ -1,8 +1,6 @@
 import "package:parser/internal_all.dart";
 
-T _runPeg<T extends ParseResult>(Parser parser, String input, {ParseMode? mode, T Function(ContextFailure)? except}) {
-  assert(mode != ParseMode.gll, "Running `ParseMode.gll` in runPeg method.");
-
+T _runPeg<T extends ParseResult>(Parser parser, String input, {PegMode? mode, T Function(ContextFailure)? except}) {
   Context result = _runCtxPeg(parser, input, mode: mode);
 
   if (result is ContextFailure) {
@@ -16,15 +14,13 @@ T _runPeg<T extends ParseResult>(Parser parser, String input, {ParseMode? mode, 
   throw ParseException("Detected ignore context. Check the grammar.");
 }
 
-Context _runCtxPeg(Parser parser, String input, {ParseMode? mode}) {
-  assert(mode != ParseMode.gll, "Running `ParseMode.gll` in runPeg method.");
-
-  mode ??= ParseMode.quadraticPeg;
+Context _runCtxPeg(Parser parser, String input, {PegMode? mode}) {
+  mode ??= PegMode.left;
 
   Parser built = parser.build();
   String formatted = input.replaceAll("\r", "").unindent();
-  PegHandler handler = PegHandler.create(mode);
-  Context context = Context.ignore(State(input: formatted, mode: mode));
+  PegHandler handler = PegHandler.peg(mode);
+  Context context = Context.ignore(State(input: formatted, parseMode: ParseMode.peg, pegMode: mode));
   Context result = handler.apply(built, context);
 
   if (result is ContextFailure) {
@@ -35,21 +31,13 @@ Context _runCtxPeg(Parser parser, String input, {ParseMode? mode}) {
 }
 
 extension ParserPegExtension on Parser {
-  R run<R extends ParseResult>(String input, {R Function(ContextFailure)? except}) =>
-      _runPeg(this, input, mode: ParseMode.quadraticPeg, except: except);
-  Context runCtx(String input) => _runCtxPeg(this, input, mode: ParseMode.quadraticPeg);
-
-  R peg<R extends ParseResult>(String input, {ParseMode? mode, R Function(ContextFailure)? except}) =>
+  R peg<R extends ParseResult>(String input, {PegMode? mode, R Function(ContextFailure)? except}) =>
       _runPeg(this, input, mode: mode, except: except);
-  Context pegCtx(String input, {ParseMode? mode}) => _runCtxPeg(this, input, mode: mode);
+  Context pegCtx(String input, {PegMode? mode}) => _runCtxPeg(this, input, mode: mode);
 }
 
 extension LazyParserPegParserExtension on Lazy<Parser> {
-  R run<R extends ParseResult>(String input, {R Function(ContextFailure)? except}) =>
-      _runPeg(this.$, input, mode: ParseMode.quadraticPeg, except: except);
-  Context runCtx(String input) => _runCtxPeg(this.$, input, mode: ParseMode.quadraticPeg);
-
-  R peg<R extends ParseResult>(String input, {ParseMode? mode, R Function(ContextFailure)? except}) =>
-      _runPeg(this.$, input, mode: mode, except: except);
-  Context pegCtx(String input, {ParseMode? mode}) => _runCtxPeg(this.$, input, mode: mode);
+  R peg<R extends ParseResult>(String input, {R Function(ContextFailure)? except}) => //
+      this.$.peg(input, except: except);
+  Context pegCtx(String input) => this.$.pegCtx(input);
 }

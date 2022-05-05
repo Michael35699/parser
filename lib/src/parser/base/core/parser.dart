@@ -7,7 +7,7 @@ import "package:parser/internal_all.dart";
 
 abstract class Parser {
   static final Never never = throw Error();
-  static final Context seedFailure = Context.failure(State(input: ""), "seed");
+  static final Context packratFailure = Context.failure(State(input: "", parseMode: ParseMode.packrat), "seed");
 
   late final bool leftRecursive = Parser.isLeftRecursive(this);
   late final List<ParserSetMapping> parserSets = computeParserSets();
@@ -18,6 +18,7 @@ abstract class Parser {
   late final ParserSet followSet = followSets[this] ?? const <Parser>{};
   late final ParserSet cycleSet = cycleSets[this] ?? const <Parser>{};
 
+  bool prioritizeLeft = true;
   bool memoize = false;
   bool built = false;
 
@@ -300,20 +301,4 @@ extension LazyParserMethodsExtension on Lazy<Parser> {
 
 extension GeneralParserExtension<T extends Object> on T {
   Parser get $ => Parser.resolve(this);
-}
-
-extension RunParserMethodExtension<R> on T Function<T extends R>(String,
-    {ParseMode? mode, T Function(ContextFailure)? except}) {
-  T pure<T extends R>(String input, {ParseMode? mode, T Function(ContextFailure)? except}) =>
-      this(input, mode: ParseMode.purePeg, except: except);
-  T linear<T extends R>(String input, {ParseMode? mode, T Function(ContextFailure)? except}) =>
-      this(input, mode: ParseMode.linearPeg, except: except);
-  T quadratic<T extends R>(String input, {ParseMode? mode, T Function(ContextFailure)? except}) =>
-      this(input, mode: ParseMode.quadraticPeg, except: except);
-}
-
-extension ContextRunParserMethodExtension<R> on Context Function(String, {ParseMode? mode}) {
-  Context pure(String input, {ParseMode? mode}) => this(input, mode: ParseMode.purePeg);
-  Context linear(String input, {ParseMode? mode}) => this(input, mode: ParseMode.linearPeg);
-  Context quadratic(String input, {ParseMode? mode}) => this(input, mode: ParseMode.quadraticPeg);
 }

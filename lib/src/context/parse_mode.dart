@@ -1,1 +1,5 @@
-enum ParseMode { purePeg, linearPeg, quadraticPeg, gll }
+enum ParseMode { peg, packrat, gll }
+
+enum PackratMode { basic, linear, quadratic }
+
+enum PegMode { pure, left }

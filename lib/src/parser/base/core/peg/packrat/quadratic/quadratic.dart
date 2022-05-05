@@ -2,17 +2,15 @@
 
 import "package:freezed_annotation/freezed_annotation.dart";
 import "package:parser/internal_all.dart";
-import "package:parser/src/parser/base/core/peg/handler/quadratic.dart";
+import "package:parser/src/parser/base/core/peg/packrat/quadratic.dart";
 
-class QuadraticPeg extends PegHandler {
+class QuadraticPackrat extends PegHandler {
   @override
-  final QuadraticPegMutable mutable;
-
-  const QuadraticPeg(this.mutable);
+  final QuadraticPackratMutable mutable = QuadraticPackratMutable();
 
   @internal
   MemoizationEntry? recall(Parser parser, int index, Context context) {
-    MemoizationEntry? entry = mutable.memoMap.putIfAbsent(parser, PegMemoizationSubMap.new)[index];
+    MemoizationEntry? entry = mutable.memoMap.putIfAbsent(parser, MemoizationSubMap.new)[index];
     Head? head = mutable.heads[index];
 
     // If the head is not being grown, return the memoized result.
@@ -23,7 +21,7 @@ class QuadraticPeg extends PegHandler {
     // If the current parser is not a part of the head and is not evaluated yet,
     // Add a failure to it.
     if (entry == null && !<Parser>{...head.involvedSet, head.parser}.contains(parser)) {
-      return Parser.seedFailure.index(index).entry();
+      return context.failure("seed").index(index).entry();
     }
 
     // Remove the current parser from the head's evaluation set.
@@ -74,12 +72,12 @@ class QuadraticPeg extends PegHandler {
     MemoizationEntry? entry = recall(parser, index, context);
     if (entry == null) {
       /// Create a new LR instance. Then, add it to the stack.
-      LeftRecursion leftRecursion = LeftRecursion(seed: Parser.seedFailure, parser: parser, head: null);
+      LeftRecursion leftRecursion = LeftRecursion(seed: context.failure("seed"), parser: parser, head: null);
       mutable.parserStack.add(leftRecursion);
 
       /// Save a new entry on `position` with the LR instance.
       entry = mutable.memoMap //
-          .putIfAbsent(parser, PegMemoizationSubMap.new)
+          .putIfAbsent(parser, MemoizationSubMap.new)
           .putIfAbsent(index, leftRecursion.entry);
 
       /// Evaluate the parser.

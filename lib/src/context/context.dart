@@ -1,7 +1,7 @@
 import "package:freezed_annotation/freezed_annotation.dart";
 import "package:parser/internal_all.dart";
-import "package:parser/src/parser/base/core/peg/handler/linear/memo_entry.dart";
-import "package:parser/src/parser/base/core/peg/handler/quadratic/memo_entry.dart";
+import "package:parser/src/parser/base/core/peg/packrat/linear/memo_entry.dart";
+import "package:parser/src/parser/base/core/peg/packrat/quadratic/memo_entry.dart";
 
 part "context.freezed.dart";
 

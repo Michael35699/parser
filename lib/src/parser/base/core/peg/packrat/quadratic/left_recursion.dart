@@ -1,5 +1,5 @@
 import "package:parser/internal_all.dart";
-import "package:parser/src/parser/base/core/peg/handler/quadratic.dart";
+import "package:parser/src/parser/base/core/peg/packrat/quadratic.dart";
 
 class LeftRecursion with QuadraticPegMemoValue {
   final Parser parser;

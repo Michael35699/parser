@@ -1,4 +1,4 @@
-import "package:parser/src/parser/base/core/peg/handler/linear/memo_entry.dart";
+import "package:parser/src/parser/base/core/peg/packrat/linear.dart";
 
 class LeftRecursion with LinearPegMemoValue {
   bool detected;

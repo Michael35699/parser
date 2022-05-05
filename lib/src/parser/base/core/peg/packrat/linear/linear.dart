@@ -2,12 +2,11 @@
 
 import "package:freezed_annotation/freezed_annotation.dart";
 import "package:parser/internal_all.dart";
-import "package:parser/src/parser/base/core/peg/handler/linear.dart";
+import "package:parser/src/parser/base/core/peg/packrat/linear.dart";
 
-class LinearPeg extends PegHandler {
+class LinearPackrat extends PegHandler {
   @override
-  final LinearPegMutable mutable;
-  const LinearPeg(this.mutable);
+  final LinearPackratMutable mutable = LinearPackratMutable();
 
   Context leftRecursiveResult(Parser parser, Context context) {
     int index = context.state.index;
@@ -28,7 +27,7 @@ class LinearPeg extends PegHandler {
   Context parseLinearMemoized(Parser parser, Context context) {
     int index = context.state.index;
 
-    PegMemoizationEntry? entry = mutable.memoMap[parser][index];
+    MemoizationEntry? entry = mutable.memoMap[parser][index];
 
     if (entry == null) {
       LeftRecursion recursion = LeftRecursion();
@@ -47,7 +46,7 @@ class LinearPeg extends PegHandler {
       if (value is LeftRecursion) {
         value.detected = true;
 
-        return Parser.seedFailure;
+        return Parser.packratFailure;
       } else if (value is Context) {
         return value;
       }

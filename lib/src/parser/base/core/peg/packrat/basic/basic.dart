@@ -2,18 +2,16 @@
 
 import "package:freezed_annotation/freezed_annotation.dart";
 import "package:parser/internal_all.dart";
-import "package:parser/src/parser/base/core/peg/handler/pure.dart";
+import "package:parser/src/parser/base/core/peg/packrat/basic.dart";
 
-class PegPure extends PegHandler {
+class BasicPackrat extends PegHandler {
   @override
-  final PegPureMutable mutable;
-
-  const PegPure(this.mutable);
+  final BasicPackratMutable mutable = BasicPackratMutable();
 
   @internal
   Context parsePureMemoized(Parser parser, Context context) {
     int index = context.state.index;
-    PegMemoizationSubMap subMap = mutable.memoMap.putIfAbsent(parser, PegMemoizationSubMap.new);
+    MemoizationSubMap subMap = mutable.memoMap.putIfAbsent(parser, MemoizationSubMap.new);
     Context result = subMap.putIfAbsent(context.state.index, () {
       subMap[index] = context.failure("Left recursion detected.");
 

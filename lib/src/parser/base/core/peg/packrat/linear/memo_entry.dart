@@ -1,11 +1,11 @@
 mixin LinearPegMemoValue {}
 
-class PegMemoizationEntry {
+class MemoizationEntry {
   LinearPegMemoValue value;
 
-  PegMemoizationEntry(this.value);
+  MemoizationEntry(this.value);
 }
 
 extension MemoizationExtensionEntry on LinearPegMemoValue {
-  PegMemoizationEntry entry() => PegMemoizationEntry(this);
+  MemoizationEntry entry() => MemoizationEntry(this);
 }

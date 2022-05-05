@@ -7,11 +7,13 @@ part "state.freezed.dart";
 class State with _$State {
   factory State({
     required String input,
-    @Default(ParseMode.purePeg) ParseMode mode,
+    required ParseMode parseMode,
     @Default(0) int index,
     @Default(double.infinity) num precedence,
     @Default(<int>[]) List<int> indentStack,
     @Default(<dynamic>{}) Set<dynamic> dataSet,
+    PegMode? pegMode,
+    PackratMode? packratMode,
   }) = StateDefault;
   State._();
 

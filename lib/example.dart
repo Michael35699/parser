@@ -8,6 +8,4 @@ export "example/grammar/xml/evaluator/node.dart";
 export "example/grammar/xml/evaluator/typedef.dart";
 export "example/grammar/xml/xml.dart";
 export "example/parser/json/json.dart";
-export "example/parser/math/infix.dart";
-export "example/parser/math/postfix.dart";
-export "example/parser/math/prefix.dart";
+export "example/parser/math.dart";
