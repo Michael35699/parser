@@ -70,3 +70,7 @@ extension IterableSequenceExtension on Iterable<Parser> {
 }
 
 SequenceParser sequence(List<Parser> parsers) => SequenceParser(parsers);
+
+extension OfSequenceExtension on SequenceParser Function(List<Parser> parsers) {
+  SequenceParser of(Object parser) => sequence(<Parser>[parser.$]);
+}
