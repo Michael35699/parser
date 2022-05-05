@@ -89,3 +89,5 @@ Parser __stringChar() => __controlChar | ~__stringAvoid >> source;
 Parser _jsonStringSlow() => '"' & __stringChar.star & '"';
 
 Parser _jsonString() => r"""(")((?:(?:(?=\\)\\(?:["\\\/bfnrt]|u[0-9a-fA-F]{4}))|[^"\\\0-\x1F\x7F]+)*)(")""".r();
+
+Parser _never() => epsilon.flatMap((_, Context c) => c.failure("never"));
