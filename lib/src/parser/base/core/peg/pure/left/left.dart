@@ -12,7 +12,6 @@ class LeftPeg extends PegHandler {
     SeedSubMap selectedSeedMap = mutable.seeds[parser];
 
     selectedSeedMap[index] = context.failure("seed");
-
     Context seed = parser.parsePeg(context, this);
     selectedSeedMap[index] = seed;
     for (;;) {
@@ -30,14 +29,14 @@ class LeftPeg extends PegHandler {
 
   Context parseLinear(Parser parser, Context context) {
     int index = context.state.index;
-    SeedSubMap selectedSeedMap = mutable.seeds[parser];
-    Context? existingSeed = selectedSeedMap[index];
+    SeedSubMap growing = mutable.seeds[parser];
 
-    if (existingSeed != null) {
-      return existingSeed;
+    if (growing.containsKey(index)) {
+      return growing[index]!;
     } else {
-      if (selectedSeedMap.isNotEmpty && parser.prioritizeLeft) {
-        selectedSeedMap[index] = context.failure("right recursion in left recursion");
+      bool? priority = parser.prioritizeLeft;
+      if (priority != null && priority && growing.isNotEmpty && parser.rightRecursive) {
+        growing[index] = context.failure("right recursion in left recursion");
 
         return parser.parsePeg(context, this);
       } else if (parser.leftRecursive) {

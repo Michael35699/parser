@@ -73,8 +73,9 @@ class QuadraticPackrat extends PegHandler {
 
     MemoizationEntry? entry = recall(parser, index, context);
     if (entry == null) {
-      if (mutable.growing.contains(parser) && parser.prioritizeLeft) {
-        mutable.memoMap[parser]![index] = context.failure("right recursion on left recursive").entry();
+      bool? priority = parser.prioritizeLeft;
+      if (priority != null && priority && mutable.growing.contains(parser) && parser.rightRecursive) {
+        mutable.memoMap[parser][index] = context.failure("right recursion on left recursive").entry();
 
         return parser.parsePeg(context, this);
       }
@@ -84,9 +85,7 @@ class QuadraticPackrat extends PegHandler {
       mutable.parserStack.add(leftRecursion);
 
       /// Save a new entry on `position` with the LR instance.
-      entry = mutable.memoMap //
-          .putIfAbsent(parser, MemoizationSubMap.new)
-          .putIfAbsent(index, leftRecursion.entry);
+      entry = mutable.memoMap[parser].putIfAbsent(index, leftRecursion.entry);
 
       /// Evaluate the parser.
       Context ans = parser.parsePeg(context, this);

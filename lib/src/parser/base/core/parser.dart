@@ -10,6 +10,9 @@ abstract class Parser {
   static final Context packratFailure = Context.failure(State(input: "", parseMode: ParseMode.packrat), "seed");
 
   late final bool leftRecursive = Parser.isLeftRecursive(this);
+  late final bool rightRecursive = Parser.isRightRecursive(this);
+  late final bool definitelyLeftRecursive = Parser.isDefinitelyLeftRecursive(this);
+  late final bool definitelyRightRecursive = Parser.isDefinitelyRightRecursive(this);
   late final List<ParserSetMapping> parserSets = computeParserSets();
   late final ParserSetMapping firstSets = parserSets[Parser.firstSetIndex];
   late final ParserSetMapping followSets = parserSets[Parser.followSetIndex];
@@ -18,9 +21,9 @@ abstract class Parser {
   late final ParserSet followSet = followSets[this] ?? const <Parser>{};
   late final ParserSet cycleSet = cycleSets[this] ?? const <Parser>{};
 
-  bool prioritizeLeft = true;
   bool memoize = false;
   bool built = false;
+  bool? prioritizeLeft;
 
   @Deprecated("Use the `clone` method")
   Parser cloneSelf(HashMap<Parser, Parser> cloned);
@@ -124,8 +127,8 @@ abstract class Parser {
     return false;
   }
 
-  static bool isLeftRecursive(Parser root) {
-    Iterable<Parser> toAdd = Parser.firstChildren(root);
+  static bool isRecursiveOf(Parser root, List<Parser> Function(Parser root) determinant) {
+    Iterable<Parser> toAdd = determinant(root);
     Queue<Parser> parsers = Queue<Parser>()..addAll(toAdd);
     Set<Parser> visited = <Parser>{...toAdd};
 
@@ -135,10 +138,26 @@ abstract class Parser {
         return true;
       }
 
-      Parser.firstChildren(current).where(visited.add).forEach(parsers.add);
+      determinant(current).where(visited.add).forEach(parsers.add);
     }
 
     return false;
+  }
+
+  static bool isLeftRecursive(Parser root) {
+    return isRecursiveOf(root, Parser.firstChildren);
+  }
+
+  static bool isRightRecursive(Parser root) {
+    return isRecursiveOf(root, Parser.lastChildren);
+  }
+
+  static bool isDefinitelyLeftRecursive(Parser root) {
+    return isRecursiveOf(root, Parser.definiteFirstChildren);
+  }
+
+  static bool isDefinitelyRightRecursive(Parser root) {
+    return isRecursiveOf(root, Parser.definiteLastChildren);
   }
 
   static bool isMemoizable(Parser parser) {
@@ -177,6 +196,38 @@ abstract class Parser {
       if (i < root.children.length) root.children[i],
       // If the parser at the index after the index of the last nullable item exists, add it to the list.
     ];
+  }
+
+  static List<Parser> lastChildren(Parser root) {
+    if (root is! SequentialParser) {
+      return root.children;
+    }
+
+    int i = 0;
+    List<Parser> reversed = root.children.reversed.toList();
+    List<Parser> nullables = reversed.takeWhile(Parser.isNullable).toList();
+    List<Parser> resolved = <Parser>[
+      for (; i < nullables.length; i++) reversed[i],
+      if (i < reversed.length) reversed[i],
+    ];
+
+    return resolved;
+  }
+
+  static List<Parser> definiteFirstChildren(Parser root) {
+    if (root is! SequentialParser) {
+      return root.children;
+    }
+
+    return <Parser>[root.children.first];
+  }
+
+  static List<Parser> definiteLastChildren(Parser root) {
+    if (root is! SequentialParser) {
+      return root.children;
+    }
+
+    return <Parser>[root.children.last];
   }
 
   static Parser resolve(Object object) {
@@ -262,6 +313,9 @@ extension ParserSharedExtension on Parser {
   bool isRecursive() => Parser.isRecursive(this);
   bool isMemoizable() => Parser.isMemoizable(this);
   bool isLeftRecursive() => Parser.isLeftRecursive(this);
+  bool isRightRecursive() => Parser.isRightRecursive(this);
+  bool isDefinitelyLeftRecursive() => Parser.isDefinitelyLeftRecursive(this);
+  bool isDefinitelyRightRecursive() => Parser.isDefinitelyRightRecursive(this);
   bool isType<T extends Parser>() => Parser.isType<T>(this);
   bool equals(Object target) => Parser.equals(this)(target.$);
 
@@ -282,6 +336,9 @@ extension LazyParserMethodsExtension on Lazy<Parser> {
   bool isRecursive() => Parser.isRecursive(this.$);
   bool isMemoizable() => Parser.isMemoizable(this.$);
   bool isLeftRecursive() => Parser.isLeftRecursive(this.$);
+  bool isRightRecursive() => Parser.isRightRecursive(this.$);
+  bool isDefinitelyLeftRecursive() => Parser.isDefinitelyLeftRecursive(this.$);
+  bool isDefinitelyRightRecursive() => Parser.isDefinitelyRightRecursive(this.$);
   bool isType<T extends Parser>() => Parser.isType<T>(this.$);
   bool equals(Object target) => Parser.equals(this.$)(target.$);
 
