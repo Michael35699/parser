@@ -33,8 +33,7 @@ class LinearPackrat extends PegHandler {
     MemoizationEntry? entry = mutable.memoMap[parser][index];
 
     if (entry == null) {
-      bool? priority = parser.prioritizeLeft;
-      if (priority != null && priority && mutable.growing.contains(parser) && parser.rightRecursive) {
+      if ((parser.prioritizeLeft ?? false) && mutable.growing.contains(parser) && parser.rightRecursive) {
         mutable.memoMap[parser][index] = context.failure("right recursion in left recursion").entry();
 
         return parser.parsePeg(context, this);
