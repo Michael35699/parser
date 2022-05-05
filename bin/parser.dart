@@ -7,5 +7,6 @@ int counter = 0;
 typedef Parser = parser.Parser;
 
 void main() {
-  print(math_parser.infix.run("1 + 2 * 3 + 4 + 5 + 8"));
+  Parser built = math_parser.postfix.unmapped();
+  print(built.peg.left<Object>("1 2 3 + +"));
 }

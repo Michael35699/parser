@@ -1,5 +1,6 @@
 library parser.util;
 
+export "src/parser/shared/typedef.dart";
 export "src/util/classes/callable.dart";
 export "src/util/classes/grammar_magic.dart";
 export "src/util/classes/multi_map.dart";
@@ -19,4 +20,3 @@ export "src/util/logger/metadata.dart";
 export "src/util/shared/time.dart";
 export "src/util/shared/time.dart";
 export "src/util/shared/unindent.dart";
-export "src/util/typedef.dart";

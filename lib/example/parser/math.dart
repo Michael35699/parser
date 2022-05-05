@@ -40,7 +40,7 @@ parser.Parser prefix() =>
     "(".t & prefix.t & ")" ^ parser.$3((_, num v, __) => v) |
     "[0-9]+".r ^ parser.$type(int.parse);
 
-parser.Parser postfix() =>
+parser.Parser postfix() => parser.blank |
     postfix.t & postfix.t & "+" ^ parser.$3((num l, num r, _) => l + r) |
     postfix.t & postfix.t & "-" ^ parser.$3((num l, num r, _) => l - r) |
     postfix.t & postfix.t & "*" ^ parser.$3((num l, num r, _) => l * r) |
@@ -49,4 +49,5 @@ parser.Parser postfix() =>
     postfix.t & postfix.t & "%" ^ parser.$3((num l, num r, _) => l % r) |
     postfix.t & postfix.t & "^" ^ parser.$3((num l, num r, _) => math.pow(l, r)) |
     "(" & postfix.t & ")" ^ parser.$3((_, num v, __) => v) |
-    "[0-9]+".r ^ parser.$type(int.parse);
+    "[0-9]+".r ^ parser.$type(int.parse)
+  ..right();
