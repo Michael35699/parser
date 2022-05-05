@@ -1,4 +1,4 @@
-library parser.peg;
+library parser.parser;
 
 export "context.dart";
 export "exception.dart";
