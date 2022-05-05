@@ -12,9 +12,12 @@ class DefaultMap<K, V> implements Map<K, V> {
   @override
   void operator []=(K key, V value) => innerMap[key] = value;
 
+  @override
   Iterable<K> get keys => innerMap.keys;
+  @override
   Iterable<V> get values => innerMap.values;
 
+  @override
   int get length => innerMap.length;
 
   @override
