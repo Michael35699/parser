@@ -30,7 +30,6 @@ abstract class Parser {
   @Deprecated("Push the parser into the `Trampoline` instead of calling it directly")
   void parseGll(Context context, Trampoline trampoline, GllContinuation continuation);
 
-
   @mustCallSuper
   bool hasEqualProperties(covariant Parser target) {
     return true;

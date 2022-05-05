@@ -20,7 +20,7 @@ Context _runCtxPeg(Parser parser, String input, {ParseMode? mode}) {
 
   Parser built = parser.build();
   String formatted = input.replaceAll("\r", "").unindent();
-  PegHandler handler = PegHandler(PegParserMutable());
+  PegHandler handler = PegHandler.create(mode);
   Context context = Context.ignore(State(input: formatted, mode: mode));
   Context result = handler.apply(built, context);
 

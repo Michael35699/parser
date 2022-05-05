@@ -1,12 +1,9 @@
-// ignore_for_file: always_specify_types
 import "package:parser/internal_all.dart";
 
 part "utils.dart";
 
-Parser S() => S & "a" | "a";
+Parser expr() => expr & "-".t & expr | number;
 
 void main() {
-  time(() {
-    print(S.end.peg("aaaaaaaaa"));
-  });
+  print << expr.run("1-2-3");
 }

@@ -1,23 +1,17 @@
 import "package:freezed_annotation/freezed_annotation.dart";
 import "package:parser/internal_all.dart";
+import "package:parser/src/parser/base/core/peg/handler/linear/memo_entry.dart";
+import "package:parser/src/parser/base/core/peg/handler/quadratic/memo_entry.dart";
 
 part "context.freezed.dart";
 
 /// Immutable class that contains a state object and additional properties.
 @freezed
-class Context with MemoizationEntryValue, _$Context {
+class Context with _$Context, QuadraticPegMemoValue, LinearPegMemoValue {
   const Context._();
   const factory Context.ignore(State state) = ContextIgnore;
-  const factory Context.failure(
-    State state,
-    String message, {
-    @Default(false) bool artificial,
-  }) = ContextFailure;
-  const factory Context.success(
-    State state,
-    ParseResult mappedResult,
-    ParseResult unmappedResult,
-  ) = ContextSuccess;
+  const factory Context.failure(State state, String message, {@Default(false) bool artificial}) = ContextFailure;
+  const factory Context.success(State state, ParseResult mappedResult, ParseResult unmappedResult) = ContextSuccess;
 
   @override
   String toString() => when(
