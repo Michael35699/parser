@@ -7,7 +7,10 @@ Iterable<T> _runGll<T extends ParseResult>(Parser parser, String input, {T Funct
     if (ctx is ContextSuccess) {
       yield ctx.mappedResult as T;
     } else if (ctx is ContextFailure) {
-      yield except?.call(ctx) ?? (throw ParseException(ctx.message));
+      if (except == null) {
+        throw ParseException(ctx.message);
+      }
+      yield except(ctx);
     }
   }
 }

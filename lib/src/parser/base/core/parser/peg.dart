@@ -6,7 +6,10 @@ T _runPeg<T extends ParseResult>(Parser parser, String input, {ParseMode? mode, 
   Context result = _runCtxPeg(parser, input, mode: mode);
 
   if (result is ContextFailure) {
-    return except?.call(result) ?? (throw ParseException(result.message));
+    if (except == null) {
+      throw ParseException(result.message);
+    }
+    return except(result);
   } else if (result is ContextSuccess) {
     return result.mappedResult as T;
   }
