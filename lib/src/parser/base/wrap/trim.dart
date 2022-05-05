@@ -1,16 +1,16 @@
 import "package:parser/internal_all.dart";
 
-Parser ws() => ("\t" | " ").star();
-Parser whitespace() => ("\t" | " ").star();
-Parser whitespaceNewline() => ("\t" | " " | "\n" | "\r").star();
+Parser ws() => r"[\t ]+".optional();
+Parser whitespace() => r"[\t ]+".optional();
+Parser whitespaceNewline() => r"\s+".optional();
 
-Parser trim(Parser parser) => whitespace() >> parser << whitespace();
-Parser trimLeft(Parser parser) => whitespace() >> parser;
-Parser trimRight(Parser parser) => parser << whitespace();
+Parser trim(Object parser) => whitespace() >> parser.$ << whitespace();
+Parser trimLeft(Object parser) => whitespace() >> parser.$;
+Parser trimRight(Object parser) => parser.$ << whitespace();
 
-Parser trimNewline(Parser parser) => whitespaceNewline() >> parser << whitespaceNewline();
-Parser trimNewlineLeft(Parser parser) => whitespaceNewline() >> parser;
-Parser trimNewlineRight(Parser parser) => parser << whitespaceNewline();
+Parser trimNewline(Object parser) => whitespaceNewline() >> parser.$ << whitespaceNewline();
+Parser trimNewlineLeft(Object parser) => whitespaceNewline() >> parser.$;
+Parser trimNewlineRight(Object parser) => parser.$ << whitespaceNewline();
 
 extension ParserParserTrimmedExtension on Parser {
   Parser trim() => whitespace() >> this << whitespace();
