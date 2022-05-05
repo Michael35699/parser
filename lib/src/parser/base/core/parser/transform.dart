@@ -7,6 +7,7 @@ import "package:parser/internal_all.dart";
 Parser _clone(Parser parser, [HashMap<Parser, Parser>? cloned]) {
   cloned ??= HashMap<Parser, Parser>.identity();
   Parser clone = cloned[parser] ??= parser.cloneSelf(cloned)
+    ..prioritizeLeft = parser.prioritizeLeft
     ..memoize = parser.memoize
     ..built = parser.built;
 

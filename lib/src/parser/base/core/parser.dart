@@ -268,6 +268,9 @@ extension ParserSharedExtension on Parser {
   Iterable<Parser> rules() => Parser.rules(this);
   Iterable<Parser> get firsts => firstChildren();
   Iterable<Parser> firstChildren() => Parser.firstChildren(this);
+
+  Parser left() => this..prioritizeLeft = true;
+  Parser right() => this..prioritizeLeft = false;
 }
 
 extension LazyParserMethodsExtension on Lazy<Parser> {
@@ -284,8 +287,10 @@ extension LazyParserMethodsExtension on Lazy<Parser> {
 
   Iterable<Parser> rules() => Parser.rules(this.$);
   Iterable<Parser> get firsts => firstChildren();
-
   Iterable<Parser> firstChildren() => Parser.firstChildren(this.$);
+
+  Parser left() => this.$..prioritizeLeft = true;
+  Parser right() => this.$..prioritizeLeft = false;
 
   ThunkParser thunk() => ThunkParser(this);
 

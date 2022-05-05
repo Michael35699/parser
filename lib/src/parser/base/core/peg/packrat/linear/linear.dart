@@ -12,41 +12,50 @@ class LinearPackrat extends PegHandler {
     int index = context.state.index;
 
     Context ctx = context;
+    mutable.growing.add(parser);
     for (;;) {
       Context inner = parser.parsePeg(context, this);
       if (inner is ContextFailure || inner.state.index <= ctx.state.index) {
-        return ctx;
+        break;
       }
 
       ctx = inner;
       mutable.memoMap[parser][index] = ctx.entry();
     }
+    mutable.growing.remove(parser);
+
+    return ctx;
   }
 
   @internal
   Context parseLinearMemoized(Parser parser, Context context) {
     int index = context.state.index;
-
     MemoizationEntry? entry = mutable.memoMap[parser][index];
 
     if (entry == null) {
-      LeftRecursion recursion = LeftRecursion();
-      mutable.memoMap[parser][index] = recursion.entry();
+      if (mutable.growing.contains(parser) && parser.prioritizeLeft) {
+        mutable.memoMap[parser][index] = context.failure("right recursion in left recursion").entry();
 
-      Context ctx = parser.parsePeg(context, this);
-      mutable.memoMap[parser][index] = ctx.entry();
-
-      if (recursion.detected) {
-        return leftRecursiveResult(parser, context);
+        return parser.parsePeg(context, this);
       } else {
-        return ctx;
+        LeftRecursion recursion = LeftRecursion();
+        mutable.memoMap[parser][index] = recursion.entry();
+
+        Context seed = parseLinearMemoized(parser, context);
+        mutable.memoMap[parser][index] = seed.entry();
+
+        if (recursion.detected) {
+          return leftRecursiveResult(parser, context);
+        } else {
+          return seed;
+        }
       }
     } else {
       MemoizationValue value = entry.value;
       if (value is LeftRecursion) {
         value.detected = true;
 
-        return Parser.packratFailure;
+        return context.failure("seed");
       } else if (value is Context) {
         return value;
       }

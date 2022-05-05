@@ -49,6 +49,7 @@ class QuadraticPackrat extends PegHandler {
       return seedContext;
     }
 
+    mutable.growing.add(parser);
     mutable.heads[index] = head;
 
     /// "Grow the seed."
@@ -61,6 +62,7 @@ class QuadraticPackrat extends PegHandler {
       entry.value = result;
     }
     mutable.heads.remove(index);
+    mutable.growing.remove(parser);
 
     return entry.value as Context;
   }
@@ -71,6 +73,12 @@ class QuadraticPackrat extends PegHandler {
 
     MemoizationEntry? entry = recall(parser, index, context);
     if (entry == null) {
+      if (mutable.growing.contains(parser) && parser.prioritizeLeft) {
+        mutable.memoMap[parser]![index] = context.failure("right recursion on left recursive").entry();
+
+        return parser.parsePeg(context, this);
+      }
+
       /// Create a new LR instance. Then, add it to the stack.
       LeftRecursion leftRecursion = LeftRecursion(seed: context.failure("seed"), parser: parser, head: null);
       mutable.parserStack.add(leftRecursion);
