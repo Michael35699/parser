@@ -56,12 +56,12 @@ extension ParserDropRightExtension on Parser {
   }
 }
 
-extension LazyParserDropRightParserExtension on LazyParser {
+extension LazyParserDropRightExtension on LazyParser {
   DropRightParser dropRight(Object right) => this.$.dropRight(right);
   Parser operator <<(Object right) => this.$ << right;
 }
 
-extension StringDropRightParserExtension on String {
+extension StringDropRightExtension on String {
   DropRightParser dropRight(Object right) => this.$.dropRight(right);
   Parser operator <<(Object right) => this.$ << right;
 }

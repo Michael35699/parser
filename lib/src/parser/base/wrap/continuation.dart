@@ -29,6 +29,6 @@ extension ParserContinuationExtension on Parser {
   ContinuationParser cc(ContinuationFunction fn) => ContinuationParser(this, fn);
 }
 
-extension LazyParserContinuationParserExtension on Lazy<Parser> {
+extension LazyParserContinuationExtension on Lazy<Parser> {
   ContinuationParser cc(ContinuationFunction fn) => ContinuationParser(this.$, fn);
 }

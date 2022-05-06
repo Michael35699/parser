@@ -42,14 +42,14 @@ extension ParserPrecedenceExtension on Parser {
   FromPrecedenceParser operator [](num precedence) => fromPrecedence(precedence);
 }
 
-extension LazyParserPrecedenceParserExtension on LazyParser {
+extension LazyParserPrecedenceExtension on LazyParser {
   FromPrecedenceParser prec(num precedence) => this.$.fromPrecedence(precedence);
   FromPrecedenceParser from(num precedence) => this.$.fromPrecedence(precedence);
   FromPrecedenceParser fromPrecedence(num precedence) => this.$.fromPrecedence(precedence);
   FromPrecedenceParser operator [](num precedence) => this.$[precedence];
 }
 
-extension StringPrecedenceParserExtension on String {
+extension StringPrecedenceExtension on String {
   FromPrecedenceParser prec(num precedence) => this.$.fromPrecedence(precedence);
   FromPrecedenceParser from(num precedence) => this.$.fromPrecedence(precedence);
   FromPrecedenceParser fromPrecedence(num precedence) => this.$.fromPrecedence(precedence);

@@ -29,6 +29,6 @@ extension ParserConditionalExtension on Parser {
   ConditionalParser conditional(Parser Function(Context) fn) => ConditionalParser(this, fn);
 }
 
-extension LazyParserConditionalParserExtension on Lazy<Parser> {
+extension LazyParserConditionalExtension on Lazy<Parser> {
   ConditionalParser conditional(Parser Function(Context) fn) => ConditionalParser(this.$, fn);
 }
