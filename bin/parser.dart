@@ -1,6 +1,5 @@
 // import "package:parser/src/util/shared/time.dart";
-// import "package:parser/example/parser/math.dart" as math_parser;
-import "package:parser/example/parser/calculator/calculator.dart";
+import "package:parser/example/parser/math.dart" as math_parser;
 import "package:parser/parser.dart" as parser;
 import "package:parser/src/util/shared/time.dart";
 
@@ -18,22 +17,9 @@ Parser implicitRight() => implicitRight & implicitRight | "s"
 
 void main() {
   const int count = 50;
-  const String input = "ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss"
-      "sssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss";
+  const String input =
+      "71 + 40 + 38 ^ 93 / 99 + 85 / 30 - 49 - 78 - 81 + 85 ~/ 45 + 65 - 83 - 14 / 16 + 96 + 97 - 92 ~/ 88 * 17 - 40 ^ 27 * 68 + 98 * 33 * 48 * 59 + 67 / 38 * 29 ^ 57 - 30 * 97 ^ 42 * 14 ~/ 52 + 53 ~/ 76 + 42 * 27 ^ 57 ~/ 17 * 53 * 22 ~/ 20 - 85 ^ 74 + 28 ~/ 20 / 78";
 
-  for (MapEntry<String, Parser> entry in <String, Parser>{
-    "peg": parser.thunk(peg),
-    "explicitLeft": parser.thunk(explicitLeft),
-    "implicitLeft": parser.thunk(implicitLeft),
-    "explicitRight": parser.thunk(explicitRight),
-    "implicitRight": parser.thunk(implicitRight),
-  }.entries) {
-    print("----- ${entry.key} -----");
-    time(count: count, name: "Pure-left", () => entry.value.peg.left(input));
-    time(count: count, name: "Packrat-Linear", () => entry.value.packrat.linear(input));
-    time(count: count, name: "Packrat-Quadratic", () => entry.value.packrat.quadratic(input));
-    print("");
-  }
-  parser.Parser calculator = expression();
-  print(calculator.run("sin(2π)(2 add 8)"));
+  Parser parser = math_parser.infix();
+  print(time(count: count, () => parser.run(input)));
 }
