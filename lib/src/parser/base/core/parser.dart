@@ -7,7 +7,6 @@ import "package:parser/internal_all.dart";
 
 abstract class Parser {
   static final Never never = throw Error();
-  static final Context packratFailure = Context.failure(State(input: "", parseMode: ParseMode.packrat), "seed");
 
   late final bool leftRecursive = Parser.isLeftRecursive(this);
   late final bool rightRecursive = Parser.isRightRecursive(this);
