@@ -14,7 +14,8 @@ class CharacterParser extends LeafParser {
   String get failureMessage => expected.value("'$pattern'");
 
   @override
-  int? parseLeaf(String input, int index) => pattern.matchAsPrefix(input, index)?.end;
+  int? parseLeaf(String input, int index) => //
+      index < input.length && pattern.contains(input[index]) ? index + 1 : null;
 }
 
 extension CharacterParserExtension on String {

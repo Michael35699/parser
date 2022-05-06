@@ -47,6 +47,7 @@ export "base/indent/dedent.dart";
 export "base/indent/indent.dart";
 export "base/indent/new_line.dart";
 export "base/lazy_wrap/thunk.dart";
+export "base/leaf/character.dart";
 export "base/leaf/regex.dart";
 export "base/leaf/string.dart";
 export "base/leaf/unicode_range.dart";
