@@ -53,7 +53,7 @@ extension LazyParserPackratParserExtension on Lazy<Parser> {
 
 extension PackratExtendedFunctionExtension on //
     R Function<R extends ParseResult>(String input, {PackratMode? mode, ExceptFunction<R>? except}) {
-  R pure<R extends ParseResult>(String input, {ExceptFunction<R>? except}) =>
+  R basic<R extends ParseResult>(String input, {ExceptFunction<R>? except}) =>
       this(input, mode: PackratMode.basic, except: except);
   R linear<R extends ParseResult>(String input, {ExceptFunction<R>? except}) =>
       this(input, mode: PackratMode.linear, except: except);
@@ -63,7 +63,7 @@ extension PackratExtendedFunctionExtension on //
 
 extension PackratContextExtendedFunctionExtension on //
     Context Function(String input, {PackratMode? mode}) {
-  Context pure(String input) => this(input, mode: PackratMode.basic);
+  Context basic(String input) => this(input, mode: PackratMode.basic);
   Context linear(String input) => this(input, mode: PackratMode.linear);
   Context quadratic(String input) => this(input, mode: PackratMode.quadratic);
 }
