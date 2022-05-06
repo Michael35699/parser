@@ -4,45 +4,51 @@ class OnFailureParser extends WrapParser {
   @override
   Parser get parser => children[0];
 
-  final String message;
+  final ParseResult value;
 
-  OnFailureParser(Parser parser, this.message) : super(<Parser>[parser]);
-  OnFailureParser.empty(this.message) : super(<Parser>[]);
+  OnFailureParser(Parser parser, this.value) : super(<Parser>[parser]);
+  OnFailureParser.empty(this.value) : super(<Parser>[]);
 
   @override
   Context parsePeg(Context context, PegHandler handler) {
     Context ctx = handler.apply(parser, context);
 
-    if (ctx is! ContextFailure) {
-      return ctx;
+    if (ctx is ContextFailure) {
+      return ctx.success(value);
     } else {
-      return ctx.failure(message);
+      return ctx;
     }
   }
 
   @override
   void parseGll(Context context, Trampoline trampoline, GllContinuation continuation) {
     trampoline.push(parser, context, (Context context) {
-      if (context is! ContextFailure) {
-        continuation(context);
+      if (context is ContextFailure) {
+        continuation(context.success(value));
       } else {
-        continuation(context.failure(message));
+        continuation(context);
       }
     });
   }
 
   @override
-  OnFailureParser empty() => OnFailureParser.empty(message);
+  OnSuccessParser empty() => OnSuccessParser.empty(value);
 }
+
+OnFailureParser onFailureParser(Parser parser, ParseResult alternative) => OnFailureParser(parser, alternative);
+OnFailureParser onFailure(Object parser, ParseResult alternative) => onFailureParser(parser.$, alternative);
 
 extension ParserOnFailureExtension on Parser {
-  OnFailureParser failure(String message) => OnFailureParser(this, message);
+  Parser onFailure(ParseResult alternative) => onFailureParser(this, alternative);
+  Parser operator ~/(ParseResult alternative) => onFailure(alternative);
 }
 
-extension LazyParserOnFailureParserExtension on LazyParser {
-  OnFailureParser failure(String message) => this.$.failure(message);
+extension LazyParserOnFailureExtension on LazyParser {
+  Parser onFailure(ParseResult alternative) => this.$.onFailure(alternative);
+  Parser operator ~/(ParseResult alternative) => this.$ ~/ alternative;
 }
 
-extension StringOnFailureParserExtension on String {
-  OnFailureParser failure(String message) => this.$.failure(message);
+extension StringOnFailureExtension on String {
+  Parser onFailure(ParseResult alternative) => this.$.onFailure(alternative);
+  Parser operator ~/(ParseResult alternative) => this.$ ~/ alternative;
 }

@@ -69,7 +69,7 @@ export "base/wrap/conditional.dart";
 export "base/wrap/continuation.dart";
 export "base/wrap/drop.dart";
 export "base/wrap/except.dart";
+export "base/wrap/failure_message.dart";
 export "base/wrap/flat.dart";
 export "base/wrap/optional.dart";
-export "base/wrap/or_else.dart";
 export "base/wrap/trim.dart";
