@@ -58,6 +58,10 @@ export "base/precedence/from_precedence.dart";
 export "base/precedence/with_precedence.dart";
 export "base/predicate/empty.dart";
 export "base/predicate/failure.dart";
+<<<<<<< HEAD
+=======
+export "base/predicate/empty.dart";
+>>>>>>> 9c47a73fd57e6b84fd2e4459f7ed0b0948b371c3
 export "base/predicate/success.dart";
 export "base/special/blank.dart";
 export "base/special/eoi.dart";
