@@ -97,7 +97,7 @@ Parser singleString() => _singleString();
 Parser doubleString() => _doubleString();
 
 // CHAR
-Parser char() => _char();
+Parser char([String? pattern]) => pattern == null ? _char() : CharacterParser(pattern);
 Parser singleChar() => _singleChar();
 Parser doubleChar() => _doubleChar();
 
