@@ -21,7 +21,7 @@ Context _runCtxPackrat(Parser parser, String input, {PackratMode? mode}) {
   Parser built = parser.build();
   String formatted = input.replaceAll("\r", "").unindent();
   PegHandler handler = PegHandler.packrat(mode);
-  Context context = Context.ignore(State(input: formatted, parseMode: ParseMode.packrat, packratMode: mode));
+  Context context = Context.empty(State(input: formatted, parseMode: ParseMode.packrat, packratMode: mode));
   Context result = handler.apply(built, context);
 
   if (result is ContextFailure) {

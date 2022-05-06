@@ -6,7 +6,7 @@ class PushParser extends SpecialParser {
   PushParser(this.item);
 
   @override
-  Context parsePure(Context context) => context.push(item).ignore();
+  Context parsePure(Context context) => context.push(item).empty();
 }
 
 PushParser _push(dynamic item) => _push(item);

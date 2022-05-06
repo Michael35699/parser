@@ -23,7 +23,7 @@ class ExceptParser extends WrapParser {
     trampoline.push(except, context, (Context ctx) {
       ctx.map(
         success: (ContextSuccess ctx) => continuation(context.failure("Failed except parser")),
-        ignore: (ContextIgnore ctx) => continuation(context.failure("Failed except parser")),
+        empty: (ContextEmpty ctx) => continuation(context.failure("Failed except parser")),
         failure: (ContextFailure ctx) => trampoline.push(parser, context, continuation),
       );
     });

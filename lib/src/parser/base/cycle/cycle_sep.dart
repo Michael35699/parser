@@ -53,7 +53,7 @@ class CycleSeparatedParser extends WrapParser with CyclicParser {
               if (putSeparator) separator,
               result.unmappedResult,
             ]);
-          } else if (result is ContextIgnore) {
+          } else if (result is ContextEmpty) {
             run(result, <ParseResult>[
               ...mapped,
               if (putSeparator) separator,
@@ -70,7 +70,7 @@ class CycleSeparatedParser extends WrapParser with CyclicParser {
       trampoline.push(separator, context, (Context context) {
         if (context is ContextSuccess) {
           parseMain(context, context.mappedResult, putSeparator: true);
-        } else if (context is ContextIgnore) {
+        } else if (context is ContextEmpty) {
           parseMain(context, null, putSeparator: false);
         } else {
           continuation(context.success(mapped, unmapped));
@@ -81,7 +81,7 @@ class CycleSeparatedParser extends WrapParser with CyclicParser {
     trampoline.push(parser, context, (Context context) {
       if (context is ContextSuccess) {
         run(context, <ParseResult>[context.mappedResult], <ParseResult>[context.unmappedResult]);
-      } else if (context is ContextIgnore) {
+      } else if (context is ContextEmpty) {
         run(context, <ParseResult>[], <ParseResult>[]);
       } else {
         continuation(context);

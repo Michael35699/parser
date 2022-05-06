@@ -19,7 +19,7 @@ mixin _$Context {
   State get state => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(State state) ignore,
+    required TResult Function(State state) empty,
     required TResult Function(State state, String message, bool artificial)
         failure,
     required TResult Function(
@@ -29,7 +29,7 @@ mixin _$Context {
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult Function(State state)? ignore,
+    TResult Function(State state)? empty,
     TResult Function(State state, String message, bool artificial)? failure,
     TResult Function(State state, Object? mappedResult, Object? unmappedResult)?
         success,
@@ -37,7 +37,7 @@ mixin _$Context {
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(State state)? ignore,
+    TResult Function(State state)? empty,
     TResult Function(State state, String message, bool artificial)? failure,
     TResult Function(State state, Object? mappedResult, Object? unmappedResult)?
         success,
@@ -46,21 +46,21 @@ mixin _$Context {
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
-    required TResult Function(ContextIgnore value) ignore,
+    required TResult Function(ContextEmpty value) empty,
     required TResult Function(ContextFailure value) failure,
     required TResult Function(ContextSuccess value) success,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
-    TResult Function(ContextIgnore value)? ignore,
+    TResult Function(ContextEmpty value)? empty,
     TResult Function(ContextFailure value)? failure,
     TResult Function(ContextSuccess value)? success,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
-    TResult Function(ContextIgnore value)? ignore,
+    TResult Function(ContextEmpty value)? empty,
     TResult Function(ContextFailure value)? failure,
     TResult Function(ContextSuccess value)? success,
     required TResult orElse(),
@@ -109,10 +109,10 @@ class _$ContextCopyWithImpl<$Res> implements $ContextCopyWith<$Res> {
 }
 
 /// @nodoc
-abstract class $ContextIgnoreCopyWith<$Res> implements $ContextCopyWith<$Res> {
-  factory $ContextIgnoreCopyWith(
-          ContextIgnore value, $Res Function(ContextIgnore) then) =
-      _$ContextIgnoreCopyWithImpl<$Res>;
+abstract class $ContextEmptyCopyWith<$Res> implements $ContextCopyWith<$Res> {
+  factory $ContextEmptyCopyWith(
+          ContextEmpty value, $Res Function(ContextEmpty) then) =
+      _$ContextEmptyCopyWithImpl<$Res>;
   @override
   $Res call({State state});
 
@@ -121,20 +121,20 @@ abstract class $ContextIgnoreCopyWith<$Res> implements $ContextCopyWith<$Res> {
 }
 
 /// @nodoc
-class _$ContextIgnoreCopyWithImpl<$Res> extends _$ContextCopyWithImpl<$Res>
-    implements $ContextIgnoreCopyWith<$Res> {
-  _$ContextIgnoreCopyWithImpl(
-      ContextIgnore _value, $Res Function(ContextIgnore) _then)
-      : super(_value, (v) => _then(v as ContextIgnore));
+class _$ContextEmptyCopyWithImpl<$Res> extends _$ContextCopyWithImpl<$Res>
+    implements $ContextEmptyCopyWith<$Res> {
+  _$ContextEmptyCopyWithImpl(
+      ContextEmpty _value, $Res Function(ContextEmpty) _then)
+      : super(_value, (v) => _then(v as ContextEmpty));
 
   @override
-  ContextIgnore get _value => super._value as ContextIgnore;
+  ContextEmpty get _value => super._value as ContextEmpty;
 
   @override
   $Res call({
     Object? state = freezed,
   }) {
-    return _then(ContextIgnore(
+    return _then(ContextEmpty(
       state == freezed
           ? _value.state
           : state // ignore: cast_nullable_to_non_nullable
@@ -145,8 +145,8 @@ class _$ContextIgnoreCopyWithImpl<$Res> extends _$ContextCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$ContextIgnore extends ContextIgnore {
-  const _$ContextIgnore(this.state) : super._();
+class _$ContextEmpty extends ContextEmpty {
+  const _$ContextEmpty(this.state) : super._();
 
   @override
   final State state;
@@ -155,7 +155,7 @@ class _$ContextIgnore extends ContextIgnore {
   bool operator ==(dynamic other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is ContextIgnore &&
+            other is ContextEmpty &&
             const DeepCollectionEquality().equals(other.state, state));
   }
 
@@ -165,44 +165,44 @@ class _$ContextIgnore extends ContextIgnore {
 
   @JsonKey(ignore: true)
   @override
-  $ContextIgnoreCopyWith<ContextIgnore> get copyWith =>
-      _$ContextIgnoreCopyWithImpl<ContextIgnore>(this, _$identity);
+  $ContextEmptyCopyWith<ContextEmpty> get copyWith =>
+      _$ContextEmptyCopyWithImpl<ContextEmpty>(this, _$identity);
 
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(State state) ignore,
+    required TResult Function(State state) empty,
     required TResult Function(State state, String message, bool artificial)
         failure,
     required TResult Function(
             State state, Object? mappedResult, Object? unmappedResult)
         success,
   }) {
-    return ignore(state);
+    return empty(state);
   }
 
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult Function(State state)? ignore,
+    TResult Function(State state)? empty,
     TResult Function(State state, String message, bool artificial)? failure,
     TResult Function(State state, Object? mappedResult, Object? unmappedResult)?
         success,
   }) {
-    return ignore?.call(state);
+    return empty?.call(state);
   }
 
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(State state)? ignore,
+    TResult Function(State state)? empty,
     TResult Function(State state, String message, bool artificial)? failure,
     TResult Function(State state, Object? mappedResult, Object? unmappedResult)?
         success,
     required TResult orElse(),
   }) {
-    if (ignore != null) {
-      return ignore(state);
+    if (empty != null) {
+      return empty(state);
     }
     return orElse();
   }
@@ -210,47 +210,47 @@ class _$ContextIgnore extends ContextIgnore {
   @override
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
-    required TResult Function(ContextIgnore value) ignore,
+    required TResult Function(ContextEmpty value) empty,
     required TResult Function(ContextFailure value) failure,
     required TResult Function(ContextSuccess value) success,
   }) {
-    return ignore(this);
+    return empty(this);
   }
 
   @override
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
-    TResult Function(ContextIgnore value)? ignore,
+    TResult Function(ContextEmpty value)? empty,
     TResult Function(ContextFailure value)? failure,
     TResult Function(ContextSuccess value)? success,
   }) {
-    return ignore?.call(this);
+    return empty?.call(this);
   }
 
   @override
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
-    TResult Function(ContextIgnore value)? ignore,
+    TResult Function(ContextEmpty value)? empty,
     TResult Function(ContextFailure value)? failure,
     TResult Function(ContextSuccess value)? success,
     required TResult orElse(),
   }) {
-    if (ignore != null) {
-      return ignore(this);
+    if (empty != null) {
+      return empty(this);
     }
     return orElse();
   }
 }
 
-abstract class ContextIgnore extends Context {
-  const factory ContextIgnore(final State state) = _$ContextIgnore;
-  const ContextIgnore._() : super._();
+abstract class ContextEmpty extends Context {
+  const factory ContextEmpty(final State state) = _$ContextEmpty;
+  const ContextEmpty._() : super._();
 
   @override
   State get state => throw _privateConstructorUsedError;
   @override
   @JsonKey(ignore: true)
-  $ContextIgnoreCopyWith<ContextIgnore> get copyWith =>
+  $ContextEmptyCopyWith<ContextEmpty> get copyWith =>
       throw _privateConstructorUsedError;
 }
 
@@ -339,7 +339,7 @@ class _$ContextFailure extends ContextFailure {
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(State state) ignore,
+    required TResult Function(State state) empty,
     required TResult Function(State state, String message, bool artificial)
         failure,
     required TResult Function(
@@ -352,7 +352,7 @@ class _$ContextFailure extends ContextFailure {
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult Function(State state)? ignore,
+    TResult Function(State state)? empty,
     TResult Function(State state, String message, bool artificial)? failure,
     TResult Function(State state, Object? mappedResult, Object? unmappedResult)?
         success,
@@ -363,7 +363,7 @@ class _$ContextFailure extends ContextFailure {
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(State state)? ignore,
+    TResult Function(State state)? empty,
     TResult Function(State state, String message, bool artificial)? failure,
     TResult Function(State state, Object? mappedResult, Object? unmappedResult)?
         success,
@@ -378,7 +378,7 @@ class _$ContextFailure extends ContextFailure {
   @override
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
-    required TResult Function(ContextIgnore value) ignore,
+    required TResult Function(ContextEmpty value) empty,
     required TResult Function(ContextFailure value) failure,
     required TResult Function(ContextSuccess value) success,
   }) {
@@ -388,7 +388,7 @@ class _$ContextFailure extends ContextFailure {
   @override
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
-    TResult Function(ContextIgnore value)? ignore,
+    TResult Function(ContextEmpty value)? empty,
     TResult Function(ContextFailure value)? failure,
     TResult Function(ContextSuccess value)? success,
   }) {
@@ -398,7 +398,7 @@ class _$ContextFailure extends ContextFailure {
   @override
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
-    TResult Function(ContextIgnore value)? ignore,
+    TResult Function(ContextEmpty value)? empty,
     TResult Function(ContextFailure value)? failure,
     TResult Function(ContextSuccess value)? success,
     required TResult orElse(),
@@ -504,7 +504,7 @@ class _$ContextSuccess extends ContextSuccess {
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(State state) ignore,
+    required TResult Function(State state) empty,
     required TResult Function(State state, String message, bool artificial)
         failure,
     required TResult Function(
@@ -517,7 +517,7 @@ class _$ContextSuccess extends ContextSuccess {
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult Function(State state)? ignore,
+    TResult Function(State state)? empty,
     TResult Function(State state, String message, bool artificial)? failure,
     TResult Function(State state, Object? mappedResult, Object? unmappedResult)?
         success,
@@ -528,7 +528,7 @@ class _$ContextSuccess extends ContextSuccess {
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(State state)? ignore,
+    TResult Function(State state)? empty,
     TResult Function(State state, String message, bool artificial)? failure,
     TResult Function(State state, Object? mappedResult, Object? unmappedResult)?
         success,
@@ -543,7 +543,7 @@ class _$ContextSuccess extends ContextSuccess {
   @override
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
-    required TResult Function(ContextIgnore value) ignore,
+    required TResult Function(ContextEmpty value) empty,
     required TResult Function(ContextFailure value) failure,
     required TResult Function(ContextSuccess value) success,
   }) {
@@ -553,7 +553,7 @@ class _$ContextSuccess extends ContextSuccess {
   @override
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
-    TResult Function(ContextIgnore value)? ignore,
+    TResult Function(ContextEmpty value)? empty,
     TResult Function(ContextFailure value)? failure,
     TResult Function(ContextSuccess value)? success,
   }) {
@@ -563,7 +563,7 @@ class _$ContextSuccess extends ContextSuccess {
   @override
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
-    TResult Function(ContextIgnore value)? ignore,
+    TResult Function(ContextEmpty value)? empty,
     TResult Function(ContextFailure value)? failure,
     TResult Function(ContextSuccess value)? success,
     required TResult orElse(),

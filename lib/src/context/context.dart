@@ -9,7 +9,7 @@ part "context.freezed.dart";
 @freezed
 class Context with _$Context, QuadraticPegMemoValue, LinearPegMemoValue {
   const Context._();
-  const factory Context.ignore(State state) = ContextIgnore;
+  const factory Context.empty(State state) = ContextEmpty;
   const factory Context.failure(State state, String message, {@Default(false) bool artificial}) = ContextFailure;
   const factory Context.success(State state, ParseResult mappedResult, ParseResult unmappedResult) = ContextSuccess;
 
@@ -20,11 +20,11 @@ class Context with _$Context, QuadraticPegMemoValue, LinearPegMemoValue {
                 ? "[Success]: $result"
                 : "[Success]: $unmapped --> $result",
         failure: (_, String message, __) => "[Failure]: $message",
-        ignore: (_) => "[Ignore]",
+        empty: (_) => "[Ignore]",
       );
 
-  /// Returns a ContextIgnore.
-  ContextIgnore ignore() => Context.ignore(state) as ContextIgnore;
+  /// Returns a ContextEmpty.
+  ContextEmpty empty() => Context.empty(state) as ContextEmpty;
 
   /// Returns a ContextFailure with the basic message.
   ContextFailure failure(String message) => Context.failure(state, message) as ContextFailure;

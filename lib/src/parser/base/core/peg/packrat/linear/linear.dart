@@ -48,7 +48,7 @@ class LinearPackrat extends PegHandler {
         Context ans = parser.parsePeg(context, this);
         mutable.memoMap[parser][index] = ans.entry();
 
-        if (recursion.detected && ans is! ContextFailure) {
+        if (recursion.detected && ans is! ContextFailure  ) {
           return leftRecursiveResult(parser, context);
         } else {
           return ans;

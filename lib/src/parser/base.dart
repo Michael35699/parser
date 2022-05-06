@@ -57,7 +57,7 @@ export "base/on/success.dart";
 export "base/precedence/from_precedence.dart";
 export "base/precedence/with_precedence.dart";
 export "base/predicate/failure.dart";
-export "base/predicate/ignore.dart";
+export "base/predicate/empty.dart";
 export "base/predicate/success.dart";
 export "base/special/blank.dart";
 export "base/special/eoi.dart";
