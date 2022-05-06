@@ -47,3 +47,6 @@ extension StringParserExceptExtension on String {
   ExceptParser except(Object other) => this.$.except(other);
   ExceptParser operator -(Object other) => except(other);
 }
+
+ExceptParser exceptParser(Parser parser, Parser other) => ExceptParser(parser, other);
+ExceptParser except(Object parser, Object other) => exceptParser(parser.$, other.$);

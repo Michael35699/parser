@@ -33,7 +33,8 @@ class FromPrecedenceParser extends WrapParser {
       super.hasEqualProperties(target) && target.precedence == precedence;
 }
 
-FromPrecedenceParser fromPrecedence(num precedence, Parser parser) => FromPrecedenceParser(precedence, parser);
+FromPrecedenceParser fromPrecedenceParser(num precedence, Parser parser) => FromPrecedenceParser(precedence, parser);
+FromPrecedenceParser fromPrecedence(num precedence, Object parser) => fromPrecedenceParser(precedence, parser.$);
 
 extension ParserPrecedenceExtension on Parser {
   FromPrecedenceParser prec(num precedence) => FromPrecedenceParser(precedence, this);

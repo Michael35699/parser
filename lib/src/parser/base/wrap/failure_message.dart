@@ -46,3 +46,6 @@ extension LazyParserFailureMessageExtension on LazyParser {
 extension StringFailureMessageExtension on String {
   FailureMessageParser message(String message) => this.$.message(message);
 }
+
+FailureMessageParser failureMessageParser(Parser parser, String message) => FailureMessageParser(parser, message);
+FailureMessageParser failureMessage(Object parser, String message) => failureMessageParser(parser.$, message);
