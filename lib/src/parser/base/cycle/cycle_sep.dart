@@ -20,7 +20,7 @@ class CycleSeparatedParser extends WrapParser with CyclicParser {
     ctx.addResult(mapped, unmapped);
 
     for (;;) {
-      Context temp1 = handler.apply(parser, ctx);
+      Context temp1 = handler.apply(separator, ctx);
       if (temp1 is ContextFailure) {
         break;
       }

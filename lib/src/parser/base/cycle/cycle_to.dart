@@ -49,11 +49,11 @@ class CycleToParser extends WrapParser with CyclicParser {
 
         trampoline.push(parser, context, (Context result) {
           if (result is ContextSuccess) {
-            run(context, mapped << result.mappedResult, unmapped << result.unmappedResult);
+            run(result, mapped << result.mappedResult, unmapped << result.unmappedResult);
           } else if (result is ContextEmpty) {
-            run(context, mapped, unmapped);
+            run(result, mapped, unmapped);
           } else {
-            continuation(context);
+            continuation(result);
           }
         });
       });
