@@ -12,7 +12,7 @@ class DropParser extends WrapParser {
     Context ctx = handler.apply(parser, context);
 
     if (ctx is! ContextFailure) {
-      return ctx.ignore();
+      return ctx.empty();
     } else {
       return ctx;
     }
@@ -22,7 +22,7 @@ class DropParser extends WrapParser {
   void parseGll(Context context, Trampoline trampoline, GllContinuation continuation) {
     trampoline.push(parser, context, (Context context) {
       if (context is! ContextFailure) {
-        continuation(context.ignore());
+        continuation(context.empty());
       } else {
         continuation(context);
       }

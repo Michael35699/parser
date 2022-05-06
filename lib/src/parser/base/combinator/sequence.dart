@@ -33,7 +33,7 @@ class SequenceParser extends CombinatorParser with SequentialParser {
         if (context is ContextSuccess) {
           return run(context, i + 1, <ParseResult>[...mapped, context.mappedResult],
               <ParseResult>[...unmapped, context.unmappedResult]);
-        } else if (context is ContextIgnore) {
+        } else if (context is ContextEmpty) {
           return run(context, i + 1, mapped, unmapped);
         }
         return continuation(context);

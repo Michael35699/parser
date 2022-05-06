@@ -38,7 +38,7 @@ class CycleStarParser extends WrapParser with CyclicParser {
             <ParseResult>[...mapped, context.mappedResult],
             <ParseResult>[...unmapped, context.unmappedResult],
           ),
-          ignore: (ContextIgnore context) => run(context, mapped, unmapped),
+          empty: (ContextEmpty context) => run(context, mapped, unmapped),
           failure: (ContextFailure context) => continuation(context.success(mapped, unmapped)),
         );
       });
@@ -47,7 +47,7 @@ class CycleStarParser extends WrapParser with CyclicParser {
     trampoline.push(parser, context, (Context ctx) {
       ctx.map(
         success: (ContextSuccess ctx) => run(ctx, <ParseResult>[ctx.mappedResult], <ParseResult>[ctx.unmappedResult]),
-        ignore: (ContextIgnore ctx) => run(ctx, <ParseResult>[], <ParseResult>[]),
+        empty: (ContextEmpty ctx) => run(ctx, <ParseResult>[], <ParseResult>[]),
         failure: (ContextFailure ctx) => continuation(context.success(<ParseResult>[], <ParseResult>[])),
       );
     });

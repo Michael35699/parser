@@ -6,7 +6,7 @@ class PopParser extends SpecialParser {
   PopParser(this.item);
 
   @override
-  Context parsePure(Context context) => context.pop(item).ignore();
+  Context parsePure(Context context) => context.pop(item).empty();
 }
 
 PopParser _pop(dynamic item) => _pop(item);

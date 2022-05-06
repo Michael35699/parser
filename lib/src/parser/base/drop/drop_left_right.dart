@@ -30,7 +30,7 @@ class DropLeftRightParser extends WrapParser with SequentialParser {
       return last.success(res.mappedResult, res.unmappedResult);
     }
 
-    return last.ignore();
+    return last.empty();
   }
 
   @override

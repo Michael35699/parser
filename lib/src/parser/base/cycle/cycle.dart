@@ -36,7 +36,7 @@ class CycleParser extends WrapParser with CyclicParser {
       trampoline.push(parser, context, (Context context) {
         if (context is ContextSuccess) {
           run(context, mapped << context.mappedResult, unmapped << context.unmappedResult);
-        } else if (context is ContextIgnore) {
+        } else if (context is ContextEmpty) {
           run(context, mapped, unmapped);
         } else {
           continuation(context.success(mapped, unmapped));
@@ -47,7 +47,7 @@ class CycleParser extends WrapParser with CyclicParser {
     trampoline.push(parser, context, (Context context) {
       if (context is ContextSuccess) {
         run(context, <ParseResult>[context.mappedResult], <ParseResult>[context.unmappedResult]);
-      } else if (context is ContextIgnore) {
+      } else if (context is ContextEmpty) {
         run(context, <ParseResult>[], <ParseResult>[]);
       } else {
         continuation(context);
