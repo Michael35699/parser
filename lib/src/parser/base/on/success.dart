@@ -32,9 +32,6 @@ class OnSuccessParser extends WrapParser {
   }
 
   @override
-  Parser get base => parser.base;
-
-  @override
   OnSuccessParser empty() => OnSuccessParser.empty(value);
 }
 

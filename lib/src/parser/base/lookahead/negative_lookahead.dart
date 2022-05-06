@@ -28,9 +28,6 @@ class NegativeLookaheadParser extends WrapParser {
   }
 
   @override
-  Parser get base => parser.base;
-
-  @override
   NegativeLookaheadParser empty() => NegativeLookaheadParser.empty();
 }
 

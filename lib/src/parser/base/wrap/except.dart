@@ -30,9 +30,6 @@ class ExceptParser extends WrapParser {
   }
 
   @override
-  Parser get base => parser.base;
-
-  @override
   ExceptParser empty() => ExceptParser.empty();
 }
 

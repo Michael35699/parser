@@ -29,9 +29,6 @@ class OptionalParser extends WrapParser {
   }
 
   @override
-  Parser get base => parser.base;
-
-  @override
   OptionalParser empty() => OptionalParser.empty();
 }
 

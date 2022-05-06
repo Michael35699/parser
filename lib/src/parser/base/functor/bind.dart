@@ -39,9 +39,6 @@ class BoundParser extends WrapParser {
   }
 
   @override
-  Parser get base => parser.base;
-
-  @override
   BoundParser empty() => BoundParser.empty(binder, replace: replaceResult);
 
   @override

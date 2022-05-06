@@ -29,9 +29,6 @@ class WithPrecedenceParser extends WrapParser {
   }
 
   @override
-  Parser get base => parser.base;
-
-  @override
   WithPrecedenceParser empty() => WithPrecedenceParser.empty(precedence);
 
   @override

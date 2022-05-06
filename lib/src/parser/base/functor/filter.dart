@@ -4,17 +4,12 @@ import "package:parser/internal_all.dart";
 
 class FilteredParser extends WrapParser {
   final FilterFunction filter;
-  final bool replaceResult;
 
   @override
   Parser get parser => children[0];
 
-  FilteredParser(Parser parser, this.filter, {bool replace = false})
-      : replaceResult = replace,
-        super(<Parser>[parser]);
-  FilteredParser.empty(this.filter, {bool replace = false})
-      : replaceResult = replace,
-        super(<Parser>[]);
+  FilteredParser(Parser parser, this.filter) : super(<Parser>[parser]);
+  FilteredParser.empty(this.filter) : super(<Parser>[]);
 
   @override
   Context parsePeg(Context context, PegHandler handler) {
@@ -41,29 +36,24 @@ class FilteredParser extends WrapParser {
   }
 
   @override
-  Parser get base => parser.base;
+  FilteredParser empty() => FilteredParser.empty(filter);
 
   @override
-  FilteredParser empty() => FilteredParser.empty(filter, replace: replaceResult);
-
-  @override
-  bool hasEqualProperties(FilteredParser target) =>
-      super.hasEqualProperties(target) && target.filter == filter && target.replaceResult == replaceResult;
+  bool hasEqualProperties(FilteredParser target) => super.hasEqualProperties(target) && target.filter == filter;
 }
 
-FilteredParser filtered(Parser parser, FilterFunction filter, {bool replace = false}) =>
-    FilteredParser(parser, filter, replace: replace);
+FilteredParser filtered(Parser parser, FilterFunction filter) => FilteredParser(parser, filter);
 
 extension ParserFilteredExtension on Parser {
-  FilteredParser filter(FilterFunction filter, {bool replace = false}) => filtered(this, filter, replace: replace);
+  FilteredParser filter(FilterFunction filter) => filtered(this, filter);
 }
 
 extension LazyParserFilteredExtension on LazyParser {
-  FilteredParser filter(FilterFunction filter, {bool replace = false}) => this.$.filter(filter, replace: replace);
+  FilteredParser filter(FilterFunction filter) => this.$.filter(filter);
 }
 
 extension StringFilteredExtension on String {
-  FilteredParser filter(FilterFunction filter, {bool replace = false}) => this.$.filter(filter, replace: replace);
+  FilteredParser filter(FilterFunction filter) => this.$.filter(filter);
 }
 
 extension ExtendedFilterFunctionExtension on FilteredParser Function(FilterFunction filter, {bool replace}) {

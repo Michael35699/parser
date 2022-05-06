@@ -12,9 +12,11 @@ abstract class WrapParser extends Parser {
   Parser get parser;
 
   @override
+  @nonVirtual
   Parser get unwrapped => parser;
 
   @override
+  @nonVirtual
   Parser get base => parser.base;
 
   @nonVirtual

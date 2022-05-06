@@ -30,9 +30,6 @@ class FlatParser extends WrapParser {
 
   @override
   FlatParser empty() => FlatParser.empty();
-
-  @override
-  Parser get base => parser.base;
 }
 
 FlatParser _flatParser(Parser parser) => FlatParser(parser);

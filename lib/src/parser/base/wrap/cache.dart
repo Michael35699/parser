@@ -14,9 +14,6 @@ class CacheParser extends WrapParser with UnwrappedParser {
       trampoline.push(parser, context, continuation);
 
   @override
-  Parser get base => parser.base;
-
-  @override
   CacheParser empty() => CacheParser.empty();
 }
 

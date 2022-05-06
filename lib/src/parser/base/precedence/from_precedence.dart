@@ -26,9 +26,6 @@ class FromPrecedenceParser extends WrapParser {
   }
 
   @override
-  Parser get base => parser.base;
-
-  @override
   FromPrecedenceParser empty() => FromPrecedenceParser.empty(precedence);
 
   @override

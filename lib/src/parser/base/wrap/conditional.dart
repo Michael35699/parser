@@ -6,9 +6,6 @@ class ConditionalParser extends WrapParser {
   @override
   Parser get parser => children[0];
 
-  @override
-  Parser get base => parser.base;
-
   ConditionalParser(Parser parser, this.function) : super(<Parser>[parser]);
   ConditionalParser.empty(this.function) : super(<Parser>[]);
 

@@ -32,9 +32,6 @@ class OnFailureParser extends WrapParser {
   }
 
   @override
-  Parser get base => parser.base;
-
-  @override
   OnFailureParser empty() => OnFailureParser.empty(message);
 }
 

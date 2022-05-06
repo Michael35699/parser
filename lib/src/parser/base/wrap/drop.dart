@@ -30,9 +30,6 @@ class DropParser extends WrapParser {
   }
 
   @override
-  Parser get base => parser.base;
-
-  @override
   DropParser empty() => DropParser.empty();
 }
 

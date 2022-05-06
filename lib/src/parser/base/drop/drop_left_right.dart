@@ -61,9 +61,6 @@ class DropLeftRightParser extends WrapParser with SequentialParser {
   }
 
   @override
-  Parser get base => parser.base;
-
-  @override
   DropLeftRightParser empty() => DropLeftRightParser.empty();
 }
 

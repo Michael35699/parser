@@ -45,9 +45,6 @@ class MappedParser extends WrapParser {
   }
 
   @override
-  Parser get base => parser.base;
-
-  @override
   MappedParser empty() => MappedParser.empty(mapper, replace: replaceResult);
 
   @override

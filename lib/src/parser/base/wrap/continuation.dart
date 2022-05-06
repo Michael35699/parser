@@ -19,9 +19,6 @@ class ContinuationParser extends WrapParser {
   }
 
   @override
-  Parser get base => parser.base;
-
-  @override
   ContinuationParser empty() => ContinuationParser.empty(function);
 
   @override

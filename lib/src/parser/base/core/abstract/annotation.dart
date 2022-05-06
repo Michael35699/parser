@@ -8,12 +8,6 @@ class AnnotationParser extends WrapParser with UnwrappedParser {
   Parser get parser => children[0];
 
   @override
-  Parser get base => parser.base;
-
-  @override
-  Parser get unwrapped => parser;
-
-  @override
   AnnotationParser empty() => AnnotationParser.empty();
 
   @override

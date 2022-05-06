@@ -39,9 +39,6 @@ class FlatMappedParser extends WrapParser {
   }
 
   @override
-  Parser get base => parser.base;
-
-  @override
   FlatMappedParser empty() => FlatMappedParser.empty(flatMapper, replace: replaceResult);
 
   @override
