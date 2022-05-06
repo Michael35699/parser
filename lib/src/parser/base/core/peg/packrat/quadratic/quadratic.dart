@@ -32,6 +32,7 @@ class QuadraticPackrat extends PegHandler {
   }
 
   @internal
+  @inlineVm
   Context leftRecursiveResult(Parser parser, int index, MemoizationEntry entry) {
     LeftRecursion leftRecursion = entry.value as LeftRecursion;
     Head head = leftRecursion.head!;
@@ -68,12 +69,16 @@ class QuadraticPackrat extends PegHandler {
   }
 
   @internal
+  @inlineVm
   Context parseQuadraticMemoized(Parser parser, Context context) {
     int index = context.state.index;
 
     MemoizationEntry? entry = recall(parser, index, context);
     if (entry == null) {
-      if ((parser.prioritizeLeft ?? false) && mutable.growing.contains(parser) && parser.rightRecursive) {
+      late bool prioritized = parser.prioritizeLeft ?? false;
+      late bool isGrowing = mutable.growing.contains(parser);
+      late bool definitelyRR = parser.definitelyRightRecursive;
+      if (prioritized && isGrowing && definitelyRR) {
         mutable.memoMap[parser][index] = context.failure("right recursion on left recursive").entry();
 
         return parser.parsePeg(context, this);
@@ -84,7 +89,7 @@ class QuadraticPackrat extends PegHandler {
       mutable.parserStack.add(leftRecursion);
 
       /// Save a new entry on `position` with the LR instance.
-      entry = mutable.memoMap[parser].putIfAbsent(index, leftRecursion.entry);
+      entry = mutable.memoMap[parser][index] = leftRecursion.entry();
 
       /// Evaluate the parser.
       Context ans = parser.parsePeg(context, this);
@@ -131,5 +136,6 @@ class QuadraticPackrat extends PegHandler {
   }
 
   @override
+  @inlineVm
   Context parse(Parser parser, Context context) => parseQuadraticMemoized(parser, context);
 }

@@ -8,6 +8,7 @@ class LinearPackrat extends PegHandler {
   @override
   final LinearPackratMutable mutable = LinearPackratMutable();
 
+  @inlineVm
   Context leftRecursiveResult(Parser parser, Context context) {
     int index = context.state.index;
 
@@ -28,13 +29,17 @@ class LinearPackrat extends PegHandler {
   }
 
   @internal
+  @inlineVm
   Context parseLinearMemoized(Parser parser, Context context) {
     int index = context.state.index;
     MemoizationEntry? entry = mutable.memoMap[parser][index];
 
     if (entry == null) {
-      if ((parser.prioritizeLeft ?? false) && mutable.growing.contains(parser) && parser.rightRecursive) {
-        mutable.memoMap[parser][index] = context.failure("right recursion in left recursion").entry();
+      late bool prioritized = parser.prioritizeLeft ?? false;
+      late bool isGrowing = mutable.growing.contains(parser);
+      late bool definitelyRR = parser.definitelyRightRecursive;
+      if (prioritized && isGrowing && definitelyRR) {
+        mutable.memoMap[parser][index] = context.failure("right recursion on left recursive").entry();
 
         return parser.parsePeg(context, this);
       } else {
@@ -64,5 +69,6 @@ class LinearPackrat extends PegHandler {
   }
 
   @override
+  @inlineVm
   Context parse(Parser parser, Context context) => parseLinearMemoized(parser, context);
 }

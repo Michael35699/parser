@@ -5,6 +5,7 @@ export "exception.dart";
 export "grammar.dart";
 export "mapper.dart";
 export "src/parser/base.dart";
+export "src/parser/shared.dart" hide inlineVm;
 export "src/parser/specialized.dart";
 export "src/parser/synthesized.dart";
 export "util.dart"
