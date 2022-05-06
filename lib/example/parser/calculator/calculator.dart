@@ -49,7 +49,7 @@ Parser _expression() =>
     1.$ ^ _expression[1] & ~r"[-\(]".r.t >> _expression[2] ^ _$plainFactor |
 
     // Wrapped Function Call
-    1.$ ^ _identifier & _ws & -"(".$ & (_expression[6] % -",".t).orElse(<num>[]) & -")".$ ^ _$fullFn |
+    1.$ ^ _identifier & _ws & -"(".$ & (_expression[6] % -",".t).failure(<num>[]) & -")".$ ^ _$fullFn |
 
     // Unwrapped Function Call
     1.$ ^ _identifier & _ws & ~"(".$ >> (_expression[0] % -",".t) ^ _$cleanFn |
