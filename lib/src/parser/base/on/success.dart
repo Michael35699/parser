@@ -4,7 +4,7 @@ class OnSuccessParser extends WrapParser {
   @override
   Parser get parser => children[0];
 
-  final Object? value;
+  final ParseResult value;
 
   OnSuccessParser(Parser parser, this.value) : super(<Parser>[parser]);
   OnSuccessParser.empty(this.value) : super(<Parser>[]);
@@ -13,7 +13,7 @@ class OnSuccessParser extends WrapParser {
   Context parsePeg(Context context, PegHandler handler) {
     Context ctx = handler.apply(parser, context);
 
-    if (ctx is ContextFailure) {
+    if (ctx is! ContextFailure) {
       return ctx.success(value);
     } else {
       return ctx;
@@ -23,7 +23,7 @@ class OnSuccessParser extends WrapParser {
   @override
   void parseGll(Context context, Trampoline trampoline, GllContinuation continuation) {
     trampoline.push(parser, context, (Context context) {
-      if (context is ContextFailure) {
+      if (context is! ContextFailure) {
         continuation(context.success(value));
       } else {
         continuation(context);
@@ -36,13 +36,15 @@ class OnSuccessParser extends WrapParser {
 }
 
 extension ParserOnSuccessExtension on Parser {
-  OnSuccessParser success(Object? value) => OnSuccessParser(this, value);
+  OnSuccessParser success(ParseResult value) => OnSuccessParser(this, value);
 }
 
-extension LazyParserOnSuccessParserExtension on LazyParser {
-  OnSuccessParser success(Object? value) => this.$.success(value);
+extension LazyParserOnSuccessExtension on LazyParser {
+  OnSuccessParser success(ParseResult value) => this.$.success(value);
 }
 
-extension StringOnSuccessParserExtension on String {
-  OnSuccessParser success(Object? value) => this.$.success(value);
+extension StringOnSuccessExtension on String {
+  OnSuccessParser success(ParseResult value) => this.$.success(value);
 }
+
+OnSuccessParser onSuccess(Object parser, ParseResult value) => OnSuccessParser(parser.$, value);
