@@ -22,33 +22,33 @@ class OnFailureParser extends WrapParser {
 
   @override
   void parseGll(Context context, Trampoline trampoline, GllContinuation continuation) {
-    trampoline.push(parser, context, (Context context) {
-      if (context is ContextFailure) {
-        continuation(context.success(value));
+    trampoline.push(parser, context, (Context ctx) {
+      if (ctx is ContextFailure) {
+        continuation(ctx.success(value));
       } else {
-        continuation(context);
+        continuation(ctx);
       }
     });
   }
 
   @override
-  OnSuccessParser empty() => OnSuccessParser.empty(value);
+  OnFailureParser empty() => OnFailureParser.empty(value);
 }
 
 OnFailureParser onFailureParser(Parser parser, ParseResult alternative) => OnFailureParser(parser, alternative);
 OnFailureParser onFailure(Object parser, ParseResult alternative) => onFailureParser(parser.$, alternative);
 
 extension ParserOnFailureExtension on Parser {
-  Parser onFailure(ParseResult alternative) => onFailureParser(this, alternative);
-  Parser operator ~/(ParseResult alternative) => onFailure(alternative);
+  OnFailureParser failure(ParseResult alternative) => onFailureParser(this, alternative);
+  OnFailureParser operator ~/(ParseResult alternative) => failure(alternative);
 }
 
 extension LazyParserOnFailureExtension on LazyParser {
-  Parser onFailure(ParseResult alternative) => this.$.onFailure(alternative);
-  Parser operator ~/(ParseResult alternative) => this.$ ~/ alternative;
+  OnFailureParser failure(ParseResult alternative) => this.$.failure(alternative);
+  OnFailureParser operator ~/(ParseResult alternative) => this.$ ~/ alternative;
 }
 
 extension StringOnFailureExtension on String {
-  Parser onFailure(ParseResult alternative) => this.$.onFailure(alternative);
-  Parser operator ~/(ParseResult alternative) => this.$ ~/ alternative;
+  OnFailureParser failure(ParseResult alternative) => this.$.failure(alternative);
+  OnFailureParser operator ~/(ParseResult alternative) => this.$ ~/ alternative;
 }
