@@ -16,7 +16,7 @@ class FailureMessageParser extends WrapParser {
     if (ctx is! ContextFailure) {
       return ctx;
     } else {
-      return ctx.failure(message);
+      return ctx.failure(message).generated();
     }
   }
 
@@ -26,7 +26,7 @@ class FailureMessageParser extends WrapParser {
       if (context is! ContextFailure) {
         continuation(context);
       } else {
-        continuation(context.failure(message));
+        continuation(context.failure(message).generated());
       }
     });
   }
