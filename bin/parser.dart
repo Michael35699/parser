@@ -1,5 +1,6 @@
 // import "package:parser/src/util/shared/time.dart";
 // import "package:parser/example/parser/math.dart" as math_parser;
+import "package:parser/example/parser/calculator/calculator.dart";
 import "package:parser/parser.dart" as parser;
 import "package:parser/src/util/shared/time.dart";
 
@@ -33,4 +34,6 @@ void main() {
     time(count: count, name: "Packrat-Quadratic", () => entry.value.packrat.quadratic(input));
     print("");
   }
+  parser.Parser calculator = expression();
+  print(calculator.run("sin(2π)(2 add 8)"));
 }
