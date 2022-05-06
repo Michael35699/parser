@@ -3,7 +3,7 @@ import "dart:collection";
 import "package:parser/internal_all.dart";
 
 class ThunkParser extends LazyLoadParser {
-  static HashMap<LazyParser, ThunkParser> map = HashMap<LazyParser, ThunkParser>();
+  static final HashMap<LazyParser, ThunkParser> _thunkMap = HashMap<LazyParser, ThunkParser>();
 
   @override
   final LazyParser lazyParser;
@@ -11,7 +11,7 @@ class ThunkParser extends LazyLoadParser {
   @override
   final bool memoizeBody = true;
 
-  factory ThunkParser(LazyParser lazyParser) => map[lazyParser] ??= ThunkParser._(lazyParser);
+  factory ThunkParser(LazyParser lazyParser) => _thunkMap[lazyParser] ??= ThunkParser._(lazyParser);
   ThunkParser._(this.lazyParser);
   ThunkParser.eager(Parser parser)
       : lazyParser = (() => throw UnsupportedError("Hello")),
