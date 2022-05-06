@@ -8,7 +8,7 @@ Iterable<T> _runGll<T extends ParseResult>(Parser parser, String input, {T Funct
       yield ctx.mappedResult as T;
     } else if (ctx is ContextFailure) {
       if (except == null) {
-        throw ParseException(ctx.message);
+        throw ParseException(ctx.withFailureMessage().message);
       }
       yield except(ctx);
     }
@@ -49,7 +49,7 @@ Iterable<Context> _runCtxGll(Parser parser, String input) sync* {
   } while (trampoline.stack.isNotEmpty);
 
   if (!hasYielded && longestFailure != null) {
-    yield longestFailure!.withFailureMessage();
+    yield longestFailure!;
   }
 }
 

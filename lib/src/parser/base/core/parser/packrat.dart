@@ -6,7 +6,7 @@ T _runPackrat<T extends ParseResult>(Parser parser, String input,
 
   if (result is ContextFailure) {
     if (except == null) {
-      throw ParseException(result.message);
+      throw ParseException(result.withFailureMessage().message);
     }
     return except(result);
   } else if (result is ContextSuccess) {
@@ -24,11 +24,7 @@ Context _runCtxPackrat(Parser parser, String input, {PackratMode? mode}) {
   Context context = Context.empty(State(input: formatted, parseMode: ParseMode.packrat, packratMode: mode));
   Context result = handler.apply(built, context);
 
-  if (result is ContextFailure) {
-    return result.withFailureMessage();
-  } else {
-    return result;
-  }
+  return result;
 }
 
 extension ParserPackratExtension on Parser {

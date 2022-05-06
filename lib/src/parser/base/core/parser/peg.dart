@@ -5,7 +5,7 @@ T _runPeg<T extends ParseResult>(Parser parser, String input, {PegMode? mode, T 
 
   if (result is ContextFailure) {
     if (except == null) {
-      throw ParseException(result.message);
+      throw ParseException(result.withFailureMessage().message);
     }
     return except(result);
   } else if (result is ContextSuccess) {
@@ -23,11 +23,7 @@ Context _runCtxPeg(Parser parser, String input, {PegMode? mode}) {
   Context context = Context.empty(State(input: formatted, parseMode: ParseMode.peg, pegMode: mode));
   Context result = handler.apply(built, context);
 
-  if (result is ContextFailure) {
-    return result.withFailureMessage();
-  } else {
-    return result;
-  }
+  return result;
 }
 
 extension ParserPegExtension on Parser {
