@@ -65,7 +65,6 @@ export "base/special/eoi.dart";
 export "base/special/epsilon.dart";
 export "base/special/source.dart";
 export "base/wrap/cache.dart";
-export "base/wrap/conditional.dart";
 export "base/wrap/continuation.dart";
 export "base/wrap/drop.dart";
 export "base/wrap/except.dart";
