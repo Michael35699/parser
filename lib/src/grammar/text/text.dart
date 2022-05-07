@@ -18,8 +18,8 @@ class TextGrammarDefinition with Grammar {
   TextGrammarDefinition(this.main) : definedRules = <String, Parser>{};
 
   @override
-  Parser start() => declarations.$type((List<Parser> p) => definedRules["start"]);
-  Parser declarations() => declaration.sep(-newline).$type(List<Parser>.from);
+  Parser start() => declarations.map.$type((List<Parser> p) => definedRules["start"]);
+  Parser declarations() => declaration.sep(-newline).map.$type(List<Parser>.from);
   Parser declaration() => identifier & "=".tnl & value[10] ^ $3((String n, _, Parser p) => definedRules[n] = p);
 
   Parser value() =>

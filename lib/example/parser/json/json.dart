@@ -21,7 +21,7 @@ Parser _members() =>
 
 Parser _pair() => _string & -":".t & _value ^ $2(_JsonEntry.new);
 
-Parser _string() => jsonString().$at(1);
+Parser _string() => jsonString().map.$at(1);
 
 Parser _trueValue = "true" ^ $value(true);
 Parser _falseValue = "false" ^ $value(false);

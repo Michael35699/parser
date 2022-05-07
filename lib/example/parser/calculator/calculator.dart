@@ -49,7 +49,7 @@ Parser plain() =>
     atomic;
 
 Parser atomic() =>
-    constants.keys.map(StringParser.new).choiceParser().$type((String c) => constants[c]!) |
+    constants.keys.map(StringParser.new).choiceParser().map.$type((String c) => constants[c]!) |
     number << ("deg" / "°") ^ $type((num v) => v * (math.pi / 180)) |
     number << ("rad" / "r") |
     number << "%" ^ $type((num v) => v / 100) |

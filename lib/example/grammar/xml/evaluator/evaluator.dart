@@ -5,10 +5,10 @@ import "package:parser/parser.dart";
 
 class XmlEvaluator extends XmlGrammar {
   @override
-  Parser start() => super.start.$type((List<XmlNode> nodes) => XmlNode.fragment(children: nodes));
+  Parser start() => super.start.map.$type((List<XmlNode> nodes) => XmlNode.fragment(children: nodes));
 
   @override
-  Parser content() => super.content.$type(List<XmlNode>.from);
+  Parser content() => super.content.map.$type(List<XmlNode>.from);
 
   @override
   Parser tagOpen() => super.tagOpen.$2((String name, List<XmlAttribute> attributes) =>
@@ -25,13 +25,13 @@ class XmlEvaluator extends XmlGrammar {
           : XmlNode.tag(name: start.name, attributes: start.attributes, children: children));
 
   @override
-  Parser tagAttributes() => super.tagAttributes.$type(List<XmlAttribute>.from);
+  Parser tagAttributes() => super.tagAttributes.map.$type(List<XmlAttribute>.from);
 
   @override
   Parser tagAttribute() => super.tagAttribute.$2(XmlAttribute.new);
 
   @override
-  Parser textNode() => super.textNode.$type(XmlNode.text);
+  Parser textNode() => super.textNode.map.$type(XmlNode.text);
 }
 
 class XmlTagStart {

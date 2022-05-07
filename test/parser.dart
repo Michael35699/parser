@@ -136,7 +136,7 @@ void main() {
         run(pass, never);
       });
       test("extension_dot", () {
-        parser.Parser pass = "a".$value("b") & "b";
+        parser.Parser pass = "a".map.$value("b") & "b";
         parser.Parser never = parser.failure("oh no!").$0(() => fail("this should not be called"));
         run(pass, never);
       });

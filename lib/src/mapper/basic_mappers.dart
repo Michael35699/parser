@@ -90,69 +90,6 @@ MapFunction $flat() => _$flat();
 MapFunction $trim() => _$trim();
 MapFunction $echo() => _$echo();
 
-extension ParserBasicMappersExtension on Parser {
-  MappedParser $join([String sep = ""]) => map(_$join(sep));
-  MappedParser $named(Function fn) => map(_$named(fn));
-  MappedParser $at(int index) => map(_$at(index));
-  MappedParser $spread(int index) => map(_$spread(index));
-  MappedParser $remove(int index) => map(_$remove(index));
-  MappedParser $drop(int index) => map(_$remove(index));
-  MappedParser $tag(Symbol name) => map(_$tag(name));
-  MappedParser $value(Object? value) => map(_$value(value));
-  MappedParser $trim() => map(_$trim());
-  MappedParser $echo() => map(_$echo());
-  MappedParser $flat() => map(_$flat());
-  MappedParser $apply(Function fn) => map(_$apply(fn));
-  MappedParser $empty(dynamic Function() fn) => map(_$empty(fn));
-  MappedParser $ctx(dynamic Function(Context) fn) => map(_$ctx(fn));
-  MappedParser $res(dynamic Function(ParseResult) fn) => map(_$res(fn));
-  MappedParser $tagged(dynamic Function(Symbol, ParseResult) function) => map(_$tagged(function));
-  MappedParser $type<T extends ParseResult>(ParseResult Function(T) callback) => map(_$type(callback));
-  MappedParser $maybe<T extends ParseResult>(ParseResult Function(T) callback) => map(_$maybe(callback));
-}
-
-extension LazyParserBasicMappersExtension on LazyParser {
-  MappedParser $join([String sep = ""]) => map(_$join(sep));
-  MappedParser $named(Function fn) => map(_$named(fn));
-  MappedParser $at(int index) => map(_$at(index));
-  MappedParser $spread(int index) => map(_$spread(index));
-  MappedParser $remove(int index) => map(_$remove(index));
-  MappedParser $drop(int index) => map(_$remove(index));
-  MappedParser $tag(Symbol name) => map(_$tag(name));
-  MappedParser $value(Object? value) => map(_$value(value));
-  MappedParser $trim() => map(_$trim());
-  MappedParser $echo() => map(_$echo());
-  MappedParser $flat() => map(_$flat());
-  MappedParser $apply(Function fn) => map(_$apply(fn));
-  MappedParser $empty(dynamic Function() fn) => map(_$empty(fn));
-  MappedParser $ctx(dynamic Function(Context) fn) => map(_$ctx(fn));
-  MappedParser $res(dynamic Function(ParseResult) fn) => map(_$res(fn));
-  MappedParser $tagged(dynamic Function(Symbol, ParseResult) function) => map(_$tagged(function));
-  MappedParser $type<T extends ParseResult>(ParseResult Function(T) callback) => map(_$type(callback));
-  MappedParser $maybe<T extends ParseResult>(ParseResult Function(T) callback) => map(_$maybe(callback));
-}
-
-extension StringBasicMappersExtension on String {
-  MappedParser $join([String sep = ""]) => map(_$join(sep));
-  MappedParser $named(Function fn) => map(_$named(fn));
-  MappedParser $at(int index) => map(_$at(index));
-  MappedParser $spread(int index) => map(_$spread(index));
-  MappedParser $remove(int index) => map(_$remove(index));
-  MappedParser $drop(int index) => map(_$remove(index));
-  MappedParser $tag(Symbol name) => map(_$tag(name));
-  MappedParser $value(Object? value) => map(_$value(value));
-  MappedParser $trim() => map(_$trim());
-  MappedParser $echo() => map(_$echo());
-  MappedParser $flat() => map(_$flat());
-  MappedParser $apply(Function fn) => map(_$apply(fn));
-  MappedParser $empty(dynamic Function() fn) => map(_$empty(fn));
-  MappedParser $ctx(dynamic Function(Context) fn) => map(_$ctx(fn));
-  MappedParser $res(dynamic Function(ParseResult) fn) => map(_$res(fn));
-  MappedParser $tagged(dynamic Function(Symbol, ParseResult) function) => map(_$tagged(function));
-  MappedParser $type<T extends ParseResult>(ParseResult Function(T) callback) => map(_$type(callback));
-  MappedParser $maybe<T extends ParseResult>(ParseResult Function(T) callback) => map(_$maybe(callback));
-}
-
 extension BuiltBasicMappersExtension on MappedParser Function(MapFunction mapper, {bool replace}) {
   MappedParser $join([String sep = ""]) => this(_$join(sep));
   MappedParser $named(Function fn) => this(_$named(fn));
