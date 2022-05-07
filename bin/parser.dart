@@ -1,23 +1,23 @@
-// import "package:parser/src/util/shared/time.dart";
-import "dart:io";
-
+import "package:parser/example.dart" as xml;
 import "package:parser/parser.dart" as parser;
-import "package:parser/src/util/shared/time.dart";
+import "package:parser/src/util/logger/logger.dart";
 
 int counter = 0;
 
 typedef Parser = parser.Parser;
-
-Parser gamma3() =>
-    gamma3 & gamma3 & gamma3 | //
-    gamma3 & gamma3 |
-    "s";
+typedef XmlGrammar = xml.XmlGrammar;
 
 void main() {
-  StringBuffer buffer = StringBuffer();
-  print(time(() => (gamma3.end.gll("ssssssssss").toList()..forEach(buffer.writeln)).last));
-  File("assets/out.txt")
-    ..createSync(recursive: true)
-    ..writeAsStringSync(buffer.toString());
-  print(gamma3.thunk().generateAsciiTree());
+  xml.XmlEvaluator grammar = xml.XmlEvaluator();
+  Parser parser = grammar.start.build();
+  print(parser.peg("""
+<html>
+<head>Heading</head>
+<body attr1='val1'>
+    <div class='container'>
+        <div id='class'>Something here</div>
+        <div>Something else</div>
+    </div>
+</body>
+</html>""", except: log.cerror));
 }
