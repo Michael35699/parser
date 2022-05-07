@@ -82,8 +82,46 @@ void main() {
 
         group("empty", () {
           test("childless", () {
-            expect(parser, parserSuccess("<alpha></alpha>", [["alpha", emptyList], emptyList, "alpha"]));
-            expect(parser, parserSuccess("<alpha></beta>", [["alpha", emptyList], emptyList, "beta"]));
+            expect(
+                parser,
+                parserSuccess("<alpha></alpha>", [
+                  ["alpha", emptyList],
+                  emptyList,
+                  "alpha"
+                ]));
+
+            expect(parser, parserFailure("<alpha></beta>"), reason: "tag name mismatch");
+          });
+          group("single_child", () {
+            test("text_node", () {
+              expect(
+                  parser,
+                  parserSuccess("<alpha>hello</alpha>", [
+                    ["alpha", emptyList],
+                    ["hello"],
+                    "alpha"
+                  ]));
+              expect(
+                  parser,
+                  parserSuccess("<alpha>hello my name</alpha>", [
+                    ["alpha", emptyList],
+                    ["hello my name"],
+                    "alpha"
+                  ]));
+            });
+            group("html_node", () {
+              test("single_node", () {
+                expect(
+                    parser,
+                    parserSuccess("<alpha><single-node/></alpha>", [
+                      ["alpha", emptyList],
+                      [
+                        ["single-node", emptyList]
+                      ],
+                      "alpha"
+                    ]));
+              });
+            });
           });
         });
       });

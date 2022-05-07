@@ -38,7 +38,7 @@ void main() {
       inner = inner.push("goodbye");
       expect(inner.state.dataStack, <dynamic>["hello", "goodbye"]);
       inner = inner.pop();
-      expect(inner.state.dataStack, <dynamic>["hell"]);
+      expect(inner.state.dataStack, <dynamic>["hello"]);
       inner = inner.pop();
       expect(inner.state.dataStack, <dynamic>[]);
     });
