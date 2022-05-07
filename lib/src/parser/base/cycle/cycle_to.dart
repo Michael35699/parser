@@ -29,7 +29,7 @@ class CycleToParser extends WrapParser with CyclicParser {
       }
 
       Context temp = handler.apply(parser, ctx);
-      if (ctx.isFailure) {
+      if (temp.isFailure) {
         break;
       }
 
