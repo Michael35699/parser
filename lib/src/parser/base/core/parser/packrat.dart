@@ -5,10 +5,11 @@ T _runPackrat<T extends ParseResult>(Parser parser, String input,
   Context result = _runCtxPackrat(parser, input, mode: mode);
 
   if (result is ContextFailure) {
+    ContextFailure message = result.withFailureMessage();
     if (except == null) {
-      throw ParseException(result.withFailureMessage().message);
+      throw ParseException(message.message);
     }
-    return except(result);
+    return except(message);
   } else if (result is ContextSuccess) {
     return result.mappedResult as T;
   }

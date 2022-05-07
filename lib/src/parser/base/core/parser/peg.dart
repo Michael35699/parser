@@ -4,14 +4,15 @@ T _runPeg<T extends ParseResult>(Parser parser, String input, {PegMode? mode, T 
   Context result = _runCtxPeg(parser, input, mode: mode);
 
   if (result is ContextFailure) {
+    ContextFailure message = result.withFailureMessage();
     if (except == null) {
-      throw ParseException(result.withFailureMessage().message);
+      throw ParseException(message.message);
     }
-    return except(result);
+    return except(message);
   } else if (result is ContextSuccess) {
     return result.mappedResult as T;
   }
-  throw ParseException("Detected ignore context. Check the grammar.");
+  throw StateError("Detected ignore context. Check the grammar.");
 }
 
 Context _runCtxPeg(Parser parser, String input, {PegMode? mode}) {
