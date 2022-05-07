@@ -28,7 +28,7 @@ class WhereParser extends WrapParser {
     trampoline.push(parser, context, (Context ctx) {
       if (ctx is ContextSuccess) {
         if (!where(ctx.mappedResult, ctx)) {
-          return continuation(ctx.failure("Where check failure"));
+          return continuation(ctx.failure("Where check failure."));
         }
       }
       return continuation(ctx);

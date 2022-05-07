@@ -52,11 +52,13 @@ class MappedParser extends WrapParser {
       super.hasEqualProperties(target) && target.mapper == mapper && target.replaceResult == replaceResult;
 }
 
-MappedParser mapped(Parser parser, MapFunction mapper, {bool replace = false}) =>
+MappedParser mappedParser(Parser parser, MapFunction mapper, {bool replace = false}) =>
     MappedParser(parser, mapper, replace: replace);
+MappedParser mapped(Object parser, MapFunction mapper, {bool replace = false}) =>
+    mappedParser(parser.$, mapper, replace: replace);
 
 extension ParserMappedExtension on Parser {
-  MappedParser map(MapFunction mapper, {bool replace = false}) => mapped(this, mapper, replace: replace);
+  MappedParser map(MapFunction mapper, {bool replace = false}) => mappedParser(this, mapper, replace: replace);
 
   MappedParser operator ^(MapFunction mapper) => map(mapper);
 }
