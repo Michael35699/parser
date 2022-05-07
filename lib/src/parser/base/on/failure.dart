@@ -14,7 +14,7 @@ class OnFailureParser extends WrapParser {
     Context ctx = handler.apply(parser, context);
 
     if (ctx is ContextFailure) {
-      return ctx.success(value);
+      return context.success(value);
     } else {
       return ctx;
     }
@@ -24,7 +24,7 @@ class OnFailureParser extends WrapParser {
   void parseGll(Context context, Trampoline trampoline, GllContinuation continuation) {
     trampoline.push(parser, context, (Context ctx) {
       if (ctx is ContextFailure) {
-        continuation(ctx.success(value));
+        continuation(context.success(value));
       } else {
         continuation(ctx);
       }
