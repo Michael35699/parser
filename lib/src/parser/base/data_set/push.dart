@@ -9,7 +9,7 @@ class PushParser extends SpecialParser {
   Context parsePure(Context context) => context.push(item).empty();
 }
 
-PushParser _push(dynamic item) => _push(item);
+PushParser _push(dynamic item) => PushParser(item);
 PushParser push(dynamic item) => PushParser(item);
 
 extension ParserPushExtension on Parser {

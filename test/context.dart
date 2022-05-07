@@ -32,16 +32,16 @@ void main() {
 
     test("push & pop", () {
       Context inner = base.copyWith();
-      expect(inner.state.dataSet, <dynamic>{});
+      expect(inner.state.dataStack, <dynamic>[]);
       inner = inner.push("hello");
-      expect(inner.state.dataSet, <dynamic>{"hello"});
+      expect(inner.state.dataStack, <dynamic>["hello"]);
       inner = inner.push("goodbye");
-      expect(inner.state.dataSet, <dynamic>{"hello", "goodbye"});
+      expect(inner.state.dataStack, <dynamic>["hello", "goodbye"]);
       inner = inner.pop();
-      expect(inner.state.dataSet, <dynamic>{"goodbye"});
+      expect(inner.state.dataStack, <dynamic>["hell"]);
       inner = inner.pop();
-      expect(inner.state.dataSet, <dynamic>{});
-    }, skip: "changed how pop works");
+      expect(inner.state.dataStack, <dynamic>[]);
+    });
   });
   group("conversion", () {
     test("empty", () {

@@ -21,7 +21,7 @@ mixin _$State {
   int get index => throw _privateConstructorUsedError;
   num get precedence => throw _privateConstructorUsedError;
   List<int> get indentStack => throw _privateConstructorUsedError;
-  Set<dynamic> get dataSet => throw _privateConstructorUsedError;
+  List<dynamic> get dataStack => throw _privateConstructorUsedError;
   PegMode? get pegMode => throw _privateConstructorUsedError;
   PackratMode? get packratMode => throw _privateConstructorUsedError;
 
@@ -39,7 +39,7 @@ abstract class $StateCopyWith<$Res> {
       int index,
       num precedence,
       List<int> indentStack,
-      Set<dynamic> dataSet,
+      List<dynamic> dataStack,
       PegMode? pegMode,
       PackratMode? packratMode});
 }
@@ -59,7 +59,7 @@ class _$StateCopyWithImpl<$Res> implements $StateCopyWith<$Res> {
     Object? index = freezed,
     Object? precedence = freezed,
     Object? indentStack = freezed,
-    Object? dataSet = freezed,
+    Object? dataStack = freezed,
     Object? pegMode = freezed,
     Object? packratMode = freezed,
   }) {
@@ -84,10 +84,10 @@ class _$StateCopyWithImpl<$Res> implements $StateCopyWith<$Res> {
           ? _value.indentStack
           : indentStack // ignore: cast_nullable_to_non_nullable
               as List<int>,
-      dataSet: dataSet == freezed
-          ? _value.dataSet
-          : dataSet // ignore: cast_nullable_to_non_nullable
-              as Set<dynamic>,
+      dataStack: dataStack == freezed
+          ? _value.dataStack
+          : dataStack // ignore: cast_nullable_to_non_nullable
+              as List<dynamic>,
       pegMode: pegMode == freezed
           ? _value.pegMode
           : pegMode // ignore: cast_nullable_to_non_nullable
@@ -112,7 +112,7 @@ abstract class $StateDefaultCopyWith<$Res> implements $StateCopyWith<$Res> {
       int index,
       num precedence,
       List<int> indentStack,
-      Set<dynamic> dataSet,
+      List<dynamic> dataStack,
       PegMode? pegMode,
       PackratMode? packratMode});
 }
@@ -134,7 +134,7 @@ class _$StateDefaultCopyWithImpl<$Res> extends _$StateCopyWithImpl<$Res>
     Object? index = freezed,
     Object? precedence = freezed,
     Object? indentStack = freezed,
-    Object? dataSet = freezed,
+    Object? dataStack = freezed,
     Object? pegMode = freezed,
     Object? packratMode = freezed,
   }) {
@@ -159,10 +159,10 @@ class _$StateDefaultCopyWithImpl<$Res> extends _$StateCopyWithImpl<$Res>
           ? _value.indentStack
           : indentStack // ignore: cast_nullable_to_non_nullable
               as List<int>,
-      dataSet: dataSet == freezed
-          ? _value.dataSet
-          : dataSet // ignore: cast_nullable_to_non_nullable
-              as Set<dynamic>,
+      dataStack: dataStack == freezed
+          ? _value.dataStack
+          : dataStack // ignore: cast_nullable_to_non_nullable
+              as List<dynamic>,
       pegMode: pegMode == freezed
           ? _value.pegMode
           : pegMode // ignore: cast_nullable_to_non_nullable
@@ -184,11 +184,11 @@ class _$StateDefault extends StateDefault {
       this.index = 0,
       this.precedence = double.infinity,
       final List<int> indentStack = const <int>[],
-      final Set<dynamic> dataSet = const <dynamic>{},
+      final List<dynamic> dataStack = const <dynamic>[],
       this.pegMode,
       this.packratMode})
       : _indentStack = indentStack,
-        _dataSet = dataSet,
+        _dataStack = dataStack,
         super._();
 
   @override
@@ -209,12 +209,12 @@ class _$StateDefault extends StateDefault {
     return EqualUnmodifiableListView(_indentStack);
   }
 
-  final Set<dynamic> _dataSet;
+  final List<dynamic> _dataStack;
   @override
   @JsonKey()
-  Set<dynamic> get dataSet {
+  List<dynamic> get dataStack {
     // ignore: implicit_dynamic_type
-    return EqualUnmodifiableSetView(_dataSet);
+    return EqualUnmodifiableListView(_dataStack);
   }
 
   @override
@@ -224,7 +224,7 @@ class _$StateDefault extends StateDefault {
 
   @override
   String toString() {
-    return 'State(input: $input, parseMode: $parseMode, index: $index, precedence: $precedence, indentStack: $indentStack, dataSet: $dataSet, pegMode: $pegMode, packratMode: $packratMode)';
+    return 'State(input: $input, parseMode: $parseMode, index: $index, precedence: $precedence, indentStack: $indentStack, dataStack: $dataStack, pegMode: $pegMode, packratMode: $packratMode)';
   }
 
   @override
@@ -239,7 +239,7 @@ class _$StateDefault extends StateDefault {
                 .equals(other.precedence, precedence) &&
             const DeepCollectionEquality()
                 .equals(other.indentStack, indentStack) &&
-            const DeepCollectionEquality().equals(other.dataSet, dataSet) &&
+            const DeepCollectionEquality().equals(other.dataStack, dataStack) &&
             const DeepCollectionEquality().equals(other.pegMode, pegMode) &&
             const DeepCollectionEquality()
                 .equals(other.packratMode, packratMode));
@@ -253,7 +253,7 @@ class _$StateDefault extends StateDefault {
       const DeepCollectionEquality().hash(index),
       const DeepCollectionEquality().hash(precedence),
       const DeepCollectionEquality().hash(indentStack),
-      const DeepCollectionEquality().hash(dataSet),
+      const DeepCollectionEquality().hash(dataStack),
       const DeepCollectionEquality().hash(pegMode),
       const DeepCollectionEquality().hash(packratMode));
 
@@ -270,7 +270,7 @@ abstract class StateDefault extends State {
       final int index,
       final num precedence,
       final List<int> indentStack,
-      final Set<dynamic> dataSet,
+      final List<dynamic> dataStack,
       final PegMode? pegMode,
       final PackratMode? packratMode}) = _$StateDefault;
   StateDefault._() : super._();
@@ -286,7 +286,7 @@ abstract class StateDefault extends State {
   @override
   List<int> get indentStack => throw _privateConstructorUsedError;
   @override
-  Set<dynamic> get dataSet => throw _privateConstructorUsedError;
+  List<dynamic> get dataStack => throw _privateConstructorUsedError;
   @override
   PegMode? get pegMode => throw _privateConstructorUsedError;
   @override

@@ -55,8 +55,8 @@ class Context with _$Context, QuadraticPegMemoValue, LinearPegMemoValue {
     return this;
   }
 
-  Context push(dynamic value) => copyWith.state(dataSet: <dynamic>{...state.dataSet, value});
-  Context pop(dynamic value) => copyWith.state(dataSet: state.dataSet.where((dynamic v) => v != value).toSet());
+  Context push(dynamic value) => copyWith.state(dataStack: state.dataStack << value);
+  Context pop() => copyWith.state(dataStack: state.dataStack.take(state.dataStack.length - 1).toList());
 
   static String highlightIndent(String input) {
     int i = 0;

@@ -11,7 +11,7 @@ class State with _$State {
     @Default(0) int index,
     @Default(double.infinity) num precedence,
     @Default(<int>[]) List<int> indentStack,
-    @Default(<dynamic>{}) Set<dynamic> dataSet,
+    @Default(<dynamic>[]) List<dynamic> dataStack,
     PegMode? pegMode,
     PackratMode? packratMode,
   }) = StateDefault;

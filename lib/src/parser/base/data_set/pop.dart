@@ -1,25 +1,23 @@
 import "package:parser/internal_all.dart";
 
 class PopParser extends SpecialParser {
-  final dynamic item;
-
-  PopParser(this.item);
+  PopParser();
 
   @override
-  Context parsePure(Context context) => context.pop(item).empty();
+  Context parsePure(Context context) => context.pop().empty();
 }
 
-PopParser _pop(dynamic item) => _pop(item);
-PopParser pop(dynamic item) => PopParser(item);
+PopParser _pop() => PopParser();
+PopParser pop() => PopParser();
 
 extension ParserPopExtension on Parser {
-  Parser pop(dynamic item) => this >> _pop(item);
+  Parser pop() => this << _pop();
 }
 
 extension LazyParserPopParserExtension on Lazy<Parser> {
-  Parser pop(dynamic item) => this.$ >> _pop(item);
+  Parser pop() => this.$ << _pop();
 }
 
 extension StringPopParserExtension on String {
-  Parser pop(dynamic item) => this.$ >> _pop(item);
+  Parser pop() => this.$ << _pop();
 }
