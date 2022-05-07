@@ -58,7 +58,7 @@ void main() {
       expect(separated, parserSuccess("a", ["a"]));
       expect(separated, parserSuccess("a,a,a,a", ["a", "a", "a", "a"]));
       expect(separated, parserSuccess("a  , a  , a, a", ["a", "a", "a", "a"]));
-      expect(separated, parserSuccess("a  , a  ,b", ["a", "a"], index: 6));
+      expect(separated, parserSuccess("a  , a  ,b", ["a", "a"], i: 6));
     });
     test("cycle_to", () {
       parser.Parser p = ("a" & "b") >>> "c";
@@ -99,7 +99,7 @@ void main() {
       parser.Parser p = "λx".$ * 3;
 
       expect(p, parserSuccess("λxλxλx", ["λx", "λx", "λx"]));
-      expect(p, parserSuccess("λxλxλxλxλx", ["λx", "λx", "λx"], index: 6));
+      expect(p, parserSuccess("λxλxλxλxλx", ["λx", "λx", "λx"], i: 6));
       expect(p, parserFailure("λx"));
       expect(
         p * 3,
@@ -122,37 +122,66 @@ void main() {
   });
 
   group("functions", () {
-    test("map", () {
-      parser.Parser p = "a".$value("b").plus() & "b" ^ parser.$flat();
+    group("map", () {
+      void run(parser.Parser pass, parser.Parser fail) {
+        expect(pass, parserSuccess("ab", ["b", "b"]));
 
-      expect(p, parserSuccess("ab", "bb"));
-      expect(p, parserSuccess("aaaaab", "bbbbbb"));
+        expect(fail, parserFailure("abc"));
+        expect(fail, parserFailure("foo"));
+      }
 
-      parser.Parser map = parser.failure("oh no!") ^ parser.$0(() => fail("this should not be called"));
+      test("operator", () {
+        parser.Parser pass = ("a" ^ parser.$value("b")) & "b";
+        parser.Parser never = parser.failure("oh no!") ^ parser.$0(() => fail("this should not be called"));
+        run(pass, never);
+      });
+      test("extension_dot", () {
+        parser.Parser pass = "a".$value("b") & "b";
+        parser.Parser never = parser.failure("oh no!").$0(() => fail("this should not be called"));
+        run(pass, never);
+      });
+      test("extension_map", () {
+        parser.Parser pass = "a".map(parser.$value("b")) & "b";
+        parser.Parser never = parser.failure("oh no!").map(parser.$0(() => fail("this should not be called")));
 
-      expect(map, parserFailure("abc"));
-      expect(map, parserFailure("foo"));
+        run(pass, never);
+      });
+      test("function", () {
+        parser.Parser pass = parser.mapped("a", parser.$value("b")) & "b";
+        parser.Parser never = parser.mapped(
+          parser.failure("oh no!"),
+          parser.$0(() => fail("this should not be called")),
+        );
+
+        run(pass, never);
+      });
+      test("constructor", () {
+        parser.Parser pass = parser.MappedParser("a".$, parser.$value("b")) & "b";
+        parser.Parser never = parser.MappedParser(
+          parser.failure("oh no!"),
+          parser.$0(() => fail("this should not be called")),
+        );
+
+        run(pass, never);
+      });
     });
     test("bind", () {
-      parser.Parser bound = "a".bind((l, _) => "b".bind((r, _) => parser.success([l, r]))).message("Expected 'a'");
+      parser.Parser bound = "a".bind((l, _) => "b".bind((r, _) => parser.success([l, r])));
 
-      expect(bound, parserSuccess("abc", ["a", "b"], index: 2));
-      expect(bound, parserFailure("a", message: "Expected 'a'"));
+      expect(bound, parserSuccess("abc", ["a", "b"], i: 2));
+      expect(bound, parserFailure("a", message: "Expected value 'b'."));
 
       parser.Parser alwaysFails = parser.failure("failure").bind((l, _) => fail("shouldn't be called"));
 
       expect(alwaysFails, parserFailure("foo bar"));
     });
-    test("filter", () {
-      parser.Parser evenNumber = parser.integer //
-          .filter((p, _) => p is int && p.isEven)
-          .message("Expected an even number");
+    test("where", () {
+      parser.Parser evenNumber = parser.integer.where((p, _) => p is int && p.isEven);
 
       expect(evenNumber, parserSuccess("12", 12));
-      expect(evenNumber, parserFailure("13", message: "Expected an even number"));
-      expect(evenNumber, parserSuccess("86", 86));
+      expect(evenNumber, parserFailure("13", message: "Where check failure."));
 
-      parser.Parser alwaysFails = parser.failure("success!").filter((p, _) => fail("shouldn't be called"));
+      parser.Parser alwaysFails = parser.failure("success!").where((p, _) => fail("shouldn't be called"));
 
       expect(alwaysFails, parserFailure("foo bar", message: "success!"));
     });
