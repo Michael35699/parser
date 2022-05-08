@@ -3,8 +3,10 @@ import "package:parser/internal_all.dart";
 class XmlGrammar with Grammar {
   @override
   Parser start() => document.end();
-  Parser document() => tag.or(textNode).to(eoi);
-  Parser content() => tag.or(textNode).to(tagClose);
+  Parser unit() => tag | textNode;
+  Parser document() => unit.to(eoi);
+  Parser content() => unit.to(tagClose);
+
   Parser tag() => blockTag | singleTag;
   Parser blockTag() => tagOpen & content.failure(const <Object>[]) & tagClose;
 
