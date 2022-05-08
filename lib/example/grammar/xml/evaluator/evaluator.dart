@@ -8,27 +8,30 @@ class XmlEvaluator extends XmlGrammar {
   Parser start() => super.start.map.$type((List<XmlNode> nodes) => XmlNode.fragment(children: nodes));
 
   @override
-  Parser content() => super.content.map.$type(List<XmlNode>.from);
+  Parser document() => super.document.map.$list<XmlNode>();
 
   @override
-  Parser tagOpen() => super.tagOpen.$2((String name, List<XmlAttribute> attributes) =>
+  Parser content() => super.content.map.$list<XmlNode>();
+
+  @override
+  Parser tagOpen() => super.tagOpen.map.$2((String name, List<XmlAttribute> attributes) =>
       XmlTagStart(name: name, attributes: XmlAttributes.fromEntries(attributes)));
 
   @override
-  Parser singleTag() => super.singleTag.$2((String name, List<XmlAttribute> attributes) =>
+  Parser singleTag() => super.singleTag.map.$2((String name, List<XmlAttribute> attributes) =>
       XmlNode.tag(name: name, attributes: XmlAttributes.fromEntries(attributes)));
 
   @override
-  Parser blockTag() => super.blockTag.$3((XmlTagStart start, List<XmlNode> children, String end) => //
+  Parser blockTag() => super.blockTag.map.$3((XmlTagStart start, List<XmlNode> children, String end) => //
       start.name != end
           ? throw Exception("Mismatched tag '${start.name}' -> '$end'")
           : XmlNode.tag(name: start.name, attributes: start.attributes, children: children));
 
   @override
-  Parser tagAttributes() => super.tagAttributes.map.$type(List<XmlAttribute>.from);
+  Parser tagAttributes() => super.tagAttributes.map.$list<XmlAttribute>();
 
   @override
-  Parser tagAttribute() => super.tagAttribute.$2(XmlAttribute.new);
+  Parser tagAttribute() => super.tagAttribute.map.$2(XmlAttribute.new);
 
   @override
   Parser textNode() => super.textNode.map.$type(XmlNode.text);
