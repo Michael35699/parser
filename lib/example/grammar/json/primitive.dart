@@ -5,14 +5,7 @@ class PrimitiveJsonGrammar with Grammar {
   Parser start() => value.$;
 
   Parser value() => whitespace & valueBody & whitespace;
-  Parser valueBody() =>
-      array | //
-      object |
-      number |
-      string |
-      trueValue |
-      falseValue |
-      nullValue;
+  Parser valueBody() => array | object | number | string | trueValue | falseValue | nullValue;
 
   Parser array() =>
       "[" & whitespace & elements & whitespace & "]" | //

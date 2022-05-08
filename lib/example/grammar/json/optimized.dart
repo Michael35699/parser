@@ -5,7 +5,7 @@ class OptimizedJsonGrammar with Grammar {
   Parser start() => value.$;
 
   Parser value() => valueBody.trim();
-  Parser valueBody() => array | object | jsonNumber | string | trueValue | falseValue | nullValue;
+  Parser valueBody() => array | object | jsonNumber | jsonString | trueValue | falseValue | nullValue;
 
   Parser array() => "[" & (elements ~/ <Object>[]).trim() & "]";
   Parser elements() => value % -",".t;
