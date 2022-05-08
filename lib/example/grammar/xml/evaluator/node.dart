@@ -20,6 +20,10 @@ class XmlNode with _$XmlNode {
   String? operator [](String key) => mapOrNull<String?>(tag: (XmlTagNode node) => node.attributes[key]);
 
   static String serialize(XmlAttributes attributes) {
+    if (attributes.isEmpty) {
+      return "";
+    }
+
     List<String> buffer = <String>[];
     for (MapEntry<String, String> entry in attributes.entries) {
       String key = entry.key;
@@ -30,7 +34,7 @@ class XmlNode with _$XmlNode {
         buffer.add('$key="$value"');
       }
     }
-    return buffer.join(" ");
+    return " ${buffer.join(" ")}";
   }
 
   String get innerXml => when(
@@ -43,10 +47,10 @@ class XmlNode with _$XmlNode {
         tag: (String tagName, XmlAttributes attributes, List<XmlNode>? children) {
           String serializedAttributes = serialize(attributes);
           if (children == null) {
-            return "<$tagName $serializedAttributes />";
+            return "<$tagName$serializedAttributes />";
           }
 
-          return (StringBuffer("<$tagName $serializedAttributes>")
+          return (StringBuffer("<$tagName$serializedAttributes>")
                 ..writeAll(children.map<String>((XmlNode n) => n.outerXml))
                 ..write("</$tagName>"))
               .toString();
@@ -60,4 +64,7 @@ class XmlNode with _$XmlNode {
         fragment: (List<XmlNode> children) => children.map<String>((XmlNode n) => n.textContent).join(" "),
         text: (String value) => value,
       );
+
+  @override
+  String toString() => outerXml;
 }

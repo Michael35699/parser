@@ -123,11 +123,6 @@ class _$XmlTextNode extends XmlTextNode {
   final String value;
 
   @override
-  String toString() {
-    return 'XmlNode.text(value: $value)';
-  }
-
-  @override
   bool operator ==(dynamic other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
@@ -272,11 +267,6 @@ class _$XmlFragmentNode extends XmlFragmentNode {
   List<XmlNode> get children {
     // ignore: implicit_dynamic_type
     return EqualUnmodifiableListView(_children);
-  }
-
-  @override
-  String toString() {
-    return 'XmlNode.fragment(children: $children)';
   }
 
   @override
@@ -450,11 +440,6 @@ class _$XmlTagNode extends XmlTagNode {
     if (value == null) return null;
     // ignore: implicit_dynamic_type
     return EqualUnmodifiableListView(value);
-  }
-
-  @override
-  String toString() {
-    return 'XmlNode.tag(name: $name, attributes: $attributes, children: $children)';
   }
 
   @override
