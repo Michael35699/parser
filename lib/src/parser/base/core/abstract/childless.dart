@@ -1,4 +1,3 @@
-import "dart:collection";
 
 import "package:freezed_annotation/freezed_annotation.dart";
 import "package:parser/internal_all.dart";
@@ -13,11 +12,11 @@ abstract class ChildlessParser extends Parser {
 
   @nonVirtual
   @override
-  Parser cloneSelf(HashMap<Parser, Parser> cloned) => this;
+  Parser cloneSelf(ParserCacheMap cloned) => this;
 
   @nonVirtual
   @override
-  Parser transformChildren(TransformHandler handler, HashMap<Parser, Parser> transformed) => this;
+  Parser transformChildren(TransformHandler handler, ParserCacheMap transformed) => this;
 
   @nonVirtual
   @override

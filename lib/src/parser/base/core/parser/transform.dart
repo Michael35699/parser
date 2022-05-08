@@ -1,11 +1,10 @@
 // ignore_for_file: deprecated_member_use_from_same_package
 
-import "dart:collection";
 
 import "package:parser/internal_all.dart";
 
-Parser _clone(Parser parser, [HashMap<Parser, Parser>? cloned]) {
-  cloned ??= HashMap<Parser, Parser>.identity();
+Parser _clone(Parser parser, [ParserCacheMap? cloned]) {
+  cloned ??= ParserCacheMap();
   Parser clone = cloned[parser] ??= parser.cloneSelf(cloned)
     ..prioritizeLeft = parser.prioritizeLeft
     ..memoize = parser.memoize
@@ -61,8 +60,8 @@ Parser _transformReplace(Parser parser, Parser target, Parser replace) {
   return _transform(parser, (Parser p) => p == target ? replace : p);
 }
 
-Parser _transform(Parser parser, TransformHandler handler, [HashMap<Parser, Parser>? transformed]) {
-  transformed ??= HashMap<Parser, Parser>.identity();
+Parser _transform(Parser parser, TransformHandler handler, [ParserCacheMap? transformed]) {
+  transformed ??= ParserCacheMap();
   Parser p = transformed[parser] ??= handler(parser.transformChildren(handler, transformed));
 
   return p;
@@ -75,14 +74,14 @@ extension ParserTransformExtension on Parser {
       _transformWhere(this, predicate, handler);
   Parser transformType<T extends Parser>(TransformHandler<T> handler) => //
       _transformType(this, handler);
-  Parser transform<T extends Parser>(TransformHandler handler, [HashMap<Parser, Parser>? transformed]) =>
+  Parser transform<T extends Parser>(TransformHandler handler, [ParserCacheMap? transformed]) =>
       _transform(this, handler, transformed);
 
   Parser build() => _build(this);
   Parser unmapped() => _unmapped(this);
   Parser undropped() => _undropped(this);
   Parser simplified() => _simplified(this);
-  Parser clone([HashMap<Parser, Parser>? cloned]) => _clone(this, cloned);
+  Parser clone([ParserCacheMap? cloned]) => _clone(this, cloned);
 }
 
 extension LazyParserTransformExtension on Lazy<Parser> {
@@ -92,12 +91,12 @@ extension LazyParserTransformExtension on Lazy<Parser> {
       _transformWhere(this.$, predicate, handler);
   Parser transformType<T extends Parser>(TransformHandler<T> handler) => //
       _transformType(this.$, handler);
-  Parser transform<T extends Parser>(TransformHandler handler, [HashMap<Parser, Parser>? transformed]) =>
+  Parser transform<T extends Parser>(TransformHandler handler, [ParserCacheMap? transformed]) =>
       _transform(this.$, handler, transformed);
 
   Parser build() => _build(this.$);
   Parser unmapped() => _unmapped(this.$);
   Parser undropped() => _undropped(this.$);
   Parser simplified() => _simplified(this.$);
-  Parser clone([HashMap<Parser, Parser>? cloned]) => _clone(this.$);
+  Parser clone([ParserCacheMap? cloned]) => _clone(this.$);
 }

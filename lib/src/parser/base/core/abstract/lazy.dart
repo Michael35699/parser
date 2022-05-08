@@ -1,4 +1,3 @@
-import "dart:collection";
 
 import "package:parser/internal_all.dart";
 
@@ -20,12 +19,12 @@ abstract class LazyLoadParser extends Parser {
   Parser get unwrapped => computed;
 
   @override
-  Parser cloneSelf(HashMap<Parser, Parser> cloned) {
+  Parser cloneSelf(ParserCacheMap cloned) {
     return eager(computed.clone(cloned));
   }
 
   @override
-  Parser transformChildren(TransformHandler handler, HashMap<Parser, Parser> transformed) {
+  Parser transformChildren(TransformHandler handler, ParserCacheMap transformed) {
     return this..computed = computed.transform(handler, transformed);
   }
 

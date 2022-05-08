@@ -25,9 +25,9 @@ abstract class Parser {
   bool? prioritizeLeft;
 
   @Deprecated("Use the `clone` method")
-  Parser cloneSelf(HashMap<Parser, Parser> cloned);
+  Parser cloneSelf(Expando<Parser> cloned);
   @Deprecated("Use the `transform` method")
-  Parser transformChildren(TransformHandler handler, HashMap<Parser, Parser> transformed);
+  Parser transformChildren(TransformHandler handler, Expando<Parser> transformed);
   @Deprecated("Use the `pegApply` method")
   Context parsePeg(Context context, PegHandler handler);
   @Deprecated("Push the parser into the `Trampoline` instead of calling it directly")

@@ -22,3 +22,5 @@ typedef ParserSet = Set<Parser>;
 typedef ParserSetMapping = Map<Parser, ParserSet>;
 
 typedef ExceptFunction<R> = R Function(ContextFailure);
+
+typedef ParserCacheMap = Expando<Parser>;
