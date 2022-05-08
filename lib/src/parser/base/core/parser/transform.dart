@@ -1,6 +1,5 @@
 // ignore_for_file: deprecated_member_use_from_same_package
 
-
 import "package:parser/internal_all.dart";
 
 Parser _clone(Parser parser, [ParserCacheMap? cloned]) {
@@ -35,7 +34,11 @@ Parser _unmapped(Parser parser) {
 }
 
 Parser _undropped(Parser parser) {
-  return _clone(parser).transformType((DropParser p) => p.parser);
+  return _clone(parser)
+      .transformType((DropParser p) => p.parser)
+      .transformType((DropLeftRightParser p) => p.left & p.parser & p.right)
+      .transformType((DropLeftParser p) => p.left & p.parser)
+      .transformType((DropRightParser p) => p.parser & p.right);
 }
 
 Parser _transformWhere<T extends Parser>(Parser parser, ParserPredicate predicate, TransformHandler<T> handler) {
