@@ -90,7 +90,13 @@ void main() {
                   "alpha"
                 ]));
 
-            expect(parser, parserFailure("<alpha></beta>"), reason: "tag name mismatch");
+            expect(
+                parser,
+                parserSuccess("<alpha></beta>", [
+                  ["alpha", emptyList],
+                  emptyList,
+                  "beta"
+                ]));
           });
           group("single_child", () {
             test("text_node", () {
