@@ -12,12 +12,13 @@ void main() {
   Parser parser = grammar.start.build();
   print(parser.peg("""
 <html>
-<head>Heading</head>
-<body attr1='val1'>
+  <head>Heading</head>
+  <body attr1=true>
     <div class='container'>
         <div id='class'>Something here</div>
         <div>Something else</div>
+        impossible
     </div>
-</body>
+  </body>
 </html>""", except: log.cerror));
 }
