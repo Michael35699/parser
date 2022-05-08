@@ -3,22 +3,22 @@ import "package:parser/internal_all.dart";
 class IndentParser extends SpecialParser {
   @override
   Context parsePure(Context context) {
-    String input = context.state.input;
+    String buffer = context.state.buffer;
     int index = context.state.index;
 
-    if (index >= input.length || input[index] != "\n") {
+    if (index >= buffer.length || buffer[index] != "\n") {
       return context.failure(expected.the("beginning of a line"));
     }
 
     int newLines = 0;
     index++;
-    while (index < input.length && input[index] == "\n") {
+    while (index < buffer.length && buffer[index] == "\n") {
       index++;
       newLines++;
     }
 
     int column = 0;
-    while (<String>{" ", "\t"}.contains(input[index])) {
+    while (<String>{" ", "\t"}.contains(buffer[index])) {
       column++;
       index++;
     }

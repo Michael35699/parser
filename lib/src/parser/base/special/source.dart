@@ -8,11 +8,11 @@ class SourceParser extends SpecialParser {
 
   @override
   Context parsePure(Context context)  {
-    if (context.state.index >= context.state.input.length) {
+    if (context.state.index >= context.state.buffer.length) {
       return context.failure("Expected any character, received end of input");
     }
 
-    return context.advance(1).success(context.state.input[context.state.index]);
+    return context.advance(1).success(context.state.buffer[context.state.index]);
   }
 
 }

@@ -12,7 +12,7 @@ class FlatParser extends WrapParser {
     Context result = handler.apply(parser, context);
 
     if (result is ContextSuccess) {
-      return result.success(result.state.input.substring(context.state.index, result.state.index));
+      return result.success(result.state.buffer.substring(context.state.index, result.state.index));
     }
     return result;
   }
@@ -21,7 +21,7 @@ class FlatParser extends WrapParser {
   void parseGll(Context context, Trampoline trampoline, GllContinuation continuation) {
     trampoline.push(parser, context, (Context result) {
       if (result is ContextSuccess) {
-        continuation(result.success(result.state.input.substring(context.state.index, result.state.index)));
+        continuation(result.success(result.state.buffer.substring(context.state.index, result.state.index)));
       } else {
         continuation(result);
       }

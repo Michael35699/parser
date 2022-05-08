@@ -16,7 +16,7 @@ final _privateConstructorUsedError = UnsupportedError(
 
 /// @nodoc
 mixin _$State {
-  String get input => throw _privateConstructorUsedError;
+  String get buffer => throw _privateConstructorUsedError;
   ParseMode get parseMode => throw _privateConstructorUsedError;
   int get index => throw _privateConstructorUsedError;
   num get precedence => throw _privateConstructorUsedError;
@@ -34,7 +34,7 @@ abstract class $StateCopyWith<$Res> {
   factory $StateCopyWith(State value, $Res Function(State) then) =
       _$StateCopyWithImpl<$Res>;
   $Res call(
-      {String input,
+      {String buffer,
       ParseMode parseMode,
       int index,
       num precedence,
@@ -54,7 +54,7 @@ class _$StateCopyWithImpl<$Res> implements $StateCopyWith<$Res> {
 
   @override
   $Res call({
-    Object? input = freezed,
+    Object? buffer = freezed,
     Object? parseMode = freezed,
     Object? index = freezed,
     Object? precedence = freezed,
@@ -64,9 +64,9 @@ class _$StateCopyWithImpl<$Res> implements $StateCopyWith<$Res> {
     Object? packratMode = freezed,
   }) {
     return _then(_value.copyWith(
-      input: input == freezed
-          ? _value.input
-          : input // ignore: cast_nullable_to_non_nullable
+      buffer: buffer == freezed
+          ? _value.buffer
+          : buffer // ignore: cast_nullable_to_non_nullable
               as String,
       parseMode: parseMode == freezed
           ? _value.parseMode
@@ -107,7 +107,7 @@ abstract class $StateDefaultCopyWith<$Res> implements $StateCopyWith<$Res> {
       _$StateDefaultCopyWithImpl<$Res>;
   @override
   $Res call(
-      {String input,
+      {String buffer,
       ParseMode parseMode,
       int index,
       num precedence,
@@ -129,7 +129,7 @@ class _$StateDefaultCopyWithImpl<$Res> extends _$StateCopyWithImpl<$Res>
 
   @override
   $Res call({
-    Object? input = freezed,
+    Object? buffer = freezed,
     Object? parseMode = freezed,
     Object? index = freezed,
     Object? precedence = freezed,
@@ -139,9 +139,9 @@ class _$StateDefaultCopyWithImpl<$Res> extends _$StateCopyWithImpl<$Res>
     Object? packratMode = freezed,
   }) {
     return _then(StateDefault(
-      input: input == freezed
-          ? _value.input
-          : input // ignore: cast_nullable_to_non_nullable
+      buffer: buffer == freezed
+          ? _value.buffer
+          : buffer // ignore: cast_nullable_to_non_nullable
               as String,
       parseMode: parseMode == freezed
           ? _value.parseMode
@@ -179,7 +179,7 @@ class _$StateDefaultCopyWithImpl<$Res> extends _$StateCopyWithImpl<$Res>
 
 class _$StateDefault extends StateDefault {
   _$StateDefault(
-      {required this.input,
+      {required this.buffer,
       required this.parseMode,
       this.index = 0,
       this.precedence = double.infinity,
@@ -192,7 +192,7 @@ class _$StateDefault extends StateDefault {
         super._();
 
   @override
-  final String input;
+  final String buffer;
   @override
   final ParseMode parseMode;
   @override
@@ -224,7 +224,7 @@ class _$StateDefault extends StateDefault {
 
   @override
   String toString() {
-    return 'State(input: $input, parseMode: $parseMode, index: $index, precedence: $precedence, indentStack: $indentStack, dataStack: $dataStack, pegMode: $pegMode, packratMode: $packratMode)';
+    return 'State(buffer: $buffer, parseMode: $parseMode, index: $index, precedence: $precedence, indentStack: $indentStack, dataStack: $dataStack, pegMode: $pegMode, packratMode: $packratMode)';
   }
 
   @override
@@ -232,7 +232,7 @@ class _$StateDefault extends StateDefault {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is StateDefault &&
-            const DeepCollectionEquality().equals(other.input, input) &&
+            const DeepCollectionEquality().equals(other.buffer, buffer) &&
             const DeepCollectionEquality().equals(other.parseMode, parseMode) &&
             const DeepCollectionEquality().equals(other.index, index) &&
             const DeepCollectionEquality()
@@ -248,7 +248,7 @@ class _$StateDefault extends StateDefault {
   @override
   int get hashCode => Object.hash(
       runtimeType,
-      const DeepCollectionEquality().hash(input),
+      const DeepCollectionEquality().hash(buffer),
       const DeepCollectionEquality().hash(parseMode),
       const DeepCollectionEquality().hash(index),
       const DeepCollectionEquality().hash(precedence),
@@ -265,7 +265,7 @@ class _$StateDefault extends StateDefault {
 
 abstract class StateDefault extends State {
   factory StateDefault(
-      {required final String input,
+      {required final String buffer,
       required final ParseMode parseMode,
       final int index,
       final num precedence,
@@ -276,7 +276,7 @@ abstract class StateDefault extends State {
   StateDefault._() : super._();
 
   @override
-  String get input => throw _privateConstructorUsedError;
+  String get buffer => throw _privateConstructorUsedError;
   @override
   ParseMode get parseMode => throw _privateConstructorUsedError;
   @override

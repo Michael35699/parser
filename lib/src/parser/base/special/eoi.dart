@@ -8,7 +8,7 @@ class EoiParser extends SpecialParser {
 
   @override
   Context parsePure(Context context) {
-    if (context.state.index >= context.state.input.length) {
+    if (context.state.index >= context.state.buffer.length) {
       return context.success(#eoi);
     }
 

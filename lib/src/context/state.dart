@@ -1,12 +1,12 @@
 import "package:freezed_annotation/freezed_annotation.dart";
-import "package:parser/src/context/parse_mode.dart";
+import "package:parser/internal_all.dart";
 
 part "state.freezed.dart";
 
 @freezed
 class State with _$State {
   factory State({
-    required String input,
+    required String buffer,
     required ParseMode parseMode,
     @Default(0) int index,
     @Default(double.infinity) num precedence,
@@ -17,7 +17,7 @@ class State with _$State {
   }) = StateDefault;
   State._();
 
-  String get padded => input.split("\n").map((String c) => "$c ").join("\n");
+  String get padded => buffer.split("\n").map((String c) => "$c ").join("\n");
   State get normalize => copyWith(precedence: -1);
 
   /// Given the index and the string, return the line number.

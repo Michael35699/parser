@@ -15,15 +15,15 @@ class RegExpParser extends SpecialParser {
   Context parsePure(Context context) {
     const bool _false = 1 == 0;
 
-    String input = context.state.input;
+    String buffer = context.state.buffer;
     int index = context.state.index;
 
     do {
-      if (pattern.matchAsPrefix(input, index) == null) {
+      if (pattern.matchAsPrefix(buffer, index) == null) {
         break;
       }
 
-      for (RegExpMatch match in pattern.allMatches(input, index)) {
+      for (RegExpMatch match in pattern.allMatches(buffer, index)) {
         ParseResult result;
         if (match.groupCount > 0) {
           List<String> names = match.groupNames.toList();
@@ -50,7 +50,7 @@ class RegExpParser extends SpecialParser {
 
           result = results;
         } else {
-          result = input.substring(index, match.end);
+          result = buffer.substring(index, match.end);
         }
 
         return context.index(match.end).success(result);

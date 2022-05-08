@@ -3,18 +3,18 @@ import "package:parser/internal_all.dart";
 class NewLineParser extends SpecialParser {
   @override
   Context parsePure(Context context) {
-    String input = context.state.input;
+    String buffer = context.state.buffer;
     int index = context.state.index;
 
-    if (index >= input.length || input[index] != "\n") {
+    if (index >= buffer.length || buffer[index] != "\n") {
       return context.failure(expected.a("newline"));
     }
 
     int newlineCount = ++index - index + 1;
-    for (; index < input.length && input[index] == "\n"; index++, newlineCount++) {}
+    for (; index < buffer.length && buffer[index] == "\n"; index++, newlineCount++) {}
 
     int column = 0;
-    while (index < input.length && <String>{" ", "\t"}.contains(input[index])) {
+    while (index < buffer.length && <String>{" ", "\t"}.contains(buffer[index])) {
       column++;
       index++;
     }

@@ -21,7 +21,7 @@ Iterable<Context> _runCtxGll(Parser parser, String input) sync* {
   Parser built = parser.build();
   String formatted = input.replaceAll("\r", "").unindent();
   Trampoline trampoline = Trampoline();
-  Context context = Context.empty(State(input: formatted, parseMode: ParseMode.gll));
+  Context context = Context.empty(State(buffer: formatted, parseMode: ParseMode.gll));
   List<Context> successes = <Context>[];
 
   trampoline.push(built, context, (Context context) {

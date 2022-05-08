@@ -3,15 +3,15 @@ import "package:parser/internal_all.dart";
 class AlignPointParser extends SpecialParser {
   @override
   Context parsePure(Context context) {
-    String input = context.state.input;
+    String buffer = context.state.buffer;
     int index = context.state.index;
 
-    if (index >= input.length) {
+    if (index >= buffer.length) {
       return context.failure(expected.the("beginning of a line"));
     }
 
     int column = 0;
-    while (index - column > 0 && input[index - column] != "\n") {
+    while (index - column > 0 && buffer[index - column] != "\n") {
       column++;
     }
 

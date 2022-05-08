@@ -3,7 +3,7 @@ import "package:parser/src/util/shared/unindent.dart";
 import "package:test/test.dart";
 
 void main() {
-  Context base = Context.empty(State(input: "", parseMode: ParseMode.packrat));
+  Context base = Context.empty(State(buffer: "", parseMode: ParseMode.packrat));
 
   group("method calls", () {
     test("index", () {
