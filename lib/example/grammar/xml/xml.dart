@@ -1,24 +1,27 @@
-import "package:parser/internal_all.dart";
+import "package:parser/parser.dart" as parser;
+
+typedef Parser = parser.Parser;
+typedef Grammar = parser.Grammar;
 
 class XmlGrammar with Grammar {
   @override
   Parser start() => document.end();
   Parser unit() => tag | textNode;
-  Parser document() => unit.to(eoi);
+  Parser document() => unit.to(parser.eoi);
   Parser content() => unit.to(tagClose);
 
   Parser tag() => blockTag | singleTag;
   Parser blockTag() => tagOpen & content.failure(const <Object>[]) & tagClose;
 
-  Parser tagOpen() => -"<".tr >> identifier & tagAttributes << -">".tl;
-  Parser singleTag() => -"<".tr >> identifier & tagAttributes << -"/>".tl;
-  Parser tagClose() => -"</".tr >> identifier << -">".tl;
+  Parser tagOpen() => -"<".tr >> parser.identifier & tagAttributes << -">".tl;
+  Parser singleTag() => -"<".tr >> parser.identifier & tagAttributes << -"/>".tl;
+  Parser tagClose() => -"</".tr >> parser.identifier << -">".tl;
 
-  Parser tagAttributes() => whitespace >> tagAttribute.sep(-whitespace).failure(const <Object>[]);
+  Parser tagAttributes() => parser.whitespace >> tagAttribute.sep(-parser.whitespace).failure(const <Object>[]);
   Parser tagAttribute() =>
-      identifier.trim & -"=".t & string.map.$at(1).or(identifier) | //
-      identifier.trim & success("true");
+      parser.identifier.trim & -"=".t & parser.string.map.$at(1).or(parser.identifier) | //
+      parser.identifier.trim & parser.success("true");
 
   Parser textNode() => textNodeChar.plus().flat();
-  Parser textNodeChar() => (singleTag.not() & blockTag.not() & tagClose.not()) >> source;
+  Parser textNodeChar() => (singleTag.not() & blockTag.not() & tagClose.not()) >> parser.source;
 }

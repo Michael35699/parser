@@ -1,7 +1,9 @@
 import "package:parser/example/grammar/xml/evaluator/node.dart";
 import "package:parser/example/grammar/xml/evaluator/typedef.dart";
 import "package:parser/example/grammar/xml/xml.dart";
-import "package:parser/parser.dart";
+import "package:parser/parser.dart" as parser;
+
+typedef Parser = parser.Parser;
 
 class XmlEvaluator extends XmlGrammar {
   @override
@@ -22,10 +24,10 @@ class XmlEvaluator extends XmlGrammar {
       XmlNode.tag(name: name, attributes: XmlAttributes.fromEntries(attributes)));
 
   @override
-  Parser blockTag() => super.blockTag.map.$3((XmlTagStart start, List<XmlNode> children, String end) => //
+  Parser blockTag() => super.blockTag.bind.$3((XmlTagStart start, List<XmlNode> children, String end) => //
       start.name != end
-          ? throw Exception("Mismatched tag '${start.name}' -> '$end'")
-          : XmlNode.tag(name: start.name, attributes: start.attributes, children: children));
+          ? parser.failure("Mismatched tag '${start.name}' -> '$end'")
+          : parser.success(XmlNode.tag(name: start.name, attributes: start.attributes, children: children)));
 
   @override
   Parser tagAttributes() => super.tagAttributes.map.$list<XmlAttribute>();
