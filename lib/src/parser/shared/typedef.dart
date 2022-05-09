@@ -1,16 +1,16 @@
 import "package:parser/internal_all.dart";
 
 typedef Lazy<T> = T Function();
-typedef LazyParser = Lazy<Parser>;
-typedef MapFunction = ParseResult Function(ParseResult, Context);
-typedef FlatMapFunction = Context Function(ParseResult, Context);
-typedef BindFunction = Parser Function(ParseResult, Context);
-typedef FilterFunction = bool Function(ParseResult, Context);
+typedef FunctorFunction<R> = R Function(ParseResult, Context);
+typedef ParserFunction<R, T extends Parser> = R Function(T);
 
+typedef LazyParser = Lazy<Parser>;
+typedef MapFunction = FunctorFunction<ParseResult>;
+typedef FlatMapFunction = FunctorFunction<Context>;
+typedef BindFunction = FunctorFunction<Parser>;
+typedef FilterFunction = FunctorFunction<bool>;
 typedef ParseFunction = Context Function(Context);
 typedef ContinuationFunction = Context Function(ParseFunction, Context);
-
-typedef ParserFunction<R, T extends Parser> = R Function(T);
 typedef ParserPredicate<T extends Parser> = ParserFunction<bool, T>;
 typedef TransformHandler<T extends Parser> = ParserFunction<Parser, T>;
 typedef NullableTransformHandler<T extends Parser> = ParserFunction<Parser?, T>;

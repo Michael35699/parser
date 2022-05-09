@@ -137,7 +137,7 @@ void main() {
       });
       test("extension_dot", () {
         parser.Parser pass = "a".map.$value("b") & "b";
-        parser.Parser never = parser.failure("oh no!").$0(() => fail("this should not be called"));
+        parser.Parser never = parser.failure("oh no!").map.$0(() => fail("this should not be called"));
         run(pass, never);
       });
       test("extension_map", () {
