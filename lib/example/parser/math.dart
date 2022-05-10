@@ -5,24 +5,21 @@ import "package:parser/parser.dart" as parser;
 parser.Parser infix() => _addition.thunk();
 
 parser.Parser _addition() => parser.blank | //
-    _addition & "+".t & _addition ^ parser.$3((num l, _, num r) => l + r) |
-    _addition & "-".t & _addition ^ parser.$3((num l, _, num r) => l - r) |
-    _multiplication
-  ..left();
+    _addition & "+".t & _multiplication ^ parser.$3((num l, _, num r) => l + r) |
+    _addition & "-".t & _multiplication ^ parser.$3((num l, _, num r) => l - r) |
+    _multiplication;
 
 parser.Parser _multiplication() => parser.blank | //
-    _multiplication & "*".t & _multiplication ^ parser.$3((num l, _, num r) => l * r) |
-    _multiplication & "/".t & _multiplication ^ parser.$3((num l, _, num r) => l / r) |
-    _multiplication & "~/".t & _multiplication ^ parser.$3((num l, _, num r) => l ~/ r) |
-    _multiplication & "%".t & _multiplication ^ parser.$3((num l, _, num r) => l % r) |
-    _power
-  ..left();
+    _multiplication & "*".t & _power ^ parser.$3((num l, _, num r) => l * r) |
+    _multiplication & "/".t & _power ^ parser.$3((num l, _, num r) => l / r) |
+    _multiplication & "~/".t & _power ^ parser.$3((num l, _, num r) => l ~/ r) |
+    _multiplication & "%".t & _power ^ parser.$3((num l, _, num r) => l % r) |
+    _power;
 
 parser.Parser _power() => parser.blank | //
-    _power & "^".t & _power ^ parser.$3((num l, _, num r) => math.pow(l, r)) |
-    _power & "**".t & _power ^ parser.$3((num l, _, num r) => math.pow(l, r)) |
-    _negative
-  ..right();
+    _power & "^".t & _negative ^ parser.$3((num l, _, num r) => math.pow(l, r)) |
+    _power & "**".t & _negative ^ parser.$3((num l, _, num r) => math.pow(l, r)) |
+    _negative;
 
 parser.Parser _negative() => "-".tr & _negative ^ parser.$2((_, num v) => -v) | _atomic;
 parser.Parser _atomic() => _number.flat() ^ parser.$type(int.parse) | "(".t >> _addition << ")".t;
