@@ -7,14 +7,14 @@ class SourceParser extends SpecialParser {
   SourceParser._();
 
   @override
-  Context parsePure(Context context)  {
+  Context parsePure(Context context) {
     if (context.state.index >= context.state.buffer.length) {
       return context.failure("Expected any character, received end of input");
     }
 
     return context.advance(1).success(context.state.buffer[context.state.index]);
   }
-
 }
 
+SourceParser any() => SourceParser();
 SourceParser source() => SourceParser();
