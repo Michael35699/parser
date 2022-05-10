@@ -9,7 +9,7 @@ void main() {
     foo bar baz
   """
       .unindent();
-  State base = State(buffer: buffer, index: 4, parseMode: ParseMode.packrat);
+  State base = State(buffer: buffer, index: 4);
 
   group("methods", () {
     test("padding", () {
