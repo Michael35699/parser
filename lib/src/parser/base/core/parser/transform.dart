@@ -5,7 +5,6 @@ import "package:parser/internal_all.dart";
 Parser _clone(Parser parser, [ParserCacheMap? cloned]) {
   cloned ??= ParserCacheMap();
   Parser clone = cloned[parser] ??= parser.cloneSelf(cloned)
-    ..prioritizeLeft = parser.prioritizeLeft
     ..memoize = parser.memoize
     ..built = parser.built;
 

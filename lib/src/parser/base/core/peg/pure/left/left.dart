@@ -38,14 +38,7 @@ class LeftPeg extends PegHandler {
     if (growing.containsKey(index)) {
       return growing[index]!;
     } else {
-      late bool prioritized = parser.prioritizeLeft ?? false;
-      late bool isGrowing = growing.isNotEmpty;
-      late bool definitelyRR = parser.definitelyRightRecursive;
-      if (prioritized && isGrowing && definitelyRR) {
-        growing[index] = context.failure("right recursion in left recursion");
-
-        return parser.parsePeg(context, this);
-      } else if (parser.leftRecursive) {
+      if (parser.leftRecursive) {
         return leftRecursiveResult(parser, context);
       } else {
         return parser.parsePeg(context, this);

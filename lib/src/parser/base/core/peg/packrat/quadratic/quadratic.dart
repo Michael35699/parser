@@ -75,37 +75,18 @@ class QuadraticPackrat extends PegHandler {
 
     MemoizationEntry? entry = recall(parser, index, context);
     if (entry == null) {
-      late bool prioritized = parser.prioritizeLeft ?? false;
-      late bool isGrowing = mutable.growing.contains(parser);
-      late bool definitelyRR = parser.definitelyRightRecursive;
-      if (prioritized && isGrowing && definitelyRR) {
-        mutable.memoMap[parser][index] = context.failure("right recursion on left recursive").entry();
-
-        return parser.parsePeg(context, this);
-      }
-
-      /// Create a new LR instance. Then, add it to the stack.
       LeftRecursion leftRecursion = LeftRecursion(seed: context.failure("seed"), parser: parser, head: null);
+
       mutable.parserStack.add(leftRecursion);
-
-      /// Save a new entry on `position` with the LR instance.
       entry = mutable.memoMap[parser][index] = leftRecursion.entry();
-
-      /// Evaluate the parser.
       Context ans = parser.parsePeg(context, this);
-
-      /// Remove the created LR instance from the stack.
       mutable.parserStack.removeLast();
 
-      /// If a descendant parser put a head in the lr then return the result of method [leftRecursiveResult()].
       if (leftRecursion.head != null) {
         leftRecursion.seed = ans;
 
         return leftRecursiveResult(parser, index, entry);
-      }
-
-      /// If it was a normal parser result, return the resulting context.
-      else {
+      } else {
         entry.value = ans;
 
         return ans;
@@ -114,14 +95,8 @@ class QuadraticPackrat extends PegHandler {
       MemoizationValue result = entry.value;
 
       if (result is LeftRecursion) {
-        /// If a previous call on this parser on this position
-        /// has placed an LR instance, then this is a left-recursive call.
-        /// Create a new head instance, and assign it to the LR instance.
         Head head = result.head ??= Head(parser: parser, evaluationSet: <Parser>{}, involvedSet: <Parser>{});
 
-        /// While the LR of the current left-recursive parser is not yet found,
-        /// Assign all the [lrStack] items to have the [lHead] as their own head.
-        /// Also, add the [rule] of [lrStack.item] to the [lHead.involvedSet]
         for (LeftRecursion left in mutable.parserStack.reversed.takeWhile((LeftRecursion lr) => lr.head != head)) {
           head.involvedSet.add(left.parser);
           left.head = head;
