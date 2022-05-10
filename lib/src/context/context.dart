@@ -24,12 +24,15 @@ class Context with _$Context, QuadraticPegMemoValue, LinearPegMemoValue {
       );
 
   /// Returns a ContextEmpty.
+  @inlineVm
   ContextEmpty empty() => Context.empty(state) as ContextEmpty;
 
   /// Returns a ContextFailure with the basic message.
+  @inlineVm
   ContextFailure failure(String message) => Context.failure(state, message) as ContextFailure;
 
   /// Returns a ContextSuccess with the given results.
+  @inlineVm
   ContextSuccess success(ParseResult result, [ParseResult unmappedResult = #NO]) =>
       Context.success(state, result, unmappedResult == #NO ? result : unmappedResult) as ContextSuccess;
 
@@ -46,13 +49,11 @@ class Context with _$Context, QuadraticPegMemoValue, LinearPegMemoValue {
   bool get isSuccess => whenOrNull(failure: (_, __, ___) => false) ?? true;
   bool get isFailure => !isSuccess;
 
-  // ignore: avoid_returning_this
-  Context addResult(List<ParseResult> mapped, List<ParseResult> unmapped) {
+  void addResult(List<ParseResult> mapped, List<ParseResult> unmapped) {
     whenOrNull(success: (_, ParseResult m, ParseResult um) {
       mapped.add(m);
       unmapped.add(um);
     });
-    return this;
   }
 
   Context push(dynamic value) => copyWith.state(dataStack: state.dataStack << value);

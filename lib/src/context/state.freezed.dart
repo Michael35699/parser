@@ -17,13 +17,10 @@ final _privateConstructorUsedError = UnsupportedError(
 /// @nodoc
 mixin _$State {
   String get buffer => throw _privateConstructorUsedError;
-  ParseMode get parseMode => throw _privateConstructorUsedError;
   int get index => throw _privateConstructorUsedError;
   num get precedence => throw _privateConstructorUsedError;
   List<int> get indentStack => throw _privateConstructorUsedError;
   List<dynamic> get dataStack => throw _privateConstructorUsedError;
-  PegMode? get pegMode => throw _privateConstructorUsedError;
-  PackratMode? get packratMode => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
   $StateCopyWith<State> get copyWith => throw _privateConstructorUsedError;
@@ -35,13 +32,10 @@ abstract class $StateCopyWith<$Res> {
       _$StateCopyWithImpl<$Res>;
   $Res call(
       {String buffer,
-      ParseMode parseMode,
       int index,
       num precedence,
       List<int> indentStack,
-      List<dynamic> dataStack,
-      PegMode? pegMode,
-      PackratMode? packratMode});
+      List<dynamic> dataStack});
 }
 
 /// @nodoc
@@ -55,23 +49,16 @@ class _$StateCopyWithImpl<$Res> implements $StateCopyWith<$Res> {
   @override
   $Res call({
     Object? buffer = freezed,
-    Object? parseMode = freezed,
     Object? index = freezed,
     Object? precedence = freezed,
     Object? indentStack = freezed,
     Object? dataStack = freezed,
-    Object? pegMode = freezed,
-    Object? packratMode = freezed,
   }) {
     return _then(_value.copyWith(
       buffer: buffer == freezed
           ? _value.buffer
           : buffer // ignore: cast_nullable_to_non_nullable
               as String,
-      parseMode: parseMode == freezed
-          ? _value.parseMode
-          : parseMode // ignore: cast_nullable_to_non_nullable
-              as ParseMode,
       index: index == freezed
           ? _value.index
           : index // ignore: cast_nullable_to_non_nullable
@@ -88,14 +75,6 @@ class _$StateCopyWithImpl<$Res> implements $StateCopyWith<$Res> {
           ? _value.dataStack
           : dataStack // ignore: cast_nullable_to_non_nullable
               as List<dynamic>,
-      pegMode: pegMode == freezed
-          ? _value.pegMode
-          : pegMode // ignore: cast_nullable_to_non_nullable
-              as PegMode?,
-      packratMode: packratMode == freezed
-          ? _value.packratMode
-          : packratMode // ignore: cast_nullable_to_non_nullable
-              as PackratMode?,
     ));
   }
 }
@@ -108,13 +87,10 @@ abstract class $StateDefaultCopyWith<$Res> implements $StateCopyWith<$Res> {
   @override
   $Res call(
       {String buffer,
-      ParseMode parseMode,
       int index,
       num precedence,
       List<int> indentStack,
-      List<dynamic> dataStack,
-      PegMode? pegMode,
-      PackratMode? packratMode});
+      List<dynamic> dataStack});
 }
 
 /// @nodoc
@@ -130,23 +106,16 @@ class _$StateDefaultCopyWithImpl<$Res> extends _$StateCopyWithImpl<$Res>
   @override
   $Res call({
     Object? buffer = freezed,
-    Object? parseMode = freezed,
     Object? index = freezed,
     Object? precedence = freezed,
     Object? indentStack = freezed,
     Object? dataStack = freezed,
-    Object? pegMode = freezed,
-    Object? packratMode = freezed,
   }) {
     return _then(StateDefault(
       buffer: buffer == freezed
           ? _value.buffer
           : buffer // ignore: cast_nullable_to_non_nullable
               as String,
-      parseMode: parseMode == freezed
-          ? _value.parseMode
-          : parseMode // ignore: cast_nullable_to_non_nullable
-              as ParseMode,
       index: index == freezed
           ? _value.index
           : index // ignore: cast_nullable_to_non_nullable
@@ -163,14 +132,6 @@ class _$StateDefaultCopyWithImpl<$Res> extends _$StateCopyWithImpl<$Res>
           ? _value.dataStack
           : dataStack // ignore: cast_nullable_to_non_nullable
               as List<dynamic>,
-      pegMode: pegMode == freezed
-          ? _value.pegMode
-          : pegMode // ignore: cast_nullable_to_non_nullable
-              as PegMode?,
-      packratMode: packratMode == freezed
-          ? _value.packratMode
-          : packratMode // ignore: cast_nullable_to_non_nullable
-              as PackratMode?,
     ));
   }
 }
@@ -180,21 +141,16 @@ class _$StateDefaultCopyWithImpl<$Res> extends _$StateCopyWithImpl<$Res>
 class _$StateDefault extends StateDefault {
   _$StateDefault(
       {required this.buffer,
-      required this.parseMode,
       this.index = 0,
       this.precedence = double.infinity,
       final List<int> indentStack = const <int>[],
-      final List<dynamic> dataStack = const <dynamic>[],
-      this.pegMode,
-      this.packratMode})
+      final List<dynamic> dataStack = const <dynamic>[]})
       : _indentStack = indentStack,
         _dataStack = dataStack,
         super._();
 
   @override
   final String buffer;
-  @override
-  final ParseMode parseMode;
   @override
   @JsonKey()
   final int index;
@@ -218,13 +174,8 @@ class _$StateDefault extends StateDefault {
   }
 
   @override
-  final PegMode? pegMode;
-  @override
-  final PackratMode? packratMode;
-
-  @override
   String toString() {
-    return 'State(buffer: $buffer, parseMode: $parseMode, index: $index, precedence: $precedence, indentStack: $indentStack, dataStack: $dataStack, pegMode: $pegMode, packratMode: $packratMode)';
+    return 'State(buffer: $buffer, index: $index, precedence: $precedence, indentStack: $indentStack, dataStack: $dataStack)';
   }
 
   @override
@@ -233,29 +184,22 @@ class _$StateDefault extends StateDefault {
         (other.runtimeType == runtimeType &&
             other is StateDefault &&
             const DeepCollectionEquality().equals(other.buffer, buffer) &&
-            const DeepCollectionEquality().equals(other.parseMode, parseMode) &&
             const DeepCollectionEquality().equals(other.index, index) &&
             const DeepCollectionEquality()
                 .equals(other.precedence, precedence) &&
             const DeepCollectionEquality()
                 .equals(other.indentStack, indentStack) &&
-            const DeepCollectionEquality().equals(other.dataStack, dataStack) &&
-            const DeepCollectionEquality().equals(other.pegMode, pegMode) &&
-            const DeepCollectionEquality()
-                .equals(other.packratMode, packratMode));
+            const DeepCollectionEquality().equals(other.dataStack, dataStack));
   }
 
   @override
   int get hashCode => Object.hash(
       runtimeType,
       const DeepCollectionEquality().hash(buffer),
-      const DeepCollectionEquality().hash(parseMode),
       const DeepCollectionEquality().hash(index),
       const DeepCollectionEquality().hash(precedence),
       const DeepCollectionEquality().hash(indentStack),
-      const DeepCollectionEquality().hash(dataStack),
-      const DeepCollectionEquality().hash(pegMode),
-      const DeepCollectionEquality().hash(packratMode));
+      const DeepCollectionEquality().hash(dataStack));
 
   @JsonKey(ignore: true)
   @override
@@ -266,19 +210,14 @@ class _$StateDefault extends StateDefault {
 abstract class StateDefault extends State {
   factory StateDefault(
       {required final String buffer,
-      required final ParseMode parseMode,
       final int index,
       final num precedence,
       final List<int> indentStack,
-      final List<dynamic> dataStack,
-      final PegMode? pegMode,
-      final PackratMode? packratMode}) = _$StateDefault;
+      final List<dynamic> dataStack}) = _$StateDefault;
   StateDefault._() : super._();
 
   @override
   String get buffer => throw _privateConstructorUsedError;
-  @override
-  ParseMode get parseMode => throw _privateConstructorUsedError;
   @override
   int get index => throw _privateConstructorUsedError;
   @override
@@ -287,10 +226,6 @@ abstract class StateDefault extends State {
   List<int> get indentStack => throw _privateConstructorUsedError;
   @override
   List<dynamic> get dataStack => throw _privateConstructorUsedError;
-  @override
-  PegMode? get pegMode => throw _privateConstructorUsedError;
-  @override
-  PackratMode? get packratMode => throw _privateConstructorUsedError;
   @override
   @JsonKey(ignore: true)
   $StateDefaultCopyWith<StateDefault> get copyWith =>

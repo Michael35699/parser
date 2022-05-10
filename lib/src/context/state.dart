@@ -1,5 +1,4 @@
 import "package:freezed_annotation/freezed_annotation.dart";
-import "package:parser/internal_all.dart";
 
 part "state.freezed.dart";
 
@@ -7,13 +6,10 @@ part "state.freezed.dart";
 class State with _$State {
   factory State({
     required String buffer,
-    required ParseMode parseMode,
     @Default(0) int index,
     @Default(double.infinity) num precedence,
     @Default(<int>[]) List<int> indentStack,
     @Default(<dynamic>[]) List<dynamic> dataStack,
-    PegMode? pegMode,
-    PackratMode? packratMode,
   }) = StateDefault;
   State._();
 

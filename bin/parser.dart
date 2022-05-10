@@ -1,4 +1,5 @@
 import "package:parser/parser.dart" as local;
+import "package:parser/src/util/shared/time.dart";
 
 int counter = 0;
 
@@ -12,9 +13,9 @@ void main() {
   const String input =
       "{ constantly running dart code here: {block} {these can be used in actual code blocks. Amazing right?} }";
 
-  code.peg.pure(input);
   // print(time(count: 50, () => code.peg.left(input)));
-  // print(time(count: 50, () => code.packrat.basic(input)));
+  print(time(count: 50, () => code.peg.pure(input)));
+  print(time(count: 50, () => code.packrat.basic(input)));
   // print(time(count: 50, () => code.packrat.linear(input)));
   // print(time(count: 50, () => code.packrat.quadratic(input)));
 }

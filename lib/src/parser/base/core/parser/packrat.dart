@@ -22,7 +22,7 @@ Context _runCtxPackrat(Parser parser, String input, {PackratMode? mode}) {
   Parser built = parser.build();
   String formatted = input.replaceAll("\r", "").unindent();
   PegHandler handler = PegHandler.packrat(mode);
-  Context context = Context.empty(State(buffer: formatted, parseMode: ParseMode.packrat, packratMode: mode));
+  Context context = Context.empty(State(buffer: formatted));
   Context result = handler.apply(built, context);
 
   return result;
