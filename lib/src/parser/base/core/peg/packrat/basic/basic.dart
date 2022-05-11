@@ -11,7 +11,7 @@ class BasicPackrat extends PegHandler {
   @internal
   Context parsePureMemoized(Parser parser, Context context) {
     int index = context.state.index;
-    Context result = mutable.memoMap[parser].putIfAbsent(context.state.index, () {
+    Context result = mutable.memoMap[parser].putIfAbsent(index, () {
       mutable.memoMap[parser][index] = context.failure("Left recursion detected.");
 
       return mutable.memoMap[parser][index] = parser.parsePeg(context, this);

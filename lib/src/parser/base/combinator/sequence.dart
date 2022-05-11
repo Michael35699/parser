@@ -9,8 +9,9 @@ class SequenceParser extends CombinatorParser with SequentialParser {
     List<ParseResult> unmapped = <ParseResult>[];
 
     Context ctx = context;
-    for (Parser parser in children) {
-      ctx = handler.apply(parser, ctx);
+    int length = children.length;
+    for (int i = 0; i < length; i++) {
+      ctx = handler.apply(children[i], ctx);
 
       if (ctx.isFailure) {
         return ctx;

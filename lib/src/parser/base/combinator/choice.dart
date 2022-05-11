@@ -34,8 +34,9 @@ class ChoiceParser extends CombinatorParser {
   Context parsePeg(Context context, PegHandler handler) {
     ContextFailure? longestError;
     Context? longestSuccess;
-    for (Parser parser in children) {
-      Context ctx = handler.apply(parser, context);
+    int length = children.length;
+    for (int i = 0; i < length; i++) {
+      Context ctx = handler.apply(children[i], context);
 
       if (ctx is ContextFailure) {
         longestError = determineFailure(ctx, longestError);

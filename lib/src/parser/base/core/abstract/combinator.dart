@@ -1,4 +1,3 @@
-
 import "package:parser/internal_all.dart";
 
 abstract class CombinatorParser extends Parser {
@@ -16,8 +15,8 @@ abstract class CombinatorParser extends Parser {
   @override
   CombinatorParser cloneSelf(ParserCacheMap cloned) {
     CombinatorParser parser = cloned[this] = empty();
-    for (Parser p in children) {
-      parser.children.add(p.clone(cloned));
+    for (int i = 0; i < children.length; i++) {
+      parser.children.add(children[i].clone(cloned));
     }
 
     return parser;
