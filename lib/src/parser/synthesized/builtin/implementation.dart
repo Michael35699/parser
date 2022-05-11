@@ -25,15 +25,20 @@ Parser _hexes() => "[0-9A-Fa-f]+".r();
 Parser _octal() => "[0-7]".r();
 Parser _octals() => "[0-7]+".r();
 
+Parser _delimitedStar(String delimiter) => //
+    delimiter >> (r"\" & any() | ~delimiter >> any()).star().flat() << delimiter;
+Parser _delimitedSingle(String delimiter) => //
+    delimiter >> (r"\" & any() | ~delimiter >> any()) << delimiter;
+
 // STRING
-Parser _string() => r"""(?:(')((?:(?:\\.)|[^'\\]+)*)('))|(?:(")((?:(?:\\.)|[^"\\]+)*)("))""".r();
-Parser _singleString() => r"(')((?:(?:\\.)|[^'\\]+)*)(')".r();
-Parser _doubleString() => r'(")((?:(?:\\.)|[^"\\]+)*)(")'.r();
+Parser _string() => _singleString | _doubleString;
+Parser _singleString() => _delimitedStar("'");
+Parser _doubleString() => _delimitedStar('"');
 
 // CHAR
-Parser _char() => r"""(?:(')((?:(?:\\.)|[^'\\])?)('))|(?:(")((?:(?:\\.)|[^"\\])?)("))""".r();
-Parser _singleChar() => r"(')((?:(?:\\.)|[^'\\])?)(')".r();
-Parser _doubleChar() => r'(")((?:(?:\\.)|[^"\\])?)(")'.r();
+Parser _char() => _singleChar | _doubleChar;
+Parser _singleChar() => _delimitedSingle("'");
+Parser _doubleChar() => _delimitedSingle('"');
 
 // INTEGER /DECIMAL
 Parser _number() => r"""(?:[0-9]*\.[0-9]+)|(?:[0-9]+)""".r ^ $type(num.parse);
