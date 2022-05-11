@@ -32,24 +32,24 @@ class CycleStarParser extends WrapParser with CyclicParser {
   void parseGll(Context context, Trampoline trampoline, GllContinuation continuation) {
     void run(Context context, List<dynamic> mapped, List<dynamic> unmapped) {
       trampoline.push(parser, context, (Context result) {
-        result.map(
-          success: (ContextSuccess context) => run(
-            context,
-            <ParseResult>[...mapped, context.mappedResult],
-            <ParseResult>[...unmapped, context.unmappedResult],
-          ),
-          empty: (ContextEmpty context) => run(context, mapped, unmapped),
-          failure: (ContextFailure context) => continuation(context.success(mapped, unmapped)),
-        );
+        if (result is ContextSuccess) {
+          run(result, mapped << result.mappedResult, unmapped << result.unmappedResult);
+        } else if (result is ContextEmpty) {
+          run(result, mapped, unmapped);
+        } else if (result is ContextFailure) {
+          continuation(result.success(mapped, unmapped));
+        }
       });
     }
 
     trampoline.push(parser, context, (Context ctx) {
-      ctx.map(
-        success: (ContextSuccess ctx) => run(ctx, <ParseResult>[ctx.mappedResult], <ParseResult>[ctx.unmappedResult]),
-        empty: (ContextEmpty ctx) => run(ctx, <ParseResult>[], <ParseResult>[]),
-        failure: (ContextFailure ctx) => continuation(context.success(<ParseResult>[], <ParseResult>[])),
-      );
+      if (ctx is ContextSuccess) {
+        return run(ctx, <ParseResult>[ctx.mappedResult], <ParseResult>[ctx.unmappedResult]);
+      } else if (ctx is ContextEmpty) {
+        return run(ctx, <ParseResult>[], <ParseResult>[]);
+      } else if (ctx is ContextFailure) {
+        return continuation(context.success(<ParseResult>[], <ParseResult>[]));
+      }
     });
   }
 
