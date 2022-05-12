@@ -101,7 +101,6 @@ class QuadraticPackrat extends PegHandler {
           head.involvedSet.add(left.parser);
           left.head = head;
         }
-
         return result.seed;
       } else if (result is Context) {
         return result;

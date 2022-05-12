@@ -1,11 +1,19 @@
-import "package:parser/parser.dart" as local;
+import "package:parser/parser.dart";
 
-int counter = 0;
-
-typedef Parser = local.Parser;
+Parser S() => S & "s" | "s";
 
 void main() {
-  const String input =
-      "{ constantly running dart code here: {block} {these can be used in actual code blocks. Amazing right?} }";
+  int i = 0;
+  Parser built = S.build().transform((Parser target) =>
+      ctx((_) {
+        print("${"  " * ++i}$target");
 
+        return empty();
+      }) >>
+      target.flatMap((_, Context ctx) {
+        print("${"  " * i--} $ctx");
+
+        return ctx;
+      }));
+  print(built.run("sssss"));
 }
